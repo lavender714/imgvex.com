@@ -48,15 +48,16 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
 
   const updateParam = (
     key: string,
-    value: string
+    value: string | null
   ) => {
+    if (!value) return;
     onChange({ ...params, [key]: value } as VideoParams | ImageParams);
   };
 
   return (
     <div className="flex flex-wrap items-center gap-2">
       {/* Model Selector */}
-      <Select value={params.model} onValueChange={(v) => updateParam("model", v)}>
+      <Select value={params.model} onValueChange={(v) => v && updateParam("model", v)}>
         <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
           <SelectValue />
           <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
@@ -75,7 +76,7 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
 
       {/* Duration (Video only) */}
       {isVideo && (
-        <Select value={(params as VideoParams).duration} onValueChange={(v) => updateParam("duration", v as VideoParams["duration"])}>
+        <Select value={(params as VideoParams).duration} onValueChange={(v) => v && updateParam("duration", v as VideoParams["duration"])}>
           <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
             <SelectValue />
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
@@ -90,7 +91,7 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
 
       {/* Quantity (Image only) */}
       {!isVideo && (
-        <Select value={(params as ImageParams).quantity} onValueChange={(v) => updateParam("quantity", v as ImageParams["quantity"])}>
+        <Select value={(params as ImageParams).quantity} onValueChange={(v) => v && updateParam("quantity", v as ImageParams["quantity"])}>
           <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
             <SelectValue />
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
@@ -106,7 +107,7 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
       )}
 
       {/* Aspect Ratio */}
-      <Select value={params.aspectRatio} onValueChange={(v) => updateParam("aspectRatio", v as VideoParams["aspectRatio"])}>
+      <Select value={params.aspectRatio} onValueChange={(v) => v && updateParam("aspectRatio", v as VideoParams["aspectRatio"])}>
         <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
           <SelectValue />
           <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
@@ -120,7 +121,7 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
 
       {/* Resolution (Video only) */}
       {isVideo && (
-        <Select value={(params as VideoParams).resolution} onValueChange={(v) => updateParam("resolution", v as VideoParams["resolution"])}>
+        <Select value={(params as VideoParams).resolution} onValueChange={(v) => v && updateParam("resolution", v as VideoParams["resolution"])}>
           <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
             <SelectValue />
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
