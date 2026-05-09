@@ -84,11 +84,6 @@ const sidebarTools: SidebarItem[] = [
       { icon: Clock, label: "Video Extend", href: "#", active: false, badge: "Hot" },
       { icon: Sparkles, label: "One-Click Video", href: "#", active: false, badge: "New" },
       { icon: Music, label: "Music to Video", href: "#", active: false, badge: "New" },
-    ],
-  },
-  {
-    category: "AI Tools",
-    items: [
       { icon: User, label: "AI Avatar", href: "#", active: false, badge: null },
       { icon: Wand2, label: "Lip Sync", href: "#", active: false, badge: null },
       { icon: Eye, label: "Motion Control", href: "#", active: false, badge: null },
