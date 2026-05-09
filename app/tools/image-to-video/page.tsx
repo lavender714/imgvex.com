@@ -34,6 +34,20 @@ import {
   Heart,
   ArrowRight,
   Home,
+  Link2,
+  Paintbrush,
+  Clapperboard,
+  Copy,
+  Type,
+  Mic,
+  MessageSquare,
+  VolumeX,
+  Keyboard,
+  Headphones,
+  Handshake,
+  FolderOpen,
+  Tag,
+  Newspaper,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -78,6 +92,41 @@ const sidebarTools: SidebarItem[] = [
       { icon: User, label: "AI Avatar", href: "#", active: false, badge: null },
       { icon: Wand2, label: "Lip Sync", href: "#", active: false, badge: null },
       { icon: Eye, label: "Motion Control", href: "#", active: false, badge: null },
+      { icon: Link2, label: "Reference To Video", href: "#", active: false, badge: null },
+      { icon: Paintbrush, label: "Video Style Transform", href: "#", active: false, badge: null },
+      { icon: Clapperboard, label: "Video Effects", href: "#", active: false, badge: null },
+    ],
+  },
+  {
+    category: "AI Image",
+    items: [
+      { icon: Copy, label: "Image to Image", href: "#", active: false, badge: null },
+      { icon: Type, label: "Text to Image", href: "#", active: false, badge: null },
+    ],
+  },
+  {
+    category: "AI Voice",
+    items: [
+      { icon: Mic, label: "Text to Speech", href: "#", active: false, badge: null },
+      { icon: Mic, label: "Voice Cloning", href: "#", active: false, badge: null },
+      { icon: MessageSquare, label: "Text to Dialogue", href: "#", active: false, badge: null },
+      { icon: VolumeX, label: "Noise Remover", href: "#", active: false, badge: null },
+      { icon: Keyboard, label: "Speech to Text", href: "#", active: false, badge: null },
+    ],
+  },
+  {
+    category: "AI Music",
+    items: [
+      { icon: Headphones, label: "Suno", href: "#", active: false, badge: null },
+    ],
+  },
+  {
+    category: "",
+    items: [
+      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
+      { icon: FolderOpen, label: "My Creations", href: "#", active: false, badge: null },
+      { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
+      { icon: Newspaper, label: "Blog", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -296,11 +345,13 @@ export default function ImageToVideoPage() {
         <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] overflow-y-auto hidden lg:flex flex-col py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
-              <div key={section.category} className="px-3 mb-2">
+              <div key={section.category || `bottom-${idx}`} className="px-3 mb-2">
                 {idx > 0 && <div className="h-px bg-[#1E293B] mb-3" />}
-                <p className="text-[10px] font-semibold text-[#475569] tracking-[1.5px] px-3 py-2 uppercase">
-                  {section.category}
-                </p>
+                {section.category && (
+                  <p className="text-[10px] font-semibold text-[#475569] tracking-[1.5px] px-3 py-2 uppercase">
+                    {section.category}
+                  </p>
+                )}
                 <div className="flex flex-col gap-0.5">
                   {section.items.map((item) => (
                     <Link
