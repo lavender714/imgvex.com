@@ -215,10 +215,10 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
             Login
           </Link>
           <Button
-            className="rounded-full bg-[#F8FAFC] hover:bg-[#E2E8F0] text-[#0B0817] font-semibold px-5 py-2 text-sm"
+            className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold px-5 py-2 text-sm"
             asChild
           >
-            <Link href="/generate">Start for Free</Link>
+            <Link href="/generate">Get Started</Link>
           </Button>
         </div>
       </div>
