@@ -35,12 +35,12 @@ const popularFeatures = [
 ];
 
 const aiTools = [
-  { name: "AI Video Editor", desc: "Edit like a pro with AI", tag: null, color: "#6366F1" },
-  { name: "Video To Video", desc: "Transform any footage", tag: "Hot", color: "#EC4899" },
-  { name: "Video Upscaler", desc: "4K quality enhancement", tag: null, color: "#14B8A6" },
-  { name: "Lip Sync AI", desc: "Perfect audio matching", tag: "New", color: "#F59E0B" },
-  { name: "AI Video Extender", desc: "Expand your scenes", tag: null, color: "#8B5CF6" },
-  { name: "Background Remover", desc: "Clean cutouts instantly", tag: null, color: "#06B6D4" },
+  { name: "AI Video Editor", desc: "Edit like a pro with AI", tag: null, color: "#6366F1", href: "#" },
+  { name: "Video To Video", desc: "Transform any footage", tag: "Hot", color: "#EC4899", href: "#" },
+  { name: "Video Upscaler", desc: "4K quality enhancement", tag: null, color: "#14B8A6", href: "#" },
+  { name: "Lip Sync AI", desc: "Perfect audio matching", tag: "New", color: "#F59E0B", href: "#" },
+  { name: "AI Video Extender", desc: "Expand your scenes", tag: null, color: "#8B5CF6", href: "#" },
+  { name: "Background Remover", desc: "Clean cutouts instantly", tag: null, color: "#06B6D4", href: "#" },
 ];
 
 const exploreTags = [
@@ -50,12 +50,47 @@ const exploreTags = [
   "Remove Object", "AI Dance", "Restyle Video", "AI Sound Effect",
 ];
 
-const footerLinks = {
-  "Creative Tools": ["AI Video Generator", "Text to Video AI", "Image to Video AI", "AI Photo Editor", "AI Video Extender", "Mimic Motion"],
-  "Video Models": ["Pollo 2.5", "Veo 3", "Sora 2", "Kling 3.0", "Seanceance 2.0", "Runway"],
-  "Image Models": ["GPT Image 2", "Nano Banana 2", "Recraft", "Ideogram", "Stable Diffusion", "Flux AI"],
-  "Apps": ["Clone Viral Video", "UGC Video Ads", "Anime Video", "Story Video", "Music Video", "News Video"],
-  "Company": ["About Us", "Contact Us", "Pricing", "API", "What's New", "Download App"],
+const footerLinks: Record<string, { label: string; href: string }[]> = {
+  "Creative Tools": [
+    { label: "AI Video Generator", href: "/generate" },
+    { label: "Text to Video AI", href: "/generate" },
+    { label: "Image to Video AI", href: "/tools/image-to-video" },
+    { label: "AI Photo Editor", href: "#" },
+    { label: "AI Video Extender", href: "#" },
+    { label: "Mimic Motion", href: "#" },
+  ],
+  "Video Models": [
+    { label: "Pollo 2.5", href: "#" },
+    { label: "Veo 3", href: "#" },
+    { label: "Sora 2", href: "#" },
+    { label: "Kling 3.0", href: "#" },
+    { label: "Seanceance 2.0", href: "#" },
+    { label: "Runway", href: "#" },
+  ],
+  "Image Models": [
+    { label: "GPT Image 2", href: "#" },
+    { label: "Nano Banana 2", href: "#" },
+    { label: "Recraft", href: "#" },
+    { label: "Ideogram", href: "#" },
+    { label: "Stable Diffusion", href: "#" },
+    { label: "Flux AI", href: "#" },
+  ],
+  "Apps": [
+    { label: "Clone Viral Video", href: "#" },
+    { label: "UGC Video Ads", href: "#" },
+    { label: "Anime Video", href: "#" },
+    { label: "Story Video", href: "#" },
+    { label: "Music Video", href: "#" },
+    { label: "News Video", href: "#" },
+  ],
+  "Company": [
+    { label: "About Us", href: "#" },
+    { label: "Contact Us", href: "#" },
+    { label: "Pricing", href: "/pricing" },
+    { label: "API", href: "#" },
+    { label: "What's New", href: "#" },
+    { label: "Download App", href: "#" },
+  ],
 };
 
 const fadeInUp = {
@@ -226,9 +261,10 @@ export default function HomePage() {
           </motion.div>
           <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {aiTools.map((tool) => (
-              <div
+              <Link
                 key={tool.name}
-                className="relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden cursor-pointer hover:border-[#475569] hover:-translate-y-0.5 transition-all duration-300 group"
+                href={tool.href}
+                className="relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden cursor-pointer hover:border-[#475569] hover:-translate-y-0.5 transition-all duration-300 group block"
               >
                 {/* Image placeholder */}
                 <div
@@ -255,7 +291,7 @@ export default function HomePage() {
                     </span>
                   )}
                 </div>
-              </div>
+              </Link>
             ))}
           </motion.div>
         </motion.div>
@@ -369,7 +405,7 @@ export default function HomePage() {
                 <div key={title} className="flex flex-col gap-2.5">
                   <h4 className="text-[13px] font-semibold text-[#F8FAFC]">{title}</h4>
                   {links.map((link) => (
-                    <a key={link} href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">{link}</a>
+                    <Link key={link.label} href={link.href} className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">{link.label}</Link>
                   ))}
                 </div>
               ))}

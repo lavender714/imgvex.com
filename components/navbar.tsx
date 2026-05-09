@@ -17,7 +17,9 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
           <Link href="/" className="text-lg font-bold text-[#F8FAFC]">imgvex.AI</Link>
           <div className="w-px h-6 bg-[#1E293B]" />
           <Link href="/generate" className="text-sm font-medium text-[#F8FAFC]">Generate</Link>
+          <Link href="/tools/image-to-video" className="text-sm font-medium text-[#64748B] hover:text-[#F8FAFC] transition-colors">Tools</Link>
           <Link href="/dashboard" className="text-sm font-medium text-[#64748B] hover:text-[#F8FAFC] transition-colors">Dashboard</Link>
+          <Link href="/pricing" className="text-sm font-medium text-[#64748B] hover:text-[#F8FAFC] transition-colors">Pricing</Link>
         </div>
         <div className="flex items-center gap-4">
           <CreditPill credits={credits} />
@@ -37,8 +39,8 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
           {[
             { label: "Features", href: "#features" },
             { label: "Models", href: "#models" },
+            { label: "Tools", href: "/tools/image-to-video" },
             { label: "Pricing", href: "/pricing" },
-            { label: "Docs", href: "#docs" },
           ].map((item) => (
             <Link
               key={item.label}
