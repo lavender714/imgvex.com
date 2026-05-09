@@ -34,14 +34,19 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto h-full flex items-center justify-between px-6 lg:px-12">
         <Link href="/" className="text-[22px] font-bold text-[#F8FAFC]">Synapse</Link>
         <nav className="hidden md:flex items-center gap-2">
-          {["Features", "Models", "Pricing", "Docs"].map((item) => (
-            <a
-              key={item}
-              href={`#${item.toLowerCase()}`}
+          {[
+            { label: "Features", href: "#features" },
+            { label: "Models", href: "#models" },
+            { label: "Pricing", href: "/pricing" },
+            { label: "Docs", href: "#docs" },
+          ].map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
               className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
             >
-              {item}
-            </a>
+              {item.label}
+            </Link>
           ))}
         </nav>
         <div className="flex items-center gap-3">

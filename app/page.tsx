@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
-import { PricingCard } from "@/components/pricing-card";
-import { CreditPackCard } from "@/components/credit-pack-card";
 import { motion } from "framer-motion";
 import { Sparkles, Play, Image, Wand2, ChevronRight, Video, Upload } from "lucide-react";
 
@@ -27,64 +25,6 @@ const features = [
   { icon: "B", iconColor: "#14B8A6", title: "Unified Prompting", description: "One prompt works across all models. Our system adapts parameters automatically." },
   { icon: "C", iconColor: "#F59E0B", title: "Batch Generation", description: "Queue up to 10 generations and let them run in the background while you work." },
   { icon: "D", iconColor: "#EC4899", title: "Asset Management", description: "Organize, tag, and export your generations. Full version history included." },
-];
-
-const pricingTiers = [
-  {
-    tier: "free" as const,
-    name: "Free",
-    price: 0,
-    period: "forever",
-    features: [
-      "10 credits / month",
-      "480p output (watermarked)",
-      "2 starter models",
-      "Community support",
-    ],
-  },
-  {
-    tier: "starter" as const,
-    name: "Starter",
-    price: 15,
-    features: [
-      "300 credits / month",
-      "1080p output",
-      "All 20+ models",
-      "Batch generation",
-      "Priority queue",
-      "No watermark",
-    ],
-  },
-  {
-    tier: "pro" as const,
-    name: "Pro · Most Popular",
-    price: 29,
-    features: [
-      "800 credits / month + 4K",
-      "3 concurrent jobs",
-      "Copyright protection",
-      "API access + Webhooks",
-      "Everything in Starter",
-    ],
-    isPopular: true,
-  },
-  {
-    tier: "studio" as const,
-    name: "Studio",
-    price: 79,
-    features: [
-      "2,500 credits + Video Agent",
-      "Multi-project workspace",
-      "Priority support",
-      "Everything in Pro",
-    ],
-  },
-];
-
-const creditPacks = [
-  { credits: 2000, price: 19 },
-  { credits: 10000, price: 79 },
-  { credits: 50000, price: 349 },
 ];
 
 const popularFeatures = [
@@ -410,55 +350,6 @@ export default function HomePage() {
             {features.map((feature, i) => (
               <FeatureCard key={i} {...feature} />
             ))}
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Pricing Section */}
-      <section id="pricing" className="py-[100px] px-6 md:px-12">
-        <motion.div
-          className="max-w-[1200px] mx-auto flex flex-col items-center gap-12"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={stagger}
-        >
-          <motion.div variants={fadeInUp} className="text-center max-w-[700px] flex flex-col gap-3">
-            <h2 className="text-4xl font-bold text-[#F8FAFC]">Simple, Transparent Pricing</h2>
-            <p className="text-base text-[#94A3B8] leading-relaxed">Start free. Scale when you&apos;re ready. No hidden fees.</p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
-            {pricingTiers.map((tier) => (
-              <PricingCard key={tier.tier} {...tier} />
-            ))}
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="w-full flex flex-col gap-6">
-            <div className="text-center flex flex-col gap-1">
-              <h3 className="text-xl font-semibold text-[#F8FAFC]">One-Time Credit Packs</h3>
-              <p className="text-sm text-[#94A3B8]">Buy credits that never expire. Use them anytime, even after canceling your subscription.</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[800px] mx-auto w-full">
-              {creditPacks.map((pack) => (
-                <CreditPackCard key={pack.credits} {...pack} />
-              ))}
-            </div>
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-6 text-sm text-[#64748B]">
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#14B8A6]" />
-              Failed generations auto-refunded
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#14B8A6]" />
-              3-day money-back guarantee
-            </span>
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#14B8A6]" />
-              Cancel anytime
-            </span>
           </motion.div>
         </motion.div>
       </section>
