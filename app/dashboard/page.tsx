@@ -32,7 +32,7 @@ export default function DashboardPage() {
       {/* Top Nav */}
       <header className="h-[60px] border-b border-[#1E293B] bg-[#06060A] flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold text-[#F8FAFC]">Synapse</Link>
+          <Link href="/" className="text-lg font-bold text-[#F8FAFC]">imgvex.AI</Link>
           <div className="w-px h-6 bg-[#1E293B]" />
           <span className="text-sm font-medium text-[#F8FAFC]">Dashboard</span>
         </div>

@@ -359,7 +359,7 @@ export default function HomePage() {
         <div className="max-w-[1200px] mx-auto">
           <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
             <div className="max-w-[280px]">
-              <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">Synapse</h3>
+              <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">imgvex.AI</h3>
               <p className="text-[13px] text-[#64748B] leading-relaxed">
                 The unified console for AI video and image generation. Built for creators who demand precision.
               </p>
@@ -377,7 +377,7 @@ export default function HomePage() {
           </div>
           <div className="h-px bg-[#1E293B] mb-6" />
           <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
-            <span>© 2026 Synapse. All rights reserved.</span>
+            <span>© 2026 imgvex.AI. All rights reserved.</span>
             <div className="flex gap-4">
               <a href="#" className="hover:text-[#64748B] transition-colors">Privacy</a>
               <a href="#" className="hover:text-[#64748B] transition-colors">Terms</a>

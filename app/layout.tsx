@@ -17,7 +17,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Synapse — AI Video & Image Generation",
+  title: "imgvex.AI — AI Video & Image Generation",
   description: "One console. Every AI model. Generate stunning videos and images with 20+ leading AI models.",
 };
 

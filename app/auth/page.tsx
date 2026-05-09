@@ -25,7 +25,7 @@ export default function AuthPage() {
           style={{ background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)" }}
         />
         <div className="relative flex flex-col items-center gap-6 max-w-[400px] text-center">
-          <h1 className="text-[42px] font-bold text-[#F8FAFC]">Synapse</h1>
+          <h1 className="text-[42px] font-bold text-[#F8FAFC]">imgvex.AI</h1>
           <p className="text-base text-[#94A3B8] leading-relaxed">
             The unified console for AI video and image generation. One account, every model.
           </p>

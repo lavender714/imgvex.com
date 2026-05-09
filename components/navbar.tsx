@@ -14,7 +14,7 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
     return (
       <header className="h-[60px] border-b border-[#1E293B] bg-[#06060A] flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-lg font-bold text-[#F8FAFC]">Synapse</Link>
+          <Link href="/" className="text-lg font-bold text-[#F8FAFC]">imgvex.AI</Link>
           <div className="w-px h-6 bg-[#1E293B]" />
           <Link href="/generate" className="text-sm font-medium text-[#F8FAFC]">Generate</Link>
           <Link href="/dashboard" className="text-sm font-medium text-[#64748B] hover:text-[#F8FAFC] transition-colors">Dashboard</Link>
@@ -32,7 +32,7 @@ export function Navbar({ variant = "landing", credits = 48 }: NavbarProps) {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-[#06060A]/85 backdrop-blur-md border-b border-[#1E293B]/50">
       <div className="max-w-[1400px] mx-auto h-full flex items-center justify-between px-6 lg:px-12">
-        <Link href="/" className="text-[22px] font-bold text-[#F8FAFC]">Synapse</Link>
+        <Link href="/" className="text-[22px] font-bold text-[#F8FAFC]">imgvex.AI</Link>
         <nav className="hidden md:flex items-center gap-2">
           {[
             { label: "Features", href: "#features" },

@@ -308,7 +308,7 @@ export default function PricingPage() {
           {[
             { icon: Shield, label: "Secure Payments", desc: "256-bit SSL encryption" },
             { icon: Clock, label: "Auto Refund", desc: "Failed generations refunded" },
-            { icon: Users, label: "12K+ Users", desc: "Trust Synapse daily" },
+            { icon: Users, label: "12K+ Users", desc: "Trust imgvex.AI daily" },
             { icon: CreditCard, label: "Flexible Billing", desc: "Monthly or yearly" },
           ].map(({ icon: Icon, label, desc }) => (
             <div key={label} className="flex items-center gap-3">
@@ -513,7 +513,7 @@ export default function PricingPage() {
       {/* Footer */}
       <footer className="py-12 px-6 md:px-12 border-t border-[#1E293B]">
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#475569]">
-          <span>© 2026 Synapse. All rights reserved.</span>
+          <span>© 2026 imgvex.AI. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="#" className="hover:text-[#64748B] transition-colors">Privacy</Link>
             <Link href="#" className="hover:text-[#64748B] transition-colors">Terms</Link>
