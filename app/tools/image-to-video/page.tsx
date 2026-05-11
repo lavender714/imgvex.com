@@ -870,7 +870,7 @@ export default function ImageToVideoPage() {
             <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
               <span>© 2026 imgvex.AI. All rights reserved.</span>
               <div className="flex gap-4">
-                <a href="#" className="hover:text-[#64748B] transition-colors">Privacy</a>
+                <Link href="/privacy" className="hover:text-[#64748B] transition-colors">Privacy</Link>
                 <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
                 <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
               </div>
