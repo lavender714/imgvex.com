@@ -416,7 +416,7 @@ export default function HomePage() {
             <span>© 2026 imgvex.AI. All rights reserved.</span>
             <div className="flex gap-4">
               <a href="#" className="hover:text-[#64748B] transition-colors">Privacy</a>
-              <a href="#" className="hover:text-[#64748B] transition-colors">Terms</a>
+              <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
               <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
             </div>
           </div>

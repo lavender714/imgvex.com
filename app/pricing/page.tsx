@@ -516,7 +516,7 @@ export default function PricingPage() {
           <span>© 2026 imgvex.AI. All rights reserved.</span>
           <div className="flex gap-4">
             <Link href="#" className="hover:text-[#64748B] transition-colors">Privacy</Link>
-            <Link href="#" className="hover:text-[#64748B] transition-colors">Terms</Link>
+            <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
             <Link href="#" className="hover:text-[#64748B] transition-colors">Cookies</Link>
           </div>
         </div>
