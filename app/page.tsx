@@ -88,8 +88,8 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "Contact Us", href: "#" },
     { label: "Pricing", href: "/pricing" },
     { label: "API", href: "#" },
+    { label: "Terms", href: "/terms" },
     { label: "What's New", href: "#" },
-    { label: "Download App", href: "#" },
   ],
 };
 
