@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
 
 const sections = [
   {
@@ -184,27 +183,6 @@ export default function TermsPage() {
               Effective Date: May 11, 2026
             </p>
           </motion.div>
-        </div>
-      </section>
-
-      {/* TOC */}
-      <section className="pb-12 px-6 md:px-12">
-        <div className="max-w-[800px] mx-auto">
-          <div className="rounded-2xl bg-[#0F0F1A] border border-[#1E293B] p-6">
-            <h2 className="text-sm font-semibold text-[#F8FAFC] mb-4">Table of Contents</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {sections.map((s) => (
-                <a
-                  key={s.id}
-                  href={`#${s.id}`}
-                  className="flex items-center gap-2 text-sm text-[#64748B] hover:text-[#818CF8] transition-colors"
-                >
-                  <ChevronRight className="w-3.5 h-3.5" />
-                  {s.title}
-                </a>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
