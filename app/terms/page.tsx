@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 const sections = [
   {
     id: "introduction",
-    title: "1. Introduction",
+    title: "Introduction",
     content: [
       "Welcome to imgvex.AI. These Terms of Service (\"Terms\") govern your access to and use of the imgvex.AI website, applications, and services (collectively, the \"Service\"). By accessing or using the Service, you agree to be bound by these Terms.",
       "If you are using the Service on behalf of an organization, you represent and warrant that you have the authority to bind that organization to these Terms. In that case, \"you\" and \"your\" will refer to that organization.",
@@ -16,7 +16,7 @@ const sections = [
   },
   {
     id: "eligibility",
-    title: "2. Eligibility",
+    title: "Eligibility",
     content: [
       "You must be at least 18 years old (or the age of legal majority in your jurisdiction) to use the Service. By using the Service, you represent and warrant that you meet this requirement.",
       "If you are using the Service on behalf of a company or organization, you represent and warrant that you have the authority to bind that entity to these Terms.",
@@ -25,7 +25,7 @@ const sections = [
   },
   {
     id: "account",
-    title: "3. Account Registration",
+    title: "Account Registration",
     content: [
       "To access certain features of the Service, you may be required to register for an account. You agree to provide accurate, complete, and up-to-date information during registration and to keep your account information current.",
       "You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You agree to notify us immediately of any unauthorized use of your account or any other breach of security.",
@@ -34,7 +34,7 @@ const sections = [
   },
   {
     id: "use-of-service",
-    title: "4. Use of the Service",
+    title: "Use of the Service",
     content: [
       "Subject to these Terms, we grant you a limited, non-exclusive, non-transferable, and revocable license to access and use the Service for your personal or internal business purposes.",
       "You agree not to (and not to permit any third party to): (a) use the Service for any illegal, harmful, or unauthorized purpose; (b) interfere with or disrupt the Service or servers; (c) attempt to gain unauthorized access to any portion of the Service; (d) reverse engineer, decompile, or disassemble any part of the Service; (e) use automated scripts or bots to access the Service; (f) resell, sublicense, or commercially exploit the Service without our express written consent.",
@@ -43,7 +43,7 @@ const sections = [
   },
   {
     id: "user-content",
-    title: "5. User Content",
+    title: "User Content",
     content: [
       "The Service allows you to upload, submit, store, send, or receive content, including text, images, videos, and other materials (\"User Content\"). You retain all rights in and to your User Content.",
       "By uploading User Content to the Service, you grant us a worldwide, non-exclusive, royalty-free, sublicensable, and transferable license to use, reproduce, distribute, prepare derivative works of, display, and perform your User Content in connection with operating, improving, and promoting the Service.",
@@ -53,7 +53,7 @@ const sections = [
   },
   {
     id: "content-restrictions",
-    title: "6. Content Restrictions",
+    title: "Content Restrictions",
     content: [
       "You may not use the Service to generate, upload, or distribute any content that:",
       "Is illegal, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or otherwise objectionable; promotes violence, discrimination, or illegal activities; infringes upon any patent, trademark, trade secret, copyright, or other proprietary rights; contains software viruses or any other malicious code; impersonates any person or entity; constitutes unsolicited or unauthorized advertising or spam; or violates any applicable local, state, national, or international law.",
@@ -63,7 +63,7 @@ const sections = [
   },
   {
     id: "ai-generated-content",
-    title: "7. AI-Generated Content",
+    title: "AI-Generated Content",
     content: [
       "The Service uses artificial intelligence to generate images, videos, and other content based on your prompts and inputs. You acknowledge that AI-generated content may be unpredictable and may not always meet your expectations.",
       "You are solely responsible for the prompts and inputs you provide and for any AI-generated content you create, publish, or distribute using the Service. You agree to review all AI-generated content before using it commercially or sharing it publicly.",
@@ -73,7 +73,7 @@ const sections = [
   },
   {
     id: "intellectual-property",
-    title: "8. Intellectual Property",
+    title: "Intellectual Property",
     content: [
       "The Service and its original content (excluding User Content), features, and functionality are and will remain the exclusive property of imgvex.AI and its licensors. The Service is protected by copyright, trademark, and other laws.",
       "Our trademarks and trade dress may not be used in connection with any product or service without our prior written consent. All other trademarks not owned by us that appear on the Service are the property of their respective owners.",
@@ -83,7 +83,7 @@ const sections = [
   },
   {
     id: "payment",
-    title: "9. Payment and Subscription",
+    title: "Payment and Subscription",
     content: [
       "Certain features of the Service require payment. By subscribing to a paid plan, you agree to pay all applicable fees as described on our Pricing page. All fees are exclusive of taxes, which you are responsible for paying.",
       "Subscriptions automatically renew at the end of each billing cycle unless you cancel before the renewal date. You authorize us to charge your designated payment method for all renewal fees.",
@@ -93,7 +93,7 @@ const sections = [
   },
   {
     id: "cancellation",
-    title: "10. Cancellation and Refunds",
+    title: "Cancellation and Refunds",
     content: [
       "You may cancel your subscription at any time through your account settings or by contacting us. Your cancellation will take effect at the end of your current billing period.",
       "Upon cancellation, you will continue to have access to your paid features until the end of the current billing period. After that, your account will revert to the free plan or be suspended, depending on your usage.",
@@ -103,7 +103,7 @@ const sections = [
   },
   {
     id: "termination",
-    title: "11. Termination",
+    title: "Termination",
     content: [
       "We may terminate or suspend your account and access to the Service immediately, without prior notice or liability, for any reason, including if you breach these Terms.",
       "Upon termination, your right to use the Service will immediately cease. All provisions of these Terms which by their nature should survive termination shall survive, including ownership provisions, warranty disclaimers, indemnity, and limitations of liability.",
@@ -112,7 +112,7 @@ const sections = [
   },
   {
     id: "disclaimers",
-    title: "12. Disclaimers",
+    title: "Disclaimers",
     content: [
       "THE SERVICE IS PROVIDED ON AN \"AS IS\" AND \"AS AVAILABLE\" BASIS WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, NON-INFRINGEMENT, OR COURSE OF PERFORMANCE.",
       "WE DO NOT WARRANT THAT: (A) THE SERVICE WILL BE UNINTERRUPTED, TIMELY, SECURE, OR ERROR-FREE; (B) THE RESULTS OBTAINED FROM USING THE SERVICE WILL BE ACCURATE OR RELIABLE; (C) ANY ERRORS IN THE SERVICE WILL BE CORRECTED.",
@@ -121,7 +121,7 @@ const sections = [
   },
   {
     id: "liability",
-    title: "13. Limitation of Liability",
+    title: "Limitation of Liability",
     content: [
       "TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL IMGVEX.AI, ITS DIRECTORS, EMPLOYEES, PARTNERS, AGENTS, SUPPLIERS, OR AFFILIATES BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING WITHOUT LIMITATION, LOSS OF PROFITS, DATA, USE, GOODWILL, OR OTHER INTANGIBLE LOSSES.",
       "OUR TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATING TO THESE TERMS OR THE SERVICE SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU PAID TO US IN THE 12 MONTHS PRIOR TO THE EVENT GIVING RISE TO LIABILITY, OR (B) ONE HUNDRED US DOLLARS (US$100).",
@@ -130,7 +130,7 @@ const sections = [
   },
   {
     id: "indemnification",
-    title: "14. Indemnification",
+    title: "Indemnification",
     content: [
       "You agree to defend, indemnify, and hold harmless imgvex.AI and its affiliates, officers, directors, employees, and agents from and against any and all claims, damages, obligations, losses, liabilities, costs, or debt, and expenses (including but not limited to attorney's fees) arising from: (a) your use of and access to the Service; (b) your violation of any provision of these Terms; (c) your violation of any third-party right, including without limitation any copyright, property, or privacy right; or (d) any claim that your User Content caused damage to a third party.",
       "This indemnification obligation will survive the termination of these Terms and your use of the Service.",
@@ -138,7 +138,7 @@ const sections = [
   },
   {
     id: "miscellaneous",
-    title: "15. Miscellaneous",
+    title: "Miscellaneous",
     content: [
       "These Terms constitute the entire agreement between you and imgvex.AI regarding the Service and supersede all prior agreements and understandings.",
       "If any provision of these Terms is held to be invalid or unenforceable, that provision will be enforced to the maximum extent permissible, and the remaining provisions will remain in full force and effect.",
@@ -149,7 +149,7 @@ const sections = [
   },
   {
     id: "contact",
-    title: "16. Contact Information",
+    title: "Contact Information",
     content: [
       "If you have any questions about these Terms, please contact us at: support@imgvex.ai",
       "imgvex.AI is operated by imgvex.AI Inc. For legal notices, please write to the address provided on our Contact page.",
@@ -205,13 +205,71 @@ export default function TermsPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-6 md:px-12 border-t border-[#1E293B]">
-        <div className="max-w-[800px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#475569]">
-          <span>© 2026 imgvex.AI. All rights reserved.</span>
-          <div className="flex gap-4">
-            <Link href="/pricing" className="hover:text-[#64748B] transition-colors">Pricing</Link>
-            <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
-            <a href="#" className="hover:text-[#64748B] transition-colors">Privacy</a>
+      <footer className="py-16 px-6 md:px-12 bg-[#040408]">
+        <div className="max-w-[1200px] mx-auto">
+          <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
+            <div className="max-w-[280px]">
+              <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">imgvex.AI</h3>
+              <p className="text-[13px] text-[#64748B] leading-relaxed">
+                The unified console for AI video and image generation. Built for creators who demand precision.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Creative Tools</h4>
+                <Link href="/generate" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Video Generator</Link>
+                <Link href="/generate" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Text to Video AI</Link>
+                <Link href="/tools/image-to-video" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Image to Video AI</Link>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Photo Editor</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Video Extender</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Mimic Motion</a>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Video Models</h4>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Pollo 2.5</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Veo 3</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Sora 2</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Kling 3.0</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Seanceance 2.0</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Runway</a>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Image Models</h4>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">GPT Image 2</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Nano Banana 2</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Recraft</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Ideogram</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Stable Diffusion</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Flux AI</a>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Apps</h4>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Clone Viral Video</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">UGC Video Ads</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Anime Video</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Story Video</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Music Video</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">News Video</a>
+              </div>
+              <div className="flex flex-col gap-2.5">
+                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Company</h4>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">About Us</a>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Contact Us</a>
+                <Link href="/pricing" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Pricing</Link>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">API</a>
+                <Link href="/terms" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Terms</Link>
+                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">What's New</a>
+              </div>
+            </div>
+          </div>
+          <div className="h-px bg-[#1E293B] mb-6" />
+          <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
+            <span>© 2026 imgvex.AI. All rights reserved.</span>
+            <div className="flex gap-4">
+              <a href="#" className="hover:text-[#64748B] transition-colors">Privacy</a>
+              <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
+              <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
+            </div>
           </div>
         </div>
       </footer>
