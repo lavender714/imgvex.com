@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,10 +13,8 @@ import {
 } from "@/components/ui/select";
 import { motion } from "framer-motion";
 import {
-  Play,
   ChevronDown,
   ChevronRight,
-  Wand2,
   Sparkles,
   Image,
   Video,
@@ -47,8 +45,13 @@ import {
   FolderOpen,
   Tag,
   Newspaper,
-  Volume2,
+  Wand2,
+  Download,
+  Share2,
   Star,
+  Check,
+  Maximize2,
+  X,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -79,8 +82,8 @@ const sidebarTools: SidebarItem[] = [
     category: "AI Video",
     items: [
       { icon: Image, label: "Image to Video", href: "/tools/image-to-video", active: false, badge: null },
-      { icon: Video, label: "Text to Video", href: "/tools/text-to-video", active: true, badge: null },
-      { icon: Layers, label: "Video to Video", href: "#", active: false, badge: null },
+      { icon: Video, label: "Text to Video", href: "/tools/text-to-video", active: false, badge: null },
+      { icon: Layers, label: "Video to Video", href: "/tools/video-to-video", active: false, badge: null },
       { icon: Zap, label: "Video Transition", href: "#", active: false, badge: null },
       { icon: Clock, label: "Video Extend", href: "#", active: false, badge: "Hot" },
       { icon: Sparkles, label: "One-Click Video", href: "#", active: false, badge: "New" },
@@ -97,7 +100,7 @@ const sidebarTools: SidebarItem[] = [
     category: "AI Image",
     items: [
       { icon: Copy, label: "Image to Image", href: "#", active: false, badge: null },
-      { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: false, badge: null },
+      { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: true, badge: null },
     ],
   },
   {
@@ -128,120 +131,122 @@ const sidebarTools: SidebarItem[] = [
 ];
 
 const models = [
-  { id: "pollo-2", name: "Pollo 2.5", logo: "P" },
-  { id: "seedance-2", name: "Seedance 2.0", logo: "S" },
-  { id: "kling-3", name: "Kling 3.0", logo: "K" },
-  { id: "veo-3", name: "Veo 3.1 Lite", logo: "V" },
-  { id: "runway-gen4", name: "Runway Gen-4", logo: "R" },
+  { id: "flux-pro", name: "Flux Pro", logo: "F" },
+  { id: "midjourney-v7", name: "Midjourney v7", logo: "M" },
+  { id: "dalle-4", name: "DALL-E 4", logo: "D" },
+  { id: "ideogram-3", name: "Ideogram 3", logo: "I" },
+  { id: "recraft-v3", name: "Recraft V3", logo: "R" },
+  { id: "stable-xl", name: "Stable Diffusion XL", logo: "S" },
 ];
 
-const videoExamples = [
-  { id: "1", title: "Cat on moon", prompt: "A cute cat sleeping on a crescent moon among clouds" },
-  { id: "2", title: "Foxes baking", prompt: "Cute fox family baking cookies together" },
-  { id: "3", title: "Origami cranes", prompt: "Paper origami cranes flying through a storm" },
-  { id: "4", title: "Cyberpunk city", prompt: "Neon-lit cyberpunk cityscape at night" },
-  { id: "5", title: "Underwater world", prompt: "Vibrant coral reef with tropical fish" },
-  { id: "6", title: "Lightning storm", prompt: "Dramatic lightning storm over mountains" },
+const supportedModelTags = [
+  { name: "GPT Image 2", color: "#6366F1" },
+  { name: "Ideogram 3", color: "#EC4899" },
+  { name: "Recraft V3", color: "#14B8A6" },
+  { name: "Midjourney", color: "#F59E0B" },
+  { name: "Stable Diffusion", color: "#8B5CF6" },
+  { name: "Flux AI", color: "#06B6D4" },
+  { name: "DALL-E 4", color: "#10B981" },
+  { name: "Imagen 4", color: "#EF4444" },
+];
+
+const aspectRatios = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"];
+
+const stylePresets = [
+  { id: "realistic", name: "Realistic", color: "#6366F1" },
+  { id: "anime", name: "Anime", color: "#EC4899" },
+  { id: "3d", name: "3D Render", color: "#14B8A6" },
+  { id: "oil", name: "Oil Painting", color: "#F59E0B" },
+  { id: "sketch", name: "Sketch", color: "#64748B" },
+  { id: "pop", name: "Pop Art", color: "#8B5CF6" },
+  { id: "pixel", name: "Pixel Art", color: "#06B6D4" },
+  { id: "cinematic", name: "Cinematic", color: "#EF4444" },
+];
+
+const imageExamples = [
+  { id: "1", title: "Cyberpunk City", style: "Cinematic", aspect: "16:9" },
+  { id: "2", title: "Fantasy Portrait", style: "Anime", aspect: "3:4" },
+  { id: "3", title: "Product Shot", style: "Realistic", aspect: "1:1" },
+  { id: "4", title: "Abstract Art", style: "Oil Painting", aspect: "1:1" },
+  { id: "5", title: "Space Explorer", style: "3D Render", aspect: "9:16" },
+  { id: "6", title: "Nature Scene", style: "Cinematic", aspect: "16:9" },
+  { id: "7", title: "Character Design", style: "Anime", aspect: "3:4" },
+  { id: "8", title: "Architectural", style: "Realistic", aspect: "4:3" },
+  { id: "9", title: "Retro Poster", style: "Pop Art", aspect: "2:3" },
 ];
 
 const featureCards = [
   {
-    title: "AI Powered Script-to-Screen Magic",
-    desc: "Turn any text prompt into a fully realized video scene. Our AI interprets your descriptions, generates characters, sets, camera movements, and lighting — all from a single sentence.",
+    title: "Turn Words Into Stunning Visuals",
+    desc: "Describe any scene, character, or concept — our AI transforms your text into photorealistic or stylized images in seconds. From product photography to fantasy art, anything is possible.",
     image: "left",
     gradient: "linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(15,15,26,0.9) 100%)",
     icon: Sparkles,
     iconColor: "#818CF8",
   },
   {
-    title: "Cinematic Quality with Zero Editing Skills",
-    desc: "No need for complex editing software. The AI handles transitions, color grading, and pacing automatically. Just describe what you want, and get production-ready output.",
+    title: "Multiple Art Styles at Your Fingertips",
+    desc: "Choose from 50+ predefined styles including anime, oil painting, 3D render, pixel art, cinematic, and more. Each style is fine-tuned to deliver consistent, high-quality results.",
     image: "right",
-    gradient: "linear-gradient(135deg, rgba(20,184,166,0.2) 0%, rgba(15,15,26,0.9) 100%)",
-    icon: Camera,
-    iconColor: "#14B8A6",
-  },
-  {
-    title: "Built-in Audio That Matches Your Message",
-    desc: "Generate ambient soundscapes, background music, or sound effects that perfectly complement your visuals. The AI analyzes your scene and creates audio that enhances the mood.",
-    image: "left",
     gradient: "linear-gradient(135deg, rgba(236,72,153,0.2) 0%, rgba(15,15,26,0.9) 100%)",
-    icon: Volume2,
+    icon: Palette,
     iconColor: "#EC4899",
   },
   {
-    title: "Contextual Scene Generation with Human-Centric Focus",
-    desc: "The AI understands narrative context, character emotions, and environmental storytelling. Create scenes where every element serves the story you're telling.",
+    title: "Fine-Grained Control with Negative Prompts",
+    desc: "Specify exactly what you don't want in your image. Exclude elements, adjust composition, and refine outputs with precision controls like CFG scale and seed values.",
+    image: "left",
+    gradient: "linear-gradient(135deg, rgba(20,184,166,0.2) 0%, rgba(15,15,26,0.9) 100%)",
+    icon: Wand2,
+    iconColor: "#14B8A6",
+  },
+  {
+    title: "Commercial-Ready High Resolution",
+    desc: "Generate images up to 4K resolution with full commercial usage rights. Perfect for marketing materials, social media, presentations, and print media.",
     image: "right",
     gradient: "linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(15,15,26,0.9) 100%)",
-    icon: User,
+    icon: Maximize2,
     iconColor: "#F59E0B",
   },
 ];
 
-const modelLogos = [
-  { name: "Pollo 2.5", color: "#6366F1" },
-  { name: "Seedance 2.0", color: "#14B8A6" },
-  { name: "Veo 3", color: "#F59E0B" },
-  { name: "Sora 2", color: "#EC4899" },
-  { name: "Kling 3.0", color: "#8B5CF6" },
-  { name: "Kling AI", color: "#EF4444" },
-  { name: "Hailuo AI", color: "#06B6D4" },
-  { name: "PixVerse", color: "#F97316" },
-  { name: "Runway", color: "#10B981" },
-  { name: "Vidu AI", color: "#6366F1" },
-  { name: "Luma AI", color: "#8B5CF6" },
-  { name: "Pika AI", color: "#EC4899" },
-  { name: "Wan AI", color: "#14B8A6" },
-];
-
-const masonryVideos = [
-  { id: "m1", aspect: "tall", label: "Tokyo Night" },
-  { id: "m2", aspect: "wide", label: "Champagne Toast" },
-  { id: "m3", aspect: "tall", label: "Sports Car" },
-  { id: "m4", aspect: "tall", label: "Neon City" },
-  { id: "m5", aspect: "wide", label: "Coral Reef" },
-  { id: "m6", aspect: "tall", label: "Butterfly" },
-];
-
 const howToSteps = [
-  { step: 1, title: "Sign Up or Log In to imgvex.AI", desc: "Get started by creating a free account or logging in." },
-  { step: 2, title: "Access the Text to Video Tool", desc: "Navigate to the Text to Video tool from your dashboard or sidebar." },
-  { step: 3, title: "Type in Your Script or Prompt", desc: "Enter a detailed description of the video you want to create." },
-  { step: 4, title: "Click Generate", desc: "The AI will process your prompt and generate a complete video within minutes." },
+  { step: 1, title: "Enter Your Prompt", desc: "Describe the image you want to create in detail. The more specific, the better the results." },
+  { step: 2, title: "Select Style & Settings", desc: "Choose your preferred art style, aspect ratio, and image count. Use negative prompts to exclude unwanted elements." },
+  { step: 3, title: "Generate & Download", desc: "Click Generate and watch the AI create your image. Download in your preferred resolution." },
 ];
 
 const relatedTools = [
-  { name: "Image to Video", desc: "Animate any photo", href: "/tools/image-to-video" },
-  { name: "Photo to Video", desc: "Bring stills to life", href: "#" },
-  { name: "AI Video Generator", desc: "Full AI creation suite", href: "/generate" },
-  { name: "Reference to Video", desc: "Style-based generation", href: "#" },
+  { name: "Image to Image", desc: "Restyle & transform", href: "#" },
+  { name: "AI Photo Editor", desc: "Smart editing tools", href: "#" },
+  { name: "Background Remover", desc: "Clean cutouts", href: "#" },
+  { name: "AI Avatar", desc: "Digital personas", href: "#" },
 ];
 
 const faqs = [
   {
-    q: "What is Text to Video AI?",
-    a: "Text to Video AI is a technology that converts written descriptions into complete video clips using artificial intelligence. You simply type what you want to see, and the AI generates a matching video.",
+    q: "What is Text to Image AI?",
+    a: "Text to Image AI is a technology that converts written descriptions into high-quality images using artificial intelligence. Simply describe what you want to see, and the AI generates a matching image.",
   },
   {
-    q: "How long does it take to generate a video?",
-    a: "Most videos are generated within 1-3 minutes depending on the length, resolution, and complexity. Higher resolution outputs may take slightly longer.",
+    q: "How long does it take to generate an image?",
+    a: "Most images are generated within 10-30 seconds depending on the model, resolution, and complexity. Higher resolution outputs may take slightly longer.",
   },
   {
-    q: "Can I use the generated videos commercially?",
-    a: "Yes, all videos generated on paid plans come with full commercial usage rights. Free plan videos include a watermark and are for personal use only.",
+    q: "What image resolutions are supported?",
+    a: "We support 512x512, 1024x1024, 2048x2048, and up to 4K resolution depending on your subscription plan and the model you choose.",
   },
   {
-    q: "What video resolutions are supported?",
-    a: "We support 480p, 720p, 1080p, and 4K resolutions depending on your subscription plan and the model you choose.",
+    q: "Can I use the generated images commercially?",
+    a: "Yes, all images generated on paid plans come with full commercial usage rights. Free plan images include a watermark and are for personal use only.",
   },
   {
-    q: "Do I need any video editing experience?",
-    a: "No editing experience is required. The AI handles all aspects of video creation including transitions, pacing, and effects.",
+    q: "What is a negative prompt?",
+    a: "A negative prompt lets you specify what you don't want in the image. For example, you can exclude 'blurry, distorted, low quality' to get cleaner results.",
   },
   {
-    q: "Can I add my own audio or music?",
-    a: "Yes, you can upload your own audio tracks or use our AI-generated audio features to create custom soundscapes for your videos.",
+    q: "How many styles are available?",
+    a: "We offer 50+ visual styles including realistic, anime, 3D render, oil painting, sketch, pop art, pixel art, cinematic, and more. New styles are added regularly.",
   },
 ];
 
@@ -250,9 +255,9 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "AI Video Generator", href: "/generate" },
     { label: "Text to Video AI", href: "/tools/text-to-video" },
     { label: "Image to Video AI", href: "/tools/image-to-video" },
+    { label: "Text to Image AI", href: "/tools/text-to-image" },
     { label: "AI Photo Editor", href: "#" },
     { label: "AI Video Extender", href: "#" },
-    { label: "Mimic Motion", href: "#" },
   ],
   "Video Models": [
     { label: "Pollo 2.5", href: "#" },
@@ -324,14 +329,29 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 
 /* ─── Page ─── */
 
-export default function TextToVideoPage() {
-  const [selectedModel, setSelectedModel] = useState("pollo-2");
+export default function TextToImagePage() {
+  const [selectedModel, setSelectedModel] = useState("flux-pro");
   const [prompt, setPrompt] = useState("");
-  const [videoRatio, setVideoRatio] = useState("16:9");
+  const [negativePrompt, setNegativePrompt] = useState("");
+  const [aspectRatio, setAspectRatio] = useState("1:1");
+  const [selectedStyle, setSelectedStyle] = useState("realistic");
+  const [imageCount, setImageCount] = useState(4);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [showNegativePrompt, setShowNegativePrompt] = useState(false);
 
   const currentModel = models.find((m) => m.id === selectedModel);
-  const creditCost = 10;
+  const creditCost = 8;
+
+  const getAspectClass = (ratio: string) => {
+    switch (ratio) {
+      case "16:9": return "aspect-video";
+      case "9:16": return "aspect-[9/16]";
+      case "4:3": return "aspect-[4/3]";
+      case "3:4": return "aspect-[3/4]";
+      case "21:9": return "aspect-[21/9]";
+      default: return "aspect-square";
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0B0817]">
@@ -341,11 +361,6 @@ export default function TextToVideoPage() {
           <div className="flex items-center gap-2">
             <span className="px-2 py-0.5 rounded bg-[#F59E0B] text-[#0B0817] text-[10px] font-bold">SALE</span>
             <span className="text-[#CBD5E1] font-medium">The Unbeatable Lowest Price</span>
-          </div>
-          <div className="hidden sm:flex items-center gap-1 text-[#94A3B8]">
-            <span>Seedance 2.0: As low as</span>
-            <span className="text-[#F59E0B] font-semibold">$0.345</span>
-            <span>per video</span>
           </div>
         </div>
       </div>
@@ -361,9 +376,7 @@ export default function TextToVideoPage() {
               <div key={section.category || `bottom-${idx}`} className="px-3 mb-2">
                 {idx > 0 && <div className="h-px bg-[#1E293B] mb-3" />}
                 {section.category && (
-                  <p className="text-[10px] font-semibold text-[#475569] tracking-[1.5px] px-3 py-2 uppercase">
-                    {section.category}
-                  </p>
+                  <p className="text-[10px] font-semibold text-[#475569] tracking-[1.5px] px-3 py-2 uppercase">{section.category}</p>
                 )}
                 <div className="flex flex-col gap-0.5">
                   {section.items.map((item) => (
@@ -379,13 +392,7 @@ export default function TextToVideoPage() {
                       <item.icon className={`w-4 h-4 ${item.active ? "text-[#818CF8]" : "text-[#475569]"}`} />
                       <span className="flex-1">{item.label}</span>
                       {item.badge && (
-                        <span
-                          className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                            item.badge === "Hot"
-                              ? "bg-[#EF4444]/15 text-[#EF4444]"
-                              : "bg-[#14B8A6]/15 text-[#14B8A6]"
-                          }`}
-                        >
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${item.badge === "Hot" ? "bg-[#EF4444]/15 text-[#EF4444]" : "bg-[#14B8A6]/15 text-[#14B8A6]"}`}>
                           {item.badge}
                         </span>
                       )}
@@ -395,10 +402,7 @@ export default function TextToVideoPage() {
               </div>
             ) : (
               <div key={section.label} className="px-3 mb-2">
-                <Link
-                  href={section.href}
-                  className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-[#64748B] hover:bg-[rgba(99,102,241,0.08)] hover:text-[#F8FAFC] transition-colors"
-                >
+                <Link href={section.href} className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-[#64748B] hover:bg-[rgba(99,102,241,0.08)] hover:text-[#F8FAFC] transition-colors">
                   <section.icon className="w-4 h-4 text-[#475569]" />
                   {section.label}
                 </Link>
@@ -410,6 +414,12 @@ export default function TextToVideoPage() {
         {/* Center: Generation Panel */}
         <main className="flex-1 overflow-y-auto px-6 py-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
+            {/* Title */}
+            <div>
+              <p className="text-lg font-bold text-[#F8FAFC] mb-1">Text to Image</p>
+              <p className="text-sm text-[#64748B]">Generate stunning images from text prompts</p>
+            </div>
+
             {/* Model Selector */}
             <div>
               <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -450,8 +460,8 @@ export default function TextToVideoPage() {
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Describe your video idea... For example: A cinematic aerial shot of a futuristic city at sunset with flying cars and neon lights..."
-                  className="w-full min-h-[160px] p-4 pb-14 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
+                  placeholder="Describe the image you want to create... For example: A majestic lion standing on a rocky cliff at golden hour, dramatic lighting, photorealistic..."
+                  className="w-full min-h-[120px] p-4 pb-14 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
                 />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
                   <button className="flex items-center gap-1.5 text-sm text-[#818CF8] hover:text-[#6366F1] transition-colors">
@@ -460,26 +470,47 @@ export default function TextToVideoPage() {
                   </button>
                   <div className="flex items-center gap-2">
                     <button className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] transition-colors" title="Copy">
-                      <Layers className="w-4 h-4" />
+                      <Copy className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               </div>
               <p className="text-xs text-[#64748B] mt-2">
-                If you're not satisfied, you can generate again or enter prompt for your own.
+                Be specific for better results. Include details about lighting, style, mood, and composition.
               </p>
             </div>
 
-            {/* Video Ratio */}
+            {/* Style Presets */}
             <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Video Ratio</p>
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Style</p>
+              <div className="grid grid-cols-4 gap-2">
+                {stylePresets.map((style) => (
+                  <button
+                    key={style.id}
+                    onClick={() => setSelectedStyle(style.id)}
+                    className={`relative rounded-xl overflow-hidden aspect-[4/3] border-2 transition-all ${
+                      selectedStyle === style.id ? "border-[#EC4899]" : "border-[#1E293B] hover:border-[#475569]"
+                    }`}
+                  >
+                    <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${style.color}20, ${style.color}08)` }} />
+                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/60 to-transparent">
+                      <p className="text-[10px] text-white font-medium text-center">{style.name}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Aspect Ratio */}
+            <div>
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Aspect Ratio</p>
               <div className="flex flex-wrap gap-2">
-                {["16:9", "9:16", "4:3", "3:4", "1:1", "21:9"].map((ratio) => (
+                {aspectRatios.map((ratio) => (
                   <button
                     key={ratio}
-                    onClick={() => setVideoRatio(ratio)}
+                    onClick={() => setAspectRatio(ratio)}
                     className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
-                      videoRatio === ratio
+                      aspectRatio === ratio
                         ? "bg-[rgba(99,102,241,0.15)] border-[#6366F1]/40 text-[#F8FAFC]"
                         : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
                     }`}
@@ -490,12 +521,53 @@ export default function TextToVideoPage() {
               </div>
             </div>
 
+            {/* Number of Images */}
+            <div>
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Number of Images</p>
+              <div className="flex gap-2">
+                {[1, 2, 4].map((count) => (
+                  <button
+                    key={count}
+                    onClick={() => setImageCount(count)}
+                    className={`flex-1 h-11 rounded-xl text-sm font-medium transition-all border ${
+                      imageCount === count
+                        ? "bg-[rgba(99,102,241,0.15)] border-[#6366F1]/40 text-[#F8FAFC]"
+                        : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
+                    }`}
+                  >
+                    {count}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Negative Prompt (Toggle) */}
+            <div>
+              <button
+                onClick={() => setShowNegativePrompt(!showNegativePrompt)}
+                className="flex items-center gap-2 text-sm text-[#64748B] hover:text-[#CBD5E1] transition-colors mb-3"
+              >
+                <X className={`w-3.5 h-3.5 transition-transform ${showNegativePrompt ? "rotate-0" : ""}`} />
+                Negative Prompt (optional)
+              </button>
+              {showNegativePrompt && (
+                <div className="rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden focus-within:border-[#6366F1] focus-within:shadow-[0_0_0_3px_rgba(99,102,241,0.15)] transition-all">
+                  <textarea
+                    value={negativePrompt}
+                    onChange={(e) => setNegativePrompt(e.target.value)}
+                    placeholder="Elements to exclude: blurry, distorted, low quality, watermark, text..."
+                    className="w-full min-h-[80px] p-4 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
+                  />
+                </div>
+              )}
+            </div>
+
             {/* Credit Cost & Generate */}
             <div className="flex flex-col gap-3 pt-2">
               <div className="flex items-center gap-2 text-sm text-[#64748B]">
                 <Layers className="w-4 h-4 text-[#818CF8]" />
                 <span>Required credits:</span>
-                <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+                <span className="font-semibold text-[#F8FAFC]">{creditCost * imageCount}</span>
               </div>
               <Button className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all">
                 <Sparkles className="w-4 h-4 mr-2" />
@@ -506,41 +578,74 @@ export default function TextToVideoPage() {
         </main>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[400px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+        <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
           <div className="p-4 border-b border-[#1E293B]">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#F8FAFC]">Sample Video</h3>
+              <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
               <span className="px-2.5 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[#6366F1]/30 text-[11px] text-[#818CF8]">
-                {currentModel?.name}: Fast Generation, No Queue
+                {currentModel?.name}: Fast Generation
               </span>
             </div>
           </div>
           <div className="flex-1 flex items-center justify-center p-6">
-            <div className="w-full aspect-video rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden">
+            <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden`}>
               <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
               <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center cursor-pointer hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                  <Play className="w-6 h-6 text-[#818CF8] ml-1" />
+                <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
+                  <Image className="w-6 h-6 text-[#818CF8]" />
                 </div>
-                <p className="text-xs text-[#64748B]">Sample preview will appear here</p>
-              </div>
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#1E293B]">
-                <div className="h-full w-1/3 bg-[#6366F1] rounded-full" />
-              </div>
-              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                <span className="text-[10px] text-[#64748B]">0:00 / 0:05</span>
-                <div className="flex items-center gap-3">
-                  <Volume2 className="w-4 h-4 text-[#64748B]" />
-                </div>
+                <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
               </div>
             </div>
+          </div>
+          {/* Toolbar */}
+          <div className="p-4 border-t border-[#1E293B] flex items-center justify-center gap-3">
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
+              <Download className="w-4 h-4" />
+              Download
+            </button>
+            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
+              <Share2 className="w-4 h-4" />
+              Share
+            </button>
           </div>
         </aside>
       </div>
 
       {/* ─── Marketing Content ─── */}
       <div className="border-t border-[#1E293B]">
-        {/* Video Examples Grid */}
+        {/* Supported Models */}
+        <section className="py-12 px-6 md:px-12 bg-[#06060A]">
+          <motion.div
+            className="max-w-[1200px] mx-auto flex flex-col gap-6"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={stagger}
+          >
+            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-[#F8FAFC]">
+                All-in-One AI Image Generator
+              </h2>
+              <p className="text-sm text-[#94A3B8] max-w-[520px] mx-auto">
+                Access the world's top image models from a single platform
+              </p>
+            </motion.div>
+            <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-3">
+              {supportedModelTags.map((tag) => (
+                <div
+                  key={tag.name}
+                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors cursor-pointer"
+                >
+                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
+                  <span className="text-sm text-[#CBD5E1] font-medium">{tag.name}</span>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Showcase Gallery */}
         <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-8"
@@ -551,26 +656,29 @@ export default function TextToVideoPage() {
           >
             <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
               <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                Text to Video of AI Video Generator
+                Turn Words Into Stunning Images
               </h2>
-              <p className="text-base text-[#94A3B8]">
-                Transform your ideas into cinematic videos — just by typing.
+              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
+                Explore the endless possibilities of AI image generation. From photorealistic scenes to artistic masterpieces.
               </p>
             </motion.div>
             <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {videoExamples.map((video) => (
+              {imageExamples.map((img) => (
                 <div
-                  key={video.id}
-                  className="relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden aspect-video group cursor-pointer hover:border-[#475569] transition-all"
+                  key={img.id}
+                  className={`relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden group cursor-pointer hover:border-[#475569] transition-all ${
+                    img.aspect === "3:4" || img.aspect === "9:16" ? "aspect-[3/4]" : img.aspect === "16:9" ? "aspect-video" : "aspect-square"
+                  }`}
                 >
                   <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/5" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-12 h-12 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                      <Play className="w-5 h-5 text-[#818CF8] ml-0.5" />
+                    <div className="w-10 h-10 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
+                      <Image className="w-4 h-4 text-[#818CF8]" />
                     </div>
                   </div>
                   <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-xs text-white/80 font-medium truncate">{video.title}</p>
+                    <p className="text-xs text-white/80 font-medium">{img.title}</p>
+                    <p className="text-[10px] text-white/50">{img.style}</p>
                   </div>
                 </div>
               ))}
@@ -589,7 +697,7 @@ export default function TextToVideoPage() {
           >
             <motion.div variants={fadeInUp} className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                The Features of AI Video Generator for Text to Video
+                The Features of AI Image Generator for Text to Image
               </h2>
             </motion.div>
             {featureCards.map((card, i) => (
@@ -605,7 +713,10 @@ export default function TextToVideoPage() {
                   <h3 className="text-2xl font-bold text-[#F8FAFC]">{card.title}</h3>
                   <p className="text-base text-[#94A3B8] leading-relaxed">{card.desc}</p>
                 </div>
-                <div className="flex-1 w-full aspect-[16/10] rounded-3xl border border-[#1E293B] flex items-center justify-center relative overflow-hidden" style={{ background: card.gradient }}>
+                <div
+                  className="flex-1 w-full aspect-[16/10] rounded-3xl border border-[#1E293B] flex items-center justify-center relative overflow-hidden"
+                  style={{ background: card.gradient }}
+                >
                   <div className="absolute inset-0 bg-black/20" />
                   <div className="relative z-10 flex flex-col items-center gap-3">
                     <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
@@ -613,127 +724,14 @@ export default function TextToVideoPage() {
                     </div>
                     <p className="text-sm text-white/60">Feature Preview</p>
                   </div>
-                  <div className="absolute bottom-4 right-4 w-9 h-9 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center cursor-pointer hover:bg-white/30 transition-colors">
-                    <Play className="w-4 h-4 text-white ml-0.5" />
-                  </div>
                 </div>
               </motion.div>
             ))}
           </motion.div>
         </section>
 
-        {/* Model Showcase */}
-        <section className="py-20 px-6 md:px-12">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                Meet Our All-in-One Text to Video AI
-              </h2>
-              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
-                Try all top-tier video models on our text to video AI generator! More than just our own flagship Pollo 2.5, we also offer access to Kling AI, Veo 3, Hailuo AI and more.
-              </p>
-            </motion.div>
-            <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-4">
-              {modelLogos.map((model) => (
-                <div key={model.name} className="flex flex-col items-center gap-2 px-4 py-3">
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center text-sm font-bold text-white" style={{ backgroundColor: model.color }}>
-                    {model.name.charAt(0)}
-                  </div>
-                  <span className="text-xs text-[#64748B]">{model.name}</span>
-                </div>
-              ))}
-            </motion.div>
-            <motion.div variants={fadeInUp} className="text-center">
-              <Link href="#" className="text-sm text-[#EC4899] hover:underline inline-flex items-center gap-1">
-                More Models <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Masonry Gallery */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                Visualize Any Ideas with Text to Video AI
-              </h2>
-              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
-                Bring any text to life with imgvex.AI text to video generator! With it, you can create engaging videos of any style with just a simple text prompt.
-              </p>
-            </motion.div>
-            <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {masonryVideos.map((video) => (
-                <div
-                  key={video.id}
-                  className={`relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden group cursor-pointer hover:border-[#475569] transition-all ${
-                    video.aspect === "tall" ? "aspect-[3/4]" : "aspect-video"
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/5" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                      <Play className="w-4 h-4 text-[#818CF8] ml-0.5" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-xs text-white/80 font-medium">{video.label}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Audio Feature */}
-        <section className="py-20 px-6 md:px-12">
-          <motion.div
-            className="max-w-[1200px] mx-auto"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="flex flex-col lg:flex-row gap-8 items-center rounded-3xl bg-[#0F0F1A] border border-[#1E293B] p-8 lg:p-12">
-              <div className="flex-1 w-full aspect-video rounded-2xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-[#EC4899]/10 to-[#6366F1]/5" />
-                <div className="relative z-10 flex flex-col items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-[rgba(236,72,153,0.2)] border border-[#EC4899]/30 flex items-center justify-center">
-                    <Play className="w-6 h-6 text-[#EC4899] ml-1" />
-                  </div>
-                  <p className="text-xs text-[#64748B]">Audio Preview</p>
-                </div>
-              </div>
-              <div className="flex-1 flex flex-col gap-5">
-                <div className="w-12 h-12 rounded-2xl bg-[rgba(236,72,153,0.15)] flex items-center justify-center">
-                  <Volume2 className="w-6 h-6 text-[#EC4899]" />
-                </div>
-                <h3 className="text-2xl font-bold text-[#F8FAFC]">Text to Video AI with Seamless Audio</h3>
-                <p className="text-base text-[#94A3B8] leading-relaxed">
-                  imgvex.AI's text to video generator creates cinematic, immersive audio from simple text prompts — whether it's ambient sounds, music, or effects — perfectly synced to enhance your video's mood.
-                </p>
-                <Button className="w-fit rounded-full bg-[#13101F] hover:bg-[#1E293B] text-white font-semibold text-sm px-6 h-11 border border-[#1E293B]" asChild>
-                  <Link href="/generate">Try Our Text to Video AI</Link>
-                </Button>
-              </div>
-            </motion.div>
-          </motion.div>
-        </section>
-
         {/* How to Use */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[1000px] mx-auto flex flex-col gap-12"
             initial="hidden"
@@ -742,7 +740,7 @@ export default function TextToVideoPage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              How to Use the AI Video Generator for Text to Video
+              How to Use the AI Image Generator for Text to Image
             </motion.h2>
             <motion.div variants={fadeInUp} className="flex flex-col gap-0">
               {howToSteps.map((s, i) => (
@@ -764,7 +762,7 @@ export default function TextToVideoPage() {
         </section>
 
         {/* Related Tools */}
-        <section className="py-16 px-6 md:px-12">
+        <section className="py-16 px-6 md:px-12 bg-[#06060A]">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-8"
             initial="hidden"
@@ -773,7 +771,7 @@ export default function TextToVideoPage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-2xl font-bold text-[#F8FAFC] text-center">
-              Unlock the Full Potential of Other AI Video Generators
+              Discover More AI Image Tools
             </motion.h2>
             <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {relatedTools.map((tool) => (
@@ -794,7 +792,7 @@ export default function TextToVideoPage() {
         </section>
 
         {/* FAQ */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[800px] mx-auto flex flex-col gap-8"
             initial="hidden"
@@ -803,7 +801,7 @@ export default function TextToVideoPage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              Frequently Asked Questions About AI Video Generator for Text to Video
+              Frequently Asked Questions About AI Image Generator for Text to Image
             </motion.h2>
             <motion.div variants={fadeInUp} className="flex flex-col gap-3">
               {faqs.map((faq, i) => (
@@ -820,7 +818,7 @@ export default function TextToVideoPage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-6 md:px-12">
+        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
           <motion.div
             className="max-w-[800px] mx-auto text-center flex flex-col items-center gap-6"
             initial="hidden"
@@ -829,16 +827,16 @@ export default function TextToVideoPage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-              Create Cinematic Videos with Just a Few Words
+              Start Creating Stunning Images Today
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-base text-[#94A3B8] max-w-[520px]">
-              Whether you're creating product ads, animated portraits, or social content — our AI-powered tool makes it fast and effortless.
+              Whether you need product photos, concept art, or social media visuals — our AI makes it effortless.
             </motion.p>
             <motion.div variants={fadeInUp}>
-              <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm px-8 h-12" asChild>
+              <Button className="rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
                 <Link href="/generate">
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Try Text to Video AI
+                  Try Text to Image AI Free
                 </Link>
               </Button>
             </motion.div>
