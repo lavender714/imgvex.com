@@ -152,17 +152,6 @@ const supportedModelTags = [
 
 const aspectRatios = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"];
 
-const stylePresets = [
-  { id: "realistic", name: "Realistic", color: "#6366F1" },
-  { id: "anime", name: "Anime", color: "#EC4899" },
-  { id: "3d", name: "3D Render", color: "#14B8A6" },
-  { id: "oil", name: "Oil Painting", color: "#F59E0B" },
-  { id: "sketch", name: "Sketch", color: "#64748B" },
-  { id: "pop", name: "Pop Art", color: "#8B5CF6" },
-  { id: "pixel", name: "Pixel Art", color: "#06B6D4" },
-  { id: "cinematic", name: "Cinematic", color: "#EF4444" },
-];
-
 const imageExamples = [
   { id: "1", title: "Cyberpunk City", style: "Cinematic", aspect: "16:9" },
   { id: "2", title: "Fantasy Portrait", style: "Anime", aspect: "3:4" },
@@ -332,15 +321,12 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 export default function TextToImagePage() {
   const [selectedModel, setSelectedModel] = useState("flux-pro");
   const [prompt, setPrompt] = useState("");
-  const [negativePrompt, setNegativePrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
-  const [selectedStyle, setSelectedStyle] = useState("realistic");
-  const [imageCount, setImageCount] = useState(4);
+  const [resolution, setResolution] = useState("1K");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [showNegativePrompt, setShowNegativePrompt] = useState(false);
 
   const currentModel = models.find((m) => m.id === selectedModel);
-  const creditCost = 8;
+  const creditCost = 2;
 
   const getAspectClass = (ratio: string) => {
     switch (ratio) {
@@ -480,97 +466,72 @@ export default function TextToImagePage() {
               </p>
             </div>
 
-            {/* Style Presets */}
+            {/* Image Dimensions */}
             <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Style</p>
-              <div className="grid grid-cols-4 gap-2">
-                {stylePresets.map((style) => (
-                  <button
-                    key={style.id}
-                    onClick={() => setSelectedStyle(style.id)}
-                    className={`relative rounded-xl overflow-hidden aspect-[4/3] border-2 transition-all ${
-                      selectedStyle === style.id ? "border-[#EC4899]" : "border-[#1E293B] hover:border-[#475569]"
-                    }`}
-                  >
-                    <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${style.color}20, ${style.color}08)` }} />
-                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/60 to-transparent">
-                      <p className="text-[10px] text-white font-medium text-center">{style.name}</p>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Aspect Ratio */}
-            <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Aspect Ratio</p>
-              <div className="flex flex-wrap gap-2">
-                {aspectRatios.map((ratio) => (
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-1">Image Dimensions</p>
+              <p className="text-xs text-[#64748B] mb-3">Select the aspect ratio for your image</p>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {[
+                  { ratio: "1:1", w: 20, h: 20 },
+                  { ratio: "16:9", w: 28, h: 16 },
+                  { ratio: "9:16", w: 16, h: 28 },
+                  { ratio: "4:3", w: 24, h: 18 },
+                  { ratio: "3:4", w: 18, h: 24 },
+                  { ratio: "21:9", w: 32, h: 12 },
+                ].map(({ ratio, w, h }) => (
                   <button
                     key={ratio}
                     onClick={() => setAspectRatio(ratio)}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${
+                    className={`flex flex-col items-center gap-2 py-3 rounded-xl border-2 transition-all ${
                       aspectRatio === ratio
-                        ? "bg-[rgba(99,102,241,0.15)] border-[#6366F1]/40 text-[#F8FAFC]"
-                        : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
+                        ? "border-[#8B5CF6] bg-[rgba(139,92,246,0.1)]"
+                        : "border-[#1E293B] bg-[#13101F] hover:border-[#475569]"
                     }`}
                   >
-                    {ratio}
+                    <div
+                      className={`border-2 rounded-sm ${aspectRatio === ratio ? "border-[#F8FAFC]" : "border-[#64748B]"}`}
+                      style={{ width: `${w}px`, height: `${h}px` }}
+                    />
+                    <span className={`text-xs font-medium ${aspectRatio === ratio ? "text-[#F8FAFC]" : "text-[#64748B]"}`}>
+                      {ratio}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
 
-            {/* Number of Images */}
+            {/* Resolution */}
             <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Number of Images</p>
-              <div className="flex gap-2">
-                {[1, 2, 4].map((count) => (
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Resolution</p>
+              <div className="grid grid-cols-3 gap-2">
+                {["1K", "2K", "4K"].map((res) => (
                   <button
-                    key={count}
-                    onClick={() => setImageCount(count)}
-                    className={`flex-1 h-11 rounded-xl text-sm font-medium transition-all border ${
-                      imageCount === count
-                        ? "bg-[rgba(99,102,241,0.15)] border-[#6366F1]/40 text-[#F8FAFC]"
+                    key={res}
+                    onClick={() => setResolution(res)}
+                    className={`h-11 rounded-xl text-sm font-medium transition-all border ${
+                      resolution === res
+                        ? "bg-[rgba(139,92,246,0.15)] border-[#8B5CF6]/40 text-[#F8FAFC]"
                         : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
                     }`}
                   >
-                    {count}
+                    {res}
                   </button>
                 ))}
               </div>
-            </div>
-
-            {/* Negative Prompt (Toggle) */}
-            <div>
-              <button
-                onClick={() => setShowNegativePrompt(!showNegativePrompt)}
-                className="flex items-center gap-2 text-sm text-[#64748B] hover:text-[#CBD5E1] transition-colors mb-3"
-              >
-                <X className={`w-3.5 h-3.5 transition-transform ${showNegativePrompt ? "rotate-0" : ""}`} />
-                Negative Prompt (optional)
-              </button>
-              {showNegativePrompt && (
-                <div className="rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden focus-within:border-[#6366F1] focus-within:shadow-[0_0_0_3px_rgba(99,102,241,0.15)] transition-all">
-                  <textarea
-                    value={negativePrompt}
-                    onChange={(e) => setNegativePrompt(e.target.value)}
-                    placeholder="Elements to exclude: blurry, distorted, low quality, watermark, text..."
-                    className="w-full min-h-[80px] p-4 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Credit Cost & Generate */}
             <div className="flex flex-col gap-3 pt-2">
               <div className="flex items-center gap-2 text-sm text-[#64748B]">
-                <Layers className="w-4 h-4 text-[#818CF8]" />
+                <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                  <path d="M2 17l10 5 10-5" />
+                  <path d="M2 12l10 5 10-5" />
+                </svg>
                 <span>Required credits:</span>
-                <span className="font-semibold text-[#F8FAFC]">{creditCost * imageCount}</span>
+                <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
               </div>
-              <Button className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all">
-                <Sparkles className="w-4 h-4 mr-2" />
+              <Button className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all">
                 Generate
               </Button>
             </div>
