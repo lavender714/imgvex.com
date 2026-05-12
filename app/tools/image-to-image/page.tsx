@@ -59,6 +59,7 @@ import {
   Flame,
   Globe,
   ShoppingBag,
+  Crown,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -85,54 +86,31 @@ function isCategory(item: SidebarItem): item is SidebarCategory {
 
 const sidebarTools: SidebarItem[] = [
   { icon: Home, label: "Home", href: "/", active: false },
+  { icon: Sparkles, label: "Create", href: "/generate", active: false },
   {
     category: "AI Video",
     items: [
       { icon: Image, label: "Image to Video", href: "/tools/image-to-video", active: false, badge: null },
       { icon: Video, label: "Text to Video", href: "/tools/text-to-video", active: false, badge: null },
       { icon: Layers, label: "Video to Video", href: "/tools/video-to-video", active: false, badge: null },
-      { icon: Zap, label: "Video Transition", href: "#", active: false, badge: null },
-      { icon: Clock, label: "Video Extend", href: "#", active: false, badge: "Hot" },
-      { icon: Sparkles, label: "One-Click Video", href: "#", active: false, badge: "New" },
-      { icon: Music, label: "Music to Video", href: "#", active: false, badge: "New" },
-      { icon: User, label: "AI Avatar", href: "#", active: false, badge: null },
-      { icon: Wand2, label: "Lip Sync", href: "#", active: false, badge: null },
-      { icon: Eye, label: "Motion Control", href: "#", active: false, badge: null },
-      { icon: Link2, label: "Reference To Video", href: "#", active: false, badge: null },
-      { icon: Paintbrush, label: "Video Style Transform", href: "#", active: false, badge: null },
-      { icon: Clapperboard, label: "Video Effects", href: "#", active: false, badge: null },
     ],
   },
   {
     category: "AI Image",
     items: [
-      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", active: true, badge: null },
       { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: false, badge: null },
-    ],
-  },
-  {
-    category: "AI Voice",
-    items: [
-      { icon: Mic, label: "Text to Speech", href: "#", active: false, badge: null },
-      { icon: Mic, label: "Voice Cloning", href: "#", active: false, badge: null },
-      { icon: MessageSquare, label: "Text to Dialogue", href: "#", active: false, badge: null },
-      { icon: VolumeX, label: "Noise Remover", href: "#", active: false, badge: null },
-      { icon: Keyboard, label: "Speech to Text", href: "#", active: false, badge: null },
-    ],
-  },
-  {
-    category: "AI Music",
-    items: [
-      { icon: Headphones, label: "Suno", href: "#", active: false, badge: null },
+      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", active: true, badge: null },
     ],
   },
   {
     category: "",
     items: [
+      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
+      { icon: Wand2, label: "Tools", href: "#", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
       { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
-      { icon: FolderOpen, label: "My Creations", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Newspaper, label: "Blog", href: "#", active: false, badge: null },
+      { icon: Link2, label: "API", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -430,29 +408,30 @@ export default function ImageToImagePage() {
       {/* ─── Workbench ─── */}
       <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px]">
         {/* Left Sidebar */}
-        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] overflow-y-auto hidden lg:flex flex-col py-4">
+        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+          <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
-              <div key={section.category || `bottom-${idx}`} className="px-3 mb-2">
-                {idx > 0 && <div className="h-px bg-[#1E293B] mb-3" />}
+              <div key={section.category || `bottom-${idx}`} className="px-3 mb-3">
+                {!section.category && <div className="h-px bg-[#1E293B] mb-3" />}
                 {section.category && (
-                  <p className="text-[10px] font-semibold text-[#475569] tracking-[1.5px] px-3 py-2 uppercase">{section.category}</p>
+                  <p className="text-[11px] font-medium text-[#64748B] px-3 py-1.5">{section.category}</p>
                 )}
                 <div className="flex flex-col gap-0.5">
                   {section.items.map((item) => (
                     <Link
                       key={item.label}
                       href={item.href}
-                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] transition-colors ${
+                      className={`flex items-center gap-2.5 px-3 py-2 rounded-full text-[13px] transition-colors ${
                         item.active
-                          ? "bg-[rgba(99,102,241,0.15)] text-[#F8FAFC] font-medium border border-[#6366F1]/30"
-                          : "text-[#64748B] hover:bg-[rgba(99,102,241,0.08)] hover:text-[#F8FAFC]"
+                          ? "bg-[rgba(236,72,153,0.12)] text-[#EC4899] font-medium"
+                          : "text-[#94A3B8] hover:bg-[rgba(148,163,184,0.06)] hover:text-[#F8FAFC]"
                       }`}
                     >
-                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#818CF8]" : "text-[#475569]"}`} />
+                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#EC4899]" : "text-[#64748B]"}`} />
                       <span className="flex-1">{item.label}</span>
                       {item.badge && (
-                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${item.badge === "Hot" ? "bg-[#EF4444]/15 text-[#EF4444]" : "bg-[#14B8A6]/15 text-[#14B8A6]"}`}>
+                        <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${item.badge === "Hot" ? "bg-[#EF4444]/15 text-[#EF4444]" : item.badge === "New" ? "bg-[#14B8A6]/15 text-[#14B8A6]" : "bg-[#F59E0B]/15 text-[#F59E0B]"}`}>
                           {item.badge}
                         </span>
                       )}
@@ -461,14 +440,24 @@ export default function ImageToImagePage() {
                 </div>
               </div>
             ) : (
-              <div key={section.label} className="px-3 mb-2">
-                <Link href={section.href} className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-[13px] text-[#64748B] hover:bg-[rgba(99,102,241,0.08)] hover:text-[#F8FAFC] transition-colors">
-                  <section.icon className="w-4 h-4 text-[#475569]" />
+              <div key={section.label} className="px-3 mb-1">
+                <Link href={section.href} className="flex items-center gap-2.5 px-3 py-2 rounded-full text-[13px] text-[#94A3B8] hover:bg-[rgba(148,163,184,0.06)] hover:text-[#F8FAFC] transition-colors">
+                  <section.icon className="w-4 h-4 text-[#64748B]" />
                   {section.label}
                 </Link>
               </div>
             )
           )}
+          </div>
+          {/* Upgrade now button */}
+          <div className="p-3 border-t border-[#1E293B]">
+            <Button className="w-full rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
+              <Link href="/pricing">
+                <Crown className="w-4 h-4 mr-2" />
+                Upgrade now
+              </Link>
+            </Button>
+          </div>
         </aside>
 
         {/* Center: Generation Panel */}
