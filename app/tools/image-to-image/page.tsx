@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useCallback } from "react";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   ChevronDown,
   ChevronRight,
@@ -51,7 +51,14 @@ import {
   Star,
   Check,
   Maximize2,
+  Upload,
   X,
+  Settings,
+  Sun,
+  Moon,
+  Flame,
+  Globe,
+  ShoppingBag,
 } from "lucide-react";
 
 /* ─── Types ─── */
@@ -99,8 +106,8 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "AI Image",
     items: [
-      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", active: false, badge: null },
-      { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: true, badge: null },
+      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", active: true, badge: null },
+      { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: false, badge: null },
     ],
   },
   {
@@ -141,72 +148,94 @@ const models = [
 
 const supportedModelTags = [
   { name: "GPT Image 2", color: "#6366F1" },
-  { name: "Ideogram 3", color: "#EC4899" },
-  { name: "Recraft V3", color: "#14B8A6" },
-  { name: "Midjourney", color: "#F59E0B" },
-  { name: "Stable Diffusion", color: "#8B5CF6" },
+  { name: "Nano Banana 2", color: "#EC4899" },
+  { name: "Stable Diffusion", color: "#14B8A6" },
   { name: "Flux AI", color: "#06B6D4" },
-  { name: "DALL-E 4", color: "#10B981" },
-  { name: "Imagen 4", color: "#EF4444" },
+  { name: "Seedream", color: "#F59E0B" },
+  { name: "GPT-4o", color: "#10B981" },
+  { name: "Flux Kontext", color: "#8B5CF6" },
+  { name: "Qwen Image", color: "#EF4444" },
+  { name: "Wan AI", color: "#6366F1" },
 ];
 
-const aspectRatios = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"];
+const loraStyles = [
+  { id: "ghibli", name: "Ghibli Art", color: "#14B8A6" },
+  { id: "anime", name: "Anime", color: "#EC4899" },
+  { id: "realistic", name: "Realistic", color: "#6366F1" },
+  { id: "oil", name: "Oil Painting", color: "#F59E0B" },
+  { id: "sketch", name: "Sketch", color: "#64748B" },
+  { id: "3d", name: "3D Render", color: "#8B5CF6" },
+  { id: "pixel", name: "Pixel Art", color: "#06B6D4" },
+  { id: "cinematic", name: "Cinematic", color: "#EF4444" },
+  { id: "pop", name: "Pop Art", color: "#F97316" },
+  { id: "watercolor", name: "Watercolor", color: "#3B82F6" },
+  { id: "cyberpunk", name: "Cyberpunk", color: "#A855F7" },
+  { id: "vintage", name: "Vintage", color: "#B45309" },
+];
 
-const imageExamples = [
-  { id: "1", title: "Cyberpunk City", style: "Cinematic", aspect: "16:9" },
-  { id: "2", title: "Fantasy Portrait", style: "Anime", aspect: "3:4" },
-  { id: "3", title: "Product Shot", style: "Realistic", aspect: "1:1" },
-  { id: "4", title: "Abstract Art", style: "Oil Painting", aspect: "1:1" },
-  { id: "5", title: "Space Explorer", style: "3D Render", aspect: "9:16" },
-  { id: "6", title: "Nature Scene", style: "Cinematic", aspect: "16:9" },
-  { id: "7", title: "Character Design", style: "Anime", aspect: "3:4" },
-  { id: "8", title: "Architectural", style: "Realistic", aspect: "4:3" },
-  { id: "9", title: "Retro Poster", style: "Pop Art", aspect: "2:3" },
+const beforeAfterExamples = [
+  { id: "1", title: "Portrait Style Transfer", desc: "Transform portraits into artistic styles" },
+  { id: "2", title: "Product Photography", desc: "Enhance product shots with professional lighting" },
+  { id: "3", title: "Scene Reimagining", desc: "Change the mood and atmosphere of any scene" },
 ];
 
 const featureCards = [
   {
-    title: "Turn Words Into Stunning Visuals",
-    desc: "Describe any scene, character, or concept — our AI transforms your text into photorealistic or stylized images in seconds. From product photography to fantasy art, anything is possible.",
+    title: "AI-Powered Image Transformation",
+    desc: "Upload any image and describe the transformation you want. Our AI analyzes the original composition, colors, and subject, then reimagines it in your chosen style while preserving the core elements.",
     image: "left",
     gradient: "linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(15,15,26,0.9) 100%)",
     icon: Sparkles,
     iconColor: "#818CF8",
   },
   {
-    title: "Multiple Art Styles at Your Fingertips",
-    desc: "Choose from 50+ predefined styles including anime, oil painting, 3D render, pixel art, cinematic, and more. Each style is fine-tuned to deliver consistent, high-quality results.",
+    title: "Creative Style Transfer with Text Prompts",
+    desc: "Simply describe how you want to change an image. Add colors, change the art style, or create entirely new looks. Our AI interprets your words to craft stunning images that resonate with your vision.",
     image: "right",
     gradient: "linear-gradient(135deg, rgba(236,72,153,0.2) 0%, rgba(15,15,26,0.9) 100%)",
     icon: Palette,
     iconColor: "#EC4899",
   },
   {
-    title: "Fine-Grained Control with Negative Prompts",
-    desc: "Specify exactly what you don't want in your image. Exclude elements, adjust composition, and refine outputs with precision controls like CFG scale and seed values.",
+    title: "Seamless AI Editing — No Experience Needed",
+    desc: "No design skills required. Upload your image, type what you want to change, and let the AI handle the rest. From subtle retouching to complete artistic overhauls.",
     image: "left",
     gradient: "linear-gradient(135deg, rgba(20,184,166,0.2) 0%, rgba(15,15,26,0.9) 100%)",
     icon: Wand2,
     iconColor: "#14B8A6",
   },
   {
-    title: "Commercial-Ready High Resolution",
-    desc: "Generate images up to 4K resolution with full commercial usage rights. Perfect for marketing materials, social media, presentations, and print media.",
+    title: "Versatile Output for Marketing, E-commerce, and Concept Art",
+    desc: "Generate multiple variations for A/B testing, create consistent brand imagery, or explore creative concepts. Each output maintains high fidelity to your original while introducing the desired changes.",
     image: "right",
     gradient: "linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(15,15,26,0.9) 100%)",
-    icon: Maximize2,
+    icon: Briefcase,
     iconColor: "#F59E0B",
   },
 ];
 
+const audienceTabs = [
+  { key: "photographers", label: "Photographers", icon: Camera },
+  { key: "creators", label: "Content Creators", icon: User },
+  { key: "marketers", label: "Marketing Teams", icon: Briefcase },
+  { key: "hobbyists", label: "Hobbyists", icon: Heart },
+];
+
+const audienceContent: Record<string, { title: string; desc: string; stat: string }> = {
+  photographers: { title: "Reduce Editing Time by 70%", desc: "Save up to 70% of your editing time. Quickly restyle or enhance photos to match your creative vision, without hours of manual adjustments.", stat: "70% faster" },
+  creators: { title: "Endless Content Variations", desc: "Create multiple versions of a single image for different platforms and audiences. One photo, infinite possibilities — perfect for maintaining a consistent feed.", stat: "50+ styles" },
+  marketers: { title: "A/B Test Visuals at Scale", desc: "Generate multiple creative variants for ad campaigns without photoshoot costs. Test different styles, backgrounds, and compositions to find what converts best.", stat: "10x more variants" },
+  hobbyists: { title: "Explore Your Creativity", desc: "Turn everyday photos into art. Experiment with different styles, create personalized gifts, or simply have fun seeing your images reimagined.", stat: "100% free to try" },
+};
+
 const howToSteps = [
-  { step: 1, title: "Enter Your Prompt", desc: "Describe the image you want to create in detail. The more specific, the better the results." },
-  { step: 2, title: "Select Style & Settings", desc: "Choose your preferred art style, aspect ratio, and image count. Use negative prompts to exclude unwanted elements." },
-  { step: 3, title: "Generate & Download", desc: "Click Generate and watch the AI create your image. Download in your preferred resolution." },
+  { step: 1, title: "Upload Your Image", desc: "Upload any JPG or PNG image. Portraits, products, landscapes, and illustrations all work great." },
+  { step: 2, title: "Choose a Style and Enter Your Prompt", desc: "Select a LoRA style or describe the transformation you want. Be specific about colors, mood, and artistic direction." },
+  { step: 3, title: "Generate and Download", desc: "Click Generate and watch the AI transform your image. Download your favorites in high resolution." },
 ];
 
 const relatedTools = [
-  { name: "Image to Image", desc: "Restyle & transform", href: "#" },
+  { name: "Text to Image", desc: "Create from scratch", href: "/tools/text-to-image" },
   { name: "AI Photo Editor", desc: "Smart editing tools", href: "#" },
   { name: "Background Remover", desc: "Clean cutouts", href: "#" },
   { name: "AI Avatar", desc: "Digital personas", href: "#" },
@@ -214,28 +243,28 @@ const relatedTools = [
 
 const faqs = [
   {
-    q: "What is Text to Image AI?",
-    a: "Text to Image AI is a technology that converts written descriptions into high-quality images using artificial intelligence. Simply describe what you want to see, and the AI generates a matching image.",
+    q: "What is Image to Image AI?",
+    a: "Image to Image AI is a technology that transforms existing images into new versions based on your instructions. Upload any image, describe the changes you want, and the AI generates a modified version while preserving the original composition.",
   },
   {
-    q: "How long does it take to generate an image?",
-    a: "Most images are generated within 10-30 seconds depending on the model, resolution, and complexity. Higher resolution outputs may take slightly longer.",
+    q: "How does Image to Image AI work?",
+    a: "Our AI analyzes your uploaded image and applies specific algorithms to modify it based on your prompts. You can describe desired changes — such as colors, styles, or artistic directions — and the AI generates a new image reflecting those ideas.",
   },
   {
-    q: "What image resolutions are supported?",
-    a: "We support 512x512, 1024x1024, 2048x2048, and up to 4K resolution depending on your subscription plan and the model you choose.",
+    q: "What is LoRA?",
+    a: "LoRA (Low-Rank Adaptation) is a technique for adapting image models to specific styles. Our platform offers 2,000+ LoRAs for different artistic styles, themes, and applications. You can select and combine LoRAs for personalized results.",
+  },
+  {
+    q: "Is Image to Image AI free to use?",
+    a: "Yes, you can try Image to Image AI for free. We offer 5 free generations daily. After that, each generation costs 2 credits. Paid plans offer more generations and higher resolutions.",
   },
   {
     q: "Can I use the generated images commercially?",
     a: "Yes, all images generated on paid plans come with full commercial usage rights. Free plan images include a watermark and are for personal use only.",
   },
   {
-    q: "What is a negative prompt?",
-    a: "A negative prompt lets you specify what you don't want in the image. For example, you can exclude 'blurry, distorted, low quality' to get cleaner results.",
-  },
-  {
-    q: "How many styles are available?",
-    a: "We offer 50+ visual styles including realistic, anime, 3D render, oil painting, sketch, pop art, pixel art, cinematic, and more. New styles are added regularly.",
+    q: "What types of images work best?",
+    a: "High-quality, clear images with good lighting work best. Portraits, product shots, landscapes, illustrations, and architecture photos all produce excellent results.",
   },
 ];
 
@@ -245,7 +274,7 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "Text to Video AI", href: "/tools/text-to-video" },
     { label: "Image to Video AI", href: "/tools/image-to-video" },
     { label: "Text to Image AI", href: "/tools/text-to-image" },
-    { label: "AI Photo Editor", href: "#" },
+    { label: "Image to Image AI", href: "/tools/image-to-image" },
     { label: "AI Video Extender", href: "#" },
   ],
   "Video Models": [
@@ -316,27 +345,72 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
   );
 }
 
+function AspectIcon({ ratio }: { ratio: string }) {
+  const dims: Record<string, { w: number; h: number }> = {
+    "1:1": { w: 20, h: 20 },
+    "16:9": { w: 28, h: 16 },
+    "9:16": { w: 16, h: 28 },
+    "4:3": { w: 24, h: 18 },
+    "3:4": { w: 18, h: 24 },
+    "21:9": { w: 32, h: 12 },
+  };
+  const d = dims[ratio] || dims["1:1"];
+  return (
+    <div
+      className="border-2 border-current rounded-sm"
+      style={{ width: `${d.w}px`, height: `${d.h}px` }}
+    />
+  );
+}
+
 /* ─── Page ─── */
 
-export default function TextToImagePage() {
+export default function ImageToImagePage() {
   const [selectedModel, setSelectedModel] = useState("flux-pro");
   const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
   const [resolution, setResolution] = useState("1K");
+  const [selectedStyle, setSelectedStyle] = useState("ghibli");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [activeAudience, setActiveAudience] = useState("photographers");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const currentModel = models.find((m) => m.id === selectedModel);
   const creditCost = 2;
 
-  const getAspectClass = (ratio: string) => {
-    switch (ratio) {
-      case "16:9": return "aspect-video";
-      case "9:16": return "aspect-[9/16]";
-      case "4:3": return "aspect-[4/3]";
-      case "3:4": return "aspect-[3/4]";
-      case "21:9": return "aspect-[21/9]";
-      default: return "aspect-square";
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0 && files[0].type.startsWith("image/")) {
+      const url = URL.createObjectURL(files[0]);
+      setUploadedImage(url);
     }
+  }, []);
+
+  const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0 && files[0].type.startsWith("image/")) {
+      const url = URL.createObjectURL(files[0]);
+      setUploadedImage(url);
+    }
+  }, []);
+
+  const handleRemoveImage = () => {
+    if (uploadedImage) URL.revokeObjectURL(uploadedImage);
+    setUploadedImage(null);
   };
 
   return (
@@ -402,8 +476,8 @@ export default function TextToImagePage() {
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             {/* Title */}
             <div>
-              <p className="text-lg font-bold text-[#F8FAFC] mb-1">Text to Image</p>
-              <p className="text-sm text-[#64748B]">Generate stunning images from text prompts</p>
+              <p className="text-lg font-bold text-[#F8FAFC] mb-1">Image to Image</p>
+              <p className="text-sm text-[#64748B]">Transform any image with AI-powered style transfer</p>
             </div>
 
             {/* Model Selector */}
@@ -433,6 +507,45 @@ export default function TextToImagePage() {
               </Select>
             </div>
 
+            {/* Upload Image */}
+            <div>
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Upload Image</p>
+              {uploadedImage ? (
+                <div className="relative rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden">
+                  <img src={uploadedImage} alt="Uploaded" className="w-full max-h-[200px] object-contain" />
+                  <button
+                    onClick={handleRemoveImage}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ) : (
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`relative rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
+                    isDragging
+                      ? "border-[#8B5CF6] bg-[rgba(139,92,246,0.08)]"
+                      : "border-[#334155] bg-[#13101F] hover:border-[#475569]"
+                  }`}
+                >
+                  <input ref={fileInputRef} type="file" accept="image/*" onChange={handleFileSelect} className="hidden" />
+                  <div className="flex flex-col items-center gap-3 py-10 px-6">
+                    <div className="w-12 h-12 rounded-xl bg-[#1E293B] flex items-center justify-center">
+                      <Upload className="w-5 h-5 text-[#64748B]" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm font-medium text-[#CBD5E1]">Upload image or drag and drop</p>
+                      <p className="text-xs text-[#64748B] mt-1">JPG, PNG supported (max 10 MB)</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Prompt */}
             <div>
               <div className="flex items-center justify-between mb-3">
@@ -446,8 +559,8 @@ export default function TextToImagePage() {
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Describe the image you want to create... For example: A majestic lion standing on a rocky cliff at golden hour, dramatic lighting, photorealistic..."
-                  className="w-full min-h-[120px] p-4 pb-14 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
+                  placeholder="Describe how you want to transform the image... For example: Turn this into a Ghibli-style animation with soft pastel colors..."
+                  className="w-full min-h-[100px] p-4 pb-14 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
                 />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
                   <button className="flex items-center gap-1.5 text-sm text-[#818CF8] hover:text-[#6366F1] transition-colors">
@@ -461,9 +574,27 @@ export default function TextToImagePage() {
                   </div>
                 </div>
               </div>
-              <p className="text-xs text-[#64748B] mt-2">
-                Be specific for better results. Include details about lighting, style, mood, and composition.
-              </p>
+            </div>
+
+            {/* Style / LoRA */}
+            <div>
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Style</p>
+              <div className="grid grid-cols-4 gap-2">
+                {loraStyles.slice(0, 8).map((style) => (
+                  <button
+                    key={style.id}
+                    onClick={() => setSelectedStyle(style.id)}
+                    className={`relative rounded-xl overflow-hidden aspect-[4/3] border-2 transition-all ${
+                      selectedStyle === style.id ? "border-[#EC4899]" : "border-[#1E293B] hover:border-[#475569]"
+                    }`}
+                  >
+                    <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${style.color}20, ${style.color}08)` }} />
+                    <div className="absolute bottom-0 left-0 right-0 p-1.5 bg-gradient-to-t from-black/60 to-transparent">
+                      <p className="text-[10px] text-white font-medium text-center">{style.name}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Image Dimensions */}
@@ -471,14 +602,7 @@ export default function TextToImagePage() {
               <p className="text-sm font-semibold text-[#F8FAFC] mb-1">Image Dimensions</p>
               <p className="text-xs text-[#64748B] mb-3">Select the aspect ratio for your image</p>
               <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {[
-                  { ratio: "1:1", w: 20, h: 20 },
-                  { ratio: "16:9", w: 28, h: 16 },
-                  { ratio: "9:16", w: 16, h: 28 },
-                  { ratio: "4:3", w: 24, h: 18 },
-                  { ratio: "3:4", w: 18, h: 24 },
-                  { ratio: "21:9", w: 32, h: 12 },
-                ].map(({ ratio, w, h }) => (
+                {["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"].map((ratio) => (
                   <button
                     key={ratio}
                     onClick={() => setAspectRatio(ratio)}
@@ -488,10 +612,7 @@ export default function TextToImagePage() {
                         : "border-[#1E293B] bg-[#13101F] hover:border-[#475569]"
                     }`}
                   >
-                    <div
-                      className={`border-2 rounded-sm ${aspectRatio === ratio ? "border-[#F8FAFC]" : "border-[#64748B]"}`}
-                      style={{ width: `${w}px`, height: `${h}px` }}
-                    />
+                    <AspectIcon ratio={ratio} />
                     <span className={`text-xs font-medium ${aspectRatio === ratio ? "text-[#F8FAFC]" : "text-[#64748B]"}`}>
                       {ratio}
                     </span>
@@ -534,6 +655,7 @@ export default function TextToImagePage() {
               <Button className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all">
                 Generate
               </Button>
+              <p className="text-xs text-[#64748B] text-center">5 free images daily, then 2 credits/image</p>
             </div>
           </div>
         </main>
@@ -542,20 +664,46 @@ export default function TextToImagePage() {
         <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
           <div className="p-4 border-b border-[#1E293B]">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
+              <h3 className="text-sm font-semibold text-[#F8FAFC]">Preview</h3>
               <span className="px-2.5 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[#6366F1]/30 text-[11px] text-[#818CF8]">
                 {currentModel?.name}: Fast Generation
               </span>
             </div>
           </div>
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden`}>
-              <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
-              <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
-                  <Image className="w-6 h-6 text-[#818CF8]" />
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex flex-col gap-4">
+              {/* Original Image */}
+              <div>
+                <p className="text-xs text-[#64748B] mb-2">Original</p>
+                <div className="w-full aspect-square rounded-2xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
+                  {uploadedImage ? (
+                    <img src={uploadedImage} alt="Original" className="w-full h-full object-contain" />
+                  ) : (
+                    <>
+                      <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(139,92,246,0.1) 100%)" }} />
+                      <div className="relative z-10 flex flex-col items-center gap-2">
+                        <Image className="w-8 h-8 text-[#64748B]" />
+                        <p className="text-xs text-[#64748B]">Upload an image to see preview</p>
+                      </div>
+                    </>
+                  )}
                 </div>
-                <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
+              </div>
+
+              {/* Generated Results Grid */}
+              <div>
+                <p className="text-xs text-[#64748B] mb-2">Generated Results</p>
+                <div className="grid grid-cols-2 gap-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <div key={i} className="aspect-square rounded-xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 opacity-30" style={{ background: `linear-gradient(135deg, rgba(139,92,246,0.15) 0%, rgba(236,72,153,0.1) 100%)` }} />
+                      <div className="relative z-10 flex flex-col items-center gap-1">
+                        <Sparkles className="w-5 h-5 text-[#64748B]" />
+                        <p className="text-[10px] text-[#64748B]">Result {i}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -563,7 +711,7 @@ export default function TextToImagePage() {
           <div className="p-4 border-t border-[#1E293B] flex items-center justify-center gap-3">
             <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
               <Download className="w-4 h-4" />
-              Download
+              Download All
             </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
               <Share2 className="w-4 h-4" />
@@ -586,7 +734,7 @@ export default function TextToImagePage() {
           >
             <motion.div variants={fadeInUp} className="text-center flex flex-col gap-2">
               <h2 className="text-2xl md:text-3xl font-bold text-[#F8FAFC]">
-                All-in-One AI Image Generator
+                All-in-One AI Image Generator from Image
               </h2>
               <p className="text-sm text-[#94A3B8] max-w-[520px] mx-auto">
                 Access the world's top image models from a single platform
@@ -596,9 +744,11 @@ export default function TextToImagePage() {
               {supportedModelTags.map((tag) => (
                 <div
                   key={tag.name}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors cursor-pointer"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors cursor-pointer"
                 >
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
+                  <div className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white" style={{ backgroundColor: tag.color }}>
+                    {tag.name.charAt(0)}
+                  </div>
                   <span className="text-sm text-[#CBD5E1] font-medium">{tag.name}</span>
                 </div>
               ))}
@@ -606,7 +756,7 @@ export default function TextToImagePage() {
           </motion.div>
         </section>
 
-        {/* Showcase Gallery */}
+        {/* Before/After Showcase */}
         <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-8"
@@ -617,29 +767,36 @@ export default function TextToImagePage() {
           >
             <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
               <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                Turn Words Into Stunning Images
+                Peerless AI Image to Image Generator
               </h2>
               <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
-                Explore the endless possibilities of AI image generation. From photorealistic scenes to artistic masterpieces.
+                Transform your existing images with our AI image to image generator. Add color, change art style, or create entirely new looks.
               </p>
             </motion.div>
-            <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {imageExamples.map((img) => (
-                <div
-                  key={img.id}
-                  className={`relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden group cursor-pointer hover:border-[#475569] transition-all ${
-                    img.aspect === "3:4" || img.aspect === "9:16" ? "aspect-[3/4]" : img.aspect === "16:9" ? "aspect-video" : "aspect-square"
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/5" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                      <Image className="w-4 h-4 text-[#818CF8]" />
+            <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {beforeAfterExamples.map((example) => (
+                <div key={example.id} className="flex flex-col gap-3">
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Before */}
+                    <div className="aspect-square rounded-xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-transparent" />
+                      <div className="relative z-10 flex flex-col items-center gap-1">
+                        <Image className="w-5 h-5 text-[#64748B]" />
+                        <span className="text-[10px] text-[#64748B]">Before</span>
+                      </div>
+                    </div>
+                    {/* After */}
+                    <div className="aspect-square rounded-xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-[#EC4899]/10 to-transparent" />
+                      <div className="relative z-10 flex flex-col items-center gap-1">
+                        <Sparkles className="w-5 h-5 text-[#EC4899]" />
+                        <span className="text-[10px] text-[#64748B]">After</span>
+                      </div>
                     </div>
                   </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-xs text-white/80 font-medium">{img.title}</p>
-                    <p className="text-[10px] text-white/50">{img.style}</p>
+                  <div>
+                    <p className="text-sm font-semibold text-[#F8FAFC]">{example.title}</p>
+                    <p className="text-xs text-[#64748B]">{example.desc}</p>
                   </div>
                 </div>
               ))}
@@ -647,8 +804,49 @@ export default function TextToImagePage() {
           </motion.div>
         </section>
 
-        {/* Features */}
+        {/* LoRA Style Gallery */}
         <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+          <motion.div
+            className="max-w-[1200px] mx-auto flex flex-col gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={stagger}
+          >
+            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
+                Different Styles for Every Need
+              </h2>
+              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
+                Choose from 2,000+ LoRAs tailored to different artistic styles, themes, and applications.
+              </p>
+            </motion.div>
+            <motion.div variants={fadeInUp} className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
+              {loraStyles.map((style) => (
+                <button
+                  key={style.id}
+                  className="flex flex-col items-center gap-2 group"
+                >
+                  <div className="w-full aspect-square rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden relative group-hover:border-[#475569] transition-all">
+                    <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${style.color}20, ${style.color}08)` }} />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-xl font-bold" style={{ color: style.color }}>{style.name.charAt(0)}</span>
+                    </div>
+                  </div>
+                  <span className="text-xs text-[#64748B] group-hover:text-[#CBD5E1] transition-colors">{style.name}</span>
+                </button>
+              ))}
+            </motion.div>
+            <motion.div variants={fadeInUp} className="text-center">
+              <Button className="rounded-full bg-[#13101F] hover:bg-[#1E293B] text-white font-semibold text-sm px-6 h-11 border border-[#1E293B]" asChild>
+                <Link href="/generate">Explore All Styles</Link>
+              </Button>
+            </motion.div>
+          </motion.div>
+        </section>
+
+        {/* Features */}
+        <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-16"
             initial="hidden"
@@ -658,7 +856,7 @@ export default function TextToImagePage() {
           >
             <motion.div variants={fadeInUp} className="text-center">
               <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                The Features of AI Image Generator for Text to Image
+                The Features of AI Image Generator for Image to Image
               </h2>
             </motion.div>
             {featureCards.map((card, i) => (
@@ -691,6 +889,90 @@ export default function TextToImagePage() {
           </motion.div>
         </section>
 
+        {/* Target Audience Tabs */}
+        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+          <motion.div
+            className="max-w-[1000px] mx-auto flex flex-col gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-50px" }}
+            variants={stagger}
+          >
+            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
+                Pollo AI Image to Image Generator Is Built for All
+              </h2>
+              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
+                Whether you're a photographer, an influencer, or simply want to transform your images for fun.
+              </p>
+            </motion.div>
+
+            {/* Tabs */}
+            <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-2">
+              {audienceTabs.map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveAudience(tab.key)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                    activeAudience === tab.key
+                      ? "bg-[rgba(139,92,246,0.15)] text-[#F8FAFC] border border-[#8B5CF6]/40"
+                      : "text-[#64748B] hover:text-[#CBD5E1] border border-transparent"
+                  }`}
+                >
+                  <tab.icon className="w-4 h-4" />
+                  {tab.label}
+                </button>
+              ))}
+            </motion.div>
+
+            {/* Tab Content */}
+            <motion.div variants={fadeInUp}>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeAudience}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="flex flex-col lg:flex-row gap-8 items-center rounded-3xl bg-[#0F0F1A] border border-[#1E293B] p-8"
+                >
+                  <div className="flex-1 w-full aspect-video rounded-2xl bg-[#13101F] border border-[#1E293B] flex items-center justify-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#8B5CF6]/5" />
+                    <div className="relative z-10 flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
+                        {(() => {
+                          const TabIcon = audienceTabs.find((t) => t.key === activeAudience)?.icon || Camera;
+                          return <TabIcon className="w-6 h-6 text-[#818CF8]" />;
+                        })()}
+                      </div>
+                      <p className="text-xs text-[#64748B]">Audience Preview</p>
+                    </div>
+                  </div>
+                  <div className="flex-1 flex flex-col gap-4">
+                    <div className="flex items-center gap-3">
+                      {(() => {
+                        const TabIcon = audienceTabs.find((t) => t.key === activeAudience)?.icon || Camera;
+                        return (
+                          <div className="w-10 h-10 rounded-xl bg-[rgba(139,92,246,0.12)] flex items-center justify-center">
+                            <TabIcon className="w-5 h-5 text-[#8B5CF6]" />
+                          </div>
+                        );
+                      })()}
+                      <span className="text-lg font-bold text-[#F8FAFC]">{audienceContent[activeAudience].title}</span>
+                    </div>
+                    <p className="text-base text-[#94A3B8] leading-relaxed">{audienceContent[activeAudience].desc}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="px-3 py-1 rounded-full bg-[rgba(139,92,246,0.12)] border border-[#8B5CF6]/30 text-xs text-[#8B5CF6] font-medium">
+                        {audienceContent[activeAudience].stat}
+                      </span>
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+            </motion.div>
+          </motion.div>
+        </section>
+
         {/* How to Use */}
         <section className="py-20 px-6 md:px-12">
           <motion.div
@@ -701,7 +983,7 @@ export default function TextToImagePage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              How to Use the AI Image Generator for Text to Image
+              How to Use the AI Image Generator for Image to Image
             </motion.h2>
             <motion.div variants={fadeInUp} className="flex flex-col gap-0">
               {howToSteps.map((s, i) => (
@@ -762,7 +1044,7 @@ export default function TextToImagePage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              Frequently Asked Questions About AI Image Generator for Text to Image
+              Frequently Asked Questions About AI Image Generator for Image to Image
             </motion.h2>
             <motion.div variants={fadeInUp} className="flex flex-col gap-3">
               {faqs.map((faq, i) => (
@@ -788,16 +1070,16 @@ export default function TextToImagePage() {
             variants={stagger}
           >
             <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-              Start Creating Stunning Images Today
+              Join 10M+ Users Using imgvex.AI to Create and Inspire
             </motion.h2>
             <motion.p variants={fadeInUp} className="text-base text-[#94A3B8] max-w-[520px]">
-              Whether you need product photos, concept art, or social media visuals — our AI makes it effortless.
+              Start transforming your images today. Upload, describe, and let AI do the rest.
             </motion.p>
             <motion.div variants={fadeInUp}>
               <Button className="rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
                 <Link href="/generate">
                   <Sparkles className="w-4 h-4 mr-2" />
-                  Try Text to Image AI Free
+                  Try Image to Image AI Free
                 </Link>
               </Button>
             </motion.div>

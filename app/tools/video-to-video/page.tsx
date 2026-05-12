@@ -85,7 +85,7 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "AI Image",
     items: [
-      { icon: Copy, label: "Image to Image", href: "#", active: false, badge: null },
+      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", active: false, badge: null },
       { icon: Type, label: "Text to Image", href: "/tools/text-to-image", active: false, badge: null },
     ],
   },

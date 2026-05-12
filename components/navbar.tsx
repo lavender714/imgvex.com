@@ -78,7 +78,7 @@ const dropdownMenus: DropdownSection[] = [
     label: "Image AI",
     items: [
       { icon: Type, label: "Text to Image", href: "/tools/text-to-image", desc: "Prompt-to-image creation" },
-      { icon: Copy, label: "Image to Image", href: "#", desc: "Restyle & transform" },
+      { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", desc: "Restyle & transform" },
       { icon: Brush, label: "AI Photo Editor", href: "#", desc: "Smart editing tools" },
       { icon: Scissors, label: "Background Remover", href: "#", desc: "Clean cutouts" },
     ],
