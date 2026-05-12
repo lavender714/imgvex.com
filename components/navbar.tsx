@@ -66,7 +66,7 @@ const dropdownMenus: DropdownSection[] = [
     label: "Video AI",
     items: [
       { icon: Image, label: "Image to Video", href: "/tools/image-to-video", desc: "Animate any photo" },
-      { icon: Video, label: "Text to Video", href: "/generate", desc: "Prompt-to-video generation" },
+      { icon: Video, label: "Text to Video", href: "/tools/text-to-video", desc: "Prompt-to-video generation" },
       { icon: Layers, label: "Video to Video", href: "#", desc: "Transform existing footage" },
       { icon: Zap, label: "Video Transition", href: "#", desc: "Seamless scene changes" },
       { icon: Clock, label: "Video Extend", href: "#", desc: "Expand video length" },

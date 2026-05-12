@@ -53,7 +53,7 @@ const exploreTags = [
 const footerLinks: Record<string, { label: string; href: string }[]> = {
   "Creative Tools": [
     { label: "AI Video Generator", href: "/generate" },
-    { label: "Text to Video AI", href: "/generate" },
+    { label: "Text to Video AI", href: "/tools/text-to-video" },
     { label: "Image to Video AI", href: "/tools/image-to-video" },
     { label: "AI Photo Editor", href: "#" },
     { label: "AI Video Extender", href: "#" },
