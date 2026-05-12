@@ -62,7 +62,7 @@ const sections = [
     title: "Your Rights",
     content: [
       "Depending on your location, you may have the following rights regarding your personal data: the right to access, correct, or delete your personal information; the right to restrict or object to processing; the right to data portability; and the right to withdraw consent.",
-      "To exercise these rights, please contact us at privacy@imgvex.ai. We will respond to your request within 30 days.",
+      "To exercise these rights, please contact us at support@imgvex.com. We will respond to your request within 30 days.",
       "You may delete your account at any time through your account settings. Upon deletion, we will remove your personal information from our active systems within 30 days, though some data may be retained in backups for a limited period or as required by law.",
       "You may opt out of marketing communications at any time by clicking the \"Unsubscribe\" link in our emails or by contacting us directly.",
     ],
@@ -99,7 +99,7 @@ const sections = [
     title: "Contact Us",
     content: [
       "If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:",
-      "Email: privacy@imgvex.ai",
+      "Email: support@imgvex.com",
       "We will make every effort to respond to your inquiry within 30 days.",
     ],
   },

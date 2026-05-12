@@ -151,7 +151,7 @@ const sections = [
     id: "contact",
     title: "Contact Information",
     content: [
-      "If you have any questions about these Terms, please contact us at: support@imgvex.ai",
+      "If you have any questions about these Terms, please contact us at: support@imgvex.com",
       "imgvex.AI is operated by imgvex.AI Inc. For legal notices, please write to the address provided on our Contact page.",
     ],
   },
