@@ -202,7 +202,7 @@ export default function PrivacyPage() {
               <div className="flex flex-col gap-2.5">
                 <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Company</h4>
                 <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">About Us</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Contact Us</a>
+                <a href="mailto:support@imgvex.com?subject=Contact%20imgvex.AI" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Contact Us</a>
                 <Link href="/pricing" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Pricing</Link>
                 <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">API</a>
                 <Link href="/terms" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Terms</Link>

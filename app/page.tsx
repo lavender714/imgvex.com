@@ -85,7 +85,7 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
   ],
   "Company": [
     { label: "About Us", href: "#" },
-    { label: "Contact Us", href: "#" },
+    { label: "Contact Us", href: "mailto:support@imgvex.com?subject=Contact%20imgvex.AI" },
     { label: "Pricing", href: "/pricing" },
     { label: "API", href: "#" },
     { label: "Terms", href: "/terms" },
