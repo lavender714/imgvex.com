@@ -95,7 +95,6 @@ const sidebarTools: SidebarItem[] = [
     category: "",
     items: [
       { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
-      { icon: Wand2, label: "Tools", href: "#", active: false, badge: null },
       { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
       { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
