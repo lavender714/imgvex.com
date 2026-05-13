@@ -18,15 +18,23 @@ export default function AuthPage() {
     setIsLoading(true);
     setErrorMsg("");
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback`,
       },
     });
     if (error) {
+      console.error("Google OAuth error:", error);
       setIsLoading(false);
-      setErrorMsg(error.message);
+      setErrorMsg(`Google sign-in failed: ${error.message}`);
+      return;
+    }
+    if (data?.url) {
+      window.location.href = data.url;
+    } else {
+      setIsLoading(false);
+      setErrorMsg("No redirect URL returned from Supabase. Check your Google provider config.");
     }
   };
 
