@@ -1,5 +1,38 @@
-const baseUrl = process.env.APIPOD_BASE_URL || "https://api.apipod.ai/v1";
-const apiKey = process.env.APIPOD_API_KEY!;
+import { readFileSync } from "fs";
+import { resolve, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+function loadEnv(key: string, defaultValue?: string): string {
+  // 1. Try process.env first
+  const envValue = process.env[key];
+  if (envValue) return envValue;
+
+  // 2. Try reading from .env.local in various locations
+  const possiblePaths = [
+    resolve(process.cwd(), ".env.local"),
+    resolve(process.cwd(), "..", ".env.local"),
+    resolve(__dirname, "..", ".env.local"),
+    resolve(__dirname, "..", "..", ".env.local"),
+  ];
+
+  for (const envPath of possiblePaths) {
+    try {
+      const content = readFileSync(envPath, "utf-8");
+      const match = content.match(new RegExp(`^${key}=(.+)$`, "m"));
+      if (match) return match[1].trim();
+    } catch {
+      // ignore and try next
+    }
+  }
+
+  if (defaultValue) return defaultValue;
+  throw new Error(`Environment variable ${key} not found`);
+}
+
+const baseUrl = loadEnv("APIPOD_BASE_URL", "https://api.apipod.ai/v1");
+const apiKey = loadEnv("APIPOD_API_KEY");
 
 const headers = {
   "Content-Type": "application/json",
