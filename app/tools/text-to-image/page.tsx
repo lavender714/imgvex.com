@@ -108,23 +108,23 @@ const sidebarTools: SidebarItem[] = [
 ];
 
 const models = [
-  { id: "flux-pro", name: "Flux Pro", logo: "F" },
-  { id: "midjourney-v7", name: "Midjourney v7", logo: "M" },
-  { id: "dalle-4", name: "DALL-E 4", logo: "D" },
-  { id: "ideogram-3", name: "Ideogram 3", logo: "I" },
-  { id: "recraft-v3", name: "Recraft V3", logo: "R" },
-  { id: "stable-xl", name: "Stable Diffusion XL", logo: "S" },
+  { id: "gpt-image-2", name: "GPT Image 2", logo: "G" },
+  { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
+  { id: "nano-banana-pro", name: "Nano Banana Pro", logo: "N+" },
+  { id: "seedream-5.0-lite", name: "Seedream 5.0", logo: "S" },
+  { id: "seedream-v4.5", name: "Seedream V4.5", logo: "S4" },
+  { id: "wan2.7-image", name: "WAN 2.7 Image", logo: "W" },
+  { id: "wan2.7-image-pro", name: "WAN 2.7 Pro", logo: "W+" },
 ];
 
 const supportedModelTags = [
   { name: "GPT Image 2", color: "#6366F1" },
-  { name: "Ideogram 3", color: "#EC4899" },
-  { name: "Recraft V3", color: "#14B8A6" },
-  { name: "Midjourney", color: "#F59E0B" },
-  { name: "Stable Diffusion", color: "#8B5CF6" },
-  { name: "Flux AI", color: "#06B6D4" },
-  { name: "DALL-E 4", color: "#10B981" },
-  { name: "Imagen 4", color: "#EF4444" },
+  { name: "Nano Banana 2", color: "#EC4899" },
+  { name: "Nano Banana Pro", color: "#14B8A6" },
+  { name: "Seedream 5.0", color: "#F59E0B" },
+  { name: "Seedream V4.5", color: "#8B5CF6" },
+  { name: "WAN 2.7 Image", color: "#06B6D4" },
+  { name: "WAN 2.7 Pro", color: "#10B981" },
 ];
 
 const aspectRatios = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"];
@@ -296,7 +296,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 /* ─── Page ─── */
 
 export default function TextToImagePage() {
-  const [selectedModel, setSelectedModel] = useState("flux-pro");
+  const [selectedModel, setSelectedModel] = useState("gpt-image-2");
   const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
   const [resolution, setResolution] = useState("1K");
