@@ -301,6 +301,10 @@ export default function TextToImagePage() {
   const [aspectRatio, setAspectRatio] = useState("1:1");
   const [resolution, setResolution] = useState("1K");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedImages, setGeneratedImages] = useState<string[]>([]);
+  const [taskStatus, setTaskStatus] = useState<string>("");
+  const [genError, setGenError] = useState("");
 
   const currentModel = models.find((m) => m.id === selectedModel);
   const creditCost = 2;
@@ -313,6 +317,89 @@ export default function TextToImagePage() {
       case "3:4": return "aspect-[3/4]";
       case "21:9": return "aspect-[21/9]";
       default: return "aspect-square";
+    }
+  };
+
+  const mapResolution = (res: string) => {
+    switch (res) {
+      case "1K": return "1024x1024";
+      case "2K": return "2048x2048";
+      case "4K": return "4096x4096";
+      default: return "1024x1024";
+    }
+  };
+
+  const handleGenerate = async () => {
+    if (!prompt.trim()) {
+      setGenError("Please enter a prompt");
+      return;
+    }
+    setIsGenerating(true);
+    setGenError("");
+    setGeneratedImages([]);
+    setTaskStatus("Submitting...");
+
+    try {
+      // 1. Create task
+      const createRes = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "image",
+          model: selectedModel,
+          prompt: prompt.trim(),
+          size: mapResolution(resolution),
+          n: 1,
+        }),
+      });
+
+      const createData = await createRes.json();
+      if (!createRes.ok) {
+        throw new Error(createData.error || "Failed to create task");
+      }
+
+      const taskId = createData.data?.task_id || createData.task_id;
+      if (!taskId) {
+        throw new Error("No task ID returned");
+      }
+
+      // 2. Poll for result
+      let attempts = 0;
+      const maxAttempts = 60;
+      const poll = async () => {
+        if (attempts >= maxAttempts) {
+          throw new Error("Generation timed out");
+        }
+        attempts++;
+
+        const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&type=image`);
+        const statusData = await statusRes.json();
+
+        const status = statusData.data?.status || statusData.status;
+        setTaskStatus(status === "pending" ? "Queued..." : status === "processing" ? "Generating..." : status);
+
+        if (status === "completed") {
+          const urls = statusData.data?.result || statusData.result || [];
+          setGeneratedImages(urls);
+          setIsGenerating(false);
+          setTaskStatus("");
+          return;
+        }
+
+        if (status === "failed") {
+          throw new Error(statusData.data?.error || "Generation failed");
+        }
+
+        // Continue polling with backoff
+        const delay = attempts < 10 ? 3000 : attempts < 20 ? 5000 : 10000;
+        setTimeout(poll, delay);
+      };
+
+      poll();
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : "Generation failed");
+      setIsGenerating(false);
+      setTaskStatus("");
     }
   };
 
@@ -508,6 +595,11 @@ export default function TextToImagePage() {
               </div>
             </div>
 
+            {/* Error */}
+            {genError && (
+              <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
+            )}
+
             {/* Credit Cost & Generate */}
             <div className="flex flex-col gap-3 pt-2">
               <div className="flex items-center gap-2 text-sm text-[#64748B]">
@@ -519,8 +611,12 @@ export default function TextToImagePage() {
                 <span>Required credits:</span>
                 <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
               </div>
-              <Button className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all">
-                Generate
+              <Button
+                onClick={handleGenerate}
+                disabled={isGenerating}
+                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
+              >
+                {isGenerating ? taskStatus || "Generating..." : "Generate"}
               </Button>
             </div>
           </div>
@@ -538,13 +634,35 @@ export default function TextToImagePage() {
           </div>
           <div className="flex-1 flex items-center justify-center p-6">
             <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden`}>
-              <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
-              <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
-                  <Image className="w-6 h-6 text-[#818CF8]" />
+              {isGenerating ? (
+                <div className="relative z-10 flex flex-col items-center gap-3">
+                  <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center animate-pulse">
+                    <Sparkles className="w-6 h-6 text-[#818CF8] animate-spin" />
+                  </div>
+                  <p className="text-sm text-[#818CF8]">{taskStatus || "Generating..."}</p>
                 </div>
-                <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
-              </div>
+              ) : generatedImages.length > 0 ? (
+                <div className="relative z-10 w-full h-full p-4">
+                  <img
+                    src={generatedImages[0]}
+                    alt="Generated"
+                    className="w-full h-full object-contain rounded-xl"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = "none";
+                    }}
+                  />
+                </div>
+              ) : (
+                <>
+                  <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
+                      <Image className="w-6 h-6 text-[#818CF8]" />
+                    </div>
+                    <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
           {/* Toolbar */}
