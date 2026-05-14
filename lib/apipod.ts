@@ -1,4 +1,4 @@
-import { readFileSync } from "fs";
+import { readFileSync, existsSync } from "fs";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -15,20 +15,28 @@ function loadEnv(key: string, defaultValue?: string): string {
     resolve(process.cwd(), "..", ".env.local"),
     resolve(__dirname, "..", ".env.local"),
     resolve(__dirname, "..", "..", ".env.local"),
+    resolve(__dirname, "..", "..", "..", ".env.local"),
   ];
 
+  const searchLog: string[] = [];
   for (const envPath of possiblePaths) {
-    try {
-      const content = readFileSync(envPath, "utf-8");
-      const match = content.match(new RegExp(`^${key}=(.+)$`, "m"));
-      if (match) return match[1].trim();
-    } catch {
-      // ignore and try next
+    const exists = existsSync(envPath);
+    searchLog.push(`${exists ? "[FOUND]" : "[MISS]"} ${envPath}`);
+    if (exists) {
+      try {
+        const content = readFileSync(envPath, "utf-8");
+        const match = content.match(new RegExp(`^${key}=(.+)$`, "m"));
+        if (match) return match[1].trim();
+      } catch (e) {
+        searchLog.push(`  read error: ${(e as Error).message}`);
+      }
     }
   }
 
   if (defaultValue) return defaultValue;
-  throw new Error(`Environment variable ${key} not found`);
+  throw new Error(
+    `[apipod-v2] Could not load ${key}. cwd=${process.cwd()} __dirname=${__dirname}. Searched:\n${searchLog.join("\n")}`
+  );
 }
 
 const baseUrl = loadEnv("APIPOD_BASE_URL", "https://api.apipod.ai/v1");
