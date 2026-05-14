@@ -10,6 +10,24 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  // Debug: check if env vars are loaded
+  const apiKey = process.env.APIPOD_API_KEY;
+  const baseUrl = process.env.APIPOD_BASE_URL;
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error: "APIPOD_API_KEY not loaded from env",
+        debug: {
+          cwd: process.cwd(),
+          hasApiKey: !!apiKey,
+          hasBaseUrl: !!baseUrl,
+          envKeys: Object.keys(process.env).filter((k) => k.includes("API")),
+        },
+      },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { type, model, prompt, ...rest } = body;
