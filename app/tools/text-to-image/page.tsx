@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/lib/supabase/client";
 import {
   Select,
   SelectContent,
@@ -108,23 +110,27 @@ const sidebarTools: SidebarItem[] = [
 ];
 
 const models = [
-  { id: "gpt-image-2", name: "GPT Image 2", logo: "G" },
-  { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
+  { id: "nano-banana", name: "Nano Banana", logo: "N", comingSoon: true },
   { id: "nano-banana-pro", name: "Nano Banana Pro", logo: "N+" },
-  { id: "seedream-5.0-lite", name: "Seedream 5.0", logo: "S" },
-  { id: "seedream-v4.5", name: "Seedream V4.5", logo: "S4" },
-  { id: "wan2.7-image", name: "WAN 2.7 Image", logo: "W" },
-  { id: "wan2.7-image-pro", name: "WAN 2.7 Pro", logo: "W+" },
+  { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
+  { id: "gpt-image-2", name: "GPT Image 2.0", logo: "G" },
+  { id: "gpt-image-1-5", name: "GPT Image 1.5", logo: "G", comingSoon: true },
+  { id: "grok-imagine", name: "Grok", logo: "G", comingSoon: true },
+  { id: "ideogram", name: "Ideogram", logo: "I", comingSoon: true },
+  { id: "flux", name: "Flux", logo: "F", comingSoon: true },
+  { id: "midjourney", name: "Midjourney", logo: "M", comingSoon: true },
 ];
 
 const supportedModelTags = [
-  { name: "GPT Image 2", color: "#6366F1" },
-  { name: "Nano Banana 2", color: "#EC4899" },
+  { name: "Nano Banana", color: "#F59E0B" },
   { name: "Nano Banana Pro", color: "#14B8A6" },
-  { name: "Seedream 5.0", color: "#F59E0B" },
-  { name: "Seedream V4.5", color: "#8B5CF6" },
-  { name: "WAN 2.7 Image", color: "#06B6D4" },
-  { name: "WAN 2.7 Pro", color: "#10B981" },
+  { name: "Nano Banana 2", color: "#EC4899" },
+  { name: "GPT Image 2.0", color: "#6366F1" },
+  { name: "GPT Image 1.5", color: "#8B5CF6" },
+  { name: "Grok", color: "#EF4444" },
+  { name: "Ideogram", color: "#06B6D4" },
+  { name: "Flux", color: "#10B981" },
+  { name: "Midjourney", color: "#F97316" },
 ];
 
 const aspectRatios = ["1:1", "16:9", "9:16", "4:3", "3:4", "21:9"];
@@ -296,7 +302,10 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 /* ─── Page ─── */
 
 export default function TextToImagePage() {
-  const [selectedModel, setSelectedModel] = useState("gpt-image-2");
+  const router = useRouter();
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [selectedModel, setSelectedModel] = useState("nano-banana-pro");
   const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
   const [resolution, setResolution] = useState("1K");
@@ -305,6 +314,28 @@ export default function TextToImagePage() {
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [taskStatus, setTaskStatus] = useState<string>("");
   const [genError, setGenError] = useState("");
+  const [progress, setProgress] = useState(0);
+
+  const ETA_SECONDS: Record<string, number> = {
+    "nano-banana": 18,
+    "nano-banana-pro": 22,
+    "nano-banana-2": 18,
+    "gpt-image-2": 25,
+    "gpt-image-1-5": 25,
+    "grok-imagine": 25,
+    "ideogram": 20,
+    "flux": 18,
+    "midjourney": 30,
+    "default": 20,
+  };
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+      setAuthLoading(false);
+    });
+  }, []);
 
   const currentModel = models.find((m) => m.id === selectedModel);
   const creditCost = 2;
@@ -330,6 +361,11 @@ export default function TextToImagePage() {
   };
 
   const handleGenerate = async () => {
+    console.log("[frontend-v2] handleGenerate called. user:", !!user);
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
     if (!prompt.trim()) {
       setGenError("Please enter a prompt");
       return;
@@ -338,9 +374,11 @@ export default function TextToImagePage() {
     setGenError("");
     setGeneratedImages([]);
     setTaskStatus("Submitting...");
+    setProgress(0);
 
     try {
       // 1. Create task
+      console.log("[frontend] Sending POST /api/generate");
       const createRes = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -352,50 +390,86 @@ export default function TextToImagePage() {
           n: 1,
         }),
       });
+      console.log("[frontend] Response status:", createRes.status);
 
       const createData = await createRes.json();
+      console.log("[frontend] Response body:", createData);
       if (!createRes.ok) {
         throw new Error(createData.error || "Failed to create task");
       }
 
       const taskId = createData.data?.task_id || createData.task_id;
+      console.log("[frontend] Got taskId:", taskId);
       if (!taskId) {
         throw new Error("No task ID returned");
       }
 
       // 2. Poll for result
+      const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
+      const startTime = Date.now();
       let attempts = 0;
-      const maxAttempts = 60;
+      const maxAttempts = 120;
+
       const poll = async () => {
-        if (attempts >= maxAttempts) {
-          throw new Error("Generation timed out");
-        }
-        attempts++;
+        try {
+          if (attempts >= maxAttempts) {
+            throw new Error("Generation timed out");
+          }
+          attempts++;
 
-        const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&type=image`);
-        const statusData = await statusRes.json();
+          // Update progress based on elapsed time / ETA (cap at 95% until confirmed)
+          const elapsed = (Date.now() - startTime) / 1000;
+          const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
+          setProgress(Math.round(rawProgress));
 
-        const status = statusData.data?.status || statusData.status;
-        setTaskStatus(status === "pending" ? "Queued..." : status === "processing" ? "Generating..." : status);
+          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&type=image`);
+          const statusData = await statusRes.json();
 
-        if (status === "completed") {
-          const urls = statusData.data?.result || statusData.result || [];
-          setGeneratedImages(urls);
+          if (!statusRes.ok) {
+            throw new Error(statusData.error || `Status query failed: ${statusRes.status}`);
+          }
+
+          const status = statusData.data?.status || statusData.status;
+          const remaining = Math.max(0, Math.ceil(etaSeconds - elapsed));
+          const statusText =
+            status === "pending"
+              ? `Queued... ~${remaining}s`
+              : status === "processing"
+              ? `Generating... ~${remaining}s`
+              : status;
+          setTaskStatus(statusText);
+
+          if (status === "completed") {
+            const urls = statusData.data?.result || statusData.result || [];
+            setGeneratedImages(urls);
+            setProgress(100);
+            setIsGenerating(false);
+            setTaskStatus("");
+            setGenError("");
+            return;
+          }
+
+          if (status === "failed") {
+            throw new Error(statusData.data?.error || "Generation failed");
+          }
+
+          // Faster polling: 1.5s initially, then 3s, then 5s
+          const delay = attempts < 3 ? 1500 : attempts < 10 ? 3000 : 5000;
+          setTimeout(() => poll().catch((e) => {
+            setGenError(e instanceof Error ? e.message : "Generation failed");
+            setIsGenerating(false);
+            setTaskStatus("");
+            setProgress(0);
+          }), delay);
+        } catch (e) {
+          setGenError(e instanceof Error ? e.message : "Generation failed");
           setIsGenerating(false);
           setTaskStatus("");
-          return;
+          setProgress(0);
         }
-
-        if (status === "failed") {
-          throw new Error(statusData.data?.error || "Generation failed");
-        }
-
-        // Continue polling with backoff
-        const delay = attempts < 10 ? 3000 : attempts < 20 ? 5000 : 10000;
-        setTimeout(poll, delay);
       };
 
-      poll();
+      await poll();
     } catch (err) {
       setGenError(err instanceof Error ? err.message : "Generation failed");
       setIsGenerating(false);
@@ -489,9 +563,8 @@ export default function TextToImagePage() {
                     <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-xs font-bold text-white">
                       {currentModel?.logo}
                     </div>
-                    <SelectValue />
+                    <span className="text-sm text-[#F8FAFC]">{currentModel?.name}</span>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-[#64748B]" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#13101F] border-[#1E293B]">
                   {models.map((m) => (
@@ -610,14 +683,40 @@ export default function TextToImagePage() {
                 </svg>
                 <span>Required credits:</span>
                 <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+                {isGenerating && (
+                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
+                )}
               </div>
+              {isGenerating && (
+                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
               <Button
                 onClick={handleGenerate}
-                disabled={isGenerating}
+                disabled={isGenerating || authLoading}
                 className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
               >
-                {isGenerating ? taskStatus || "Generating..." : "Generate"}
+                {authLoading
+                  ? "Checking..."
+                  : isGenerating
+                  ? taskStatus || "Generating..."
+                  : user
+                  ? "Generate"
+                  : "Sign in to Generate"}
               </Button>
+              {!user && !authLoading && (
+                <p className="text-xs text-[#64748B] text-center">
+                  You need to{" "}
+                  <Link href="/auth" className="text-[#818CF8] hover:underline">
+                    sign in
+                  </Link>{" "}
+                  before generating images
+                </p>
+              )}
             </div>
           </div>
         </main>

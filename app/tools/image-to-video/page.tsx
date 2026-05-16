@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -104,11 +106,19 @@ const sidebarTools: SidebarItem[] = [
 ];
 
 const models = [
-  { id: "seedance-2", name: "Seedance 2.0", logo: "S" },
-  { id: "pollo-2", name: "Pollo 2.5", logo: "P" },
+  { id: "seedance-2.0-r2v", name: "Seedance 2.0", logo: "S" },
+  { id: "seedance-2.0-fast-t2v", name: "Seedance 2.0 fast", logo: "S" },
+  { id: "veo3-1-lite", name: "Veo 3.1 Lite", logo: "V" },
+  { id: "veo3-1-fast", name: "Veo 3.1 Fast", logo: "V" },
+  { id: "veo3-1-quality", name: "Veo 3.1 Quality", logo: "V" },
+  { id: "sora-2-vip", name: "Sora 2", logo: "S" },
+  { id: "sora-2-pro", name: "Sora 2 Pro", logo: "S", comingSoon: true },
+  { id: "runway-gen4", name: "Runway", logo: "R" },
   { id: "kling-3", name: "Kling 3.0", logo: "K" },
-  { id: "veo-3", name: "Veo 3.1 Lite", logo: "V" },
-  { id: "runway-gen4", name: "Runway Gen-4", logo: "R" },
+  { id: "kling-2.6-motion-control", name: "Kling V2.6", logo: "K" },
+  { id: "hailuo-02", name: "Hailuo 02", logo: "H", comingSoon: true },
+  { id: "hailuo-02-pro", name: "Hailuo 02 Pro", logo: "H", comingSoon: true },
+  { id: "grok-imagine-t2v", name: "Grok", logo: "G" },
 ];
 
 const videoRatios = ["16:9", "9:16", "4:3", "3:4", "1:1", "21:9"];
@@ -247,7 +257,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 /* ─── Page ─── */
 
 export default function ImageToVideoPage() {
-  const [selectedModel, setSelectedModel] = useState("seedance-2");
+  const [selectedModel, setSelectedModel] = useState("seedance-2.0-r2v");
   const [channelVersion, setChannelVersion] = useState<"v1" | "v2">("v1");
   const [referenceMode, setReferenceMode] = useState("reference");
   const [videoRatio, setVideoRatio] = useState("16:9");
@@ -256,6 +266,135 @@ export default function ImageToVideoPage() {
   const [isDragging, setIsDragging] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [user, setUser] = useState<any>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedVideos, setGeneratedVideos] = useState<string[]>([]);
+  const [taskStatus, setTaskStatus] = useState<string>("");
+  const [genError, setGenError] = useState<string>("");
+  const [progress, setProgress] = useState(0);
+
+  const ETA_SECONDS: Record<string, number> = {
+    "seedance-2.0-r2v": 75,
+    "seedance-2.0-fast-t2v": 45,
+    "veo3-1-lite": 60,
+    "veo3-1-fast": 45,
+    "veo3-1-quality": 90,
+    "sora-2-vip": 90,
+    "sora-2-pro": 90,
+    "runway-gen4": 60,
+    "kling-3": 60,
+    "kling-2.6-motion-control": 60,
+    "hailuo-02": 60,
+    "hailuo-02-pro": 60,
+    "grok-imagine-t2v": 60,
+    "default": 75,
+  };
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      setUser(user);
+      setAuthLoading(false);
+    };
+    checkAuth();
+  }, []);
+
+  const handleGenerate = async () => {
+    if (!user) {
+      router.push("/auth");
+      return;
+    }
+    if (!prompt.trim()) {
+      setGenError("Please enter a prompt");
+      return;
+    }
+    setGenError("");
+    setIsGenerating(true);
+    setGeneratedVideos([]);
+    setTaskStatus("Submitting...");
+    setProgress(0);
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "video",
+          model: selectedModel,
+          prompt: prompt.trim(),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        throw new Error(data.error || `Failed: ${res.status}`);
+      }
+      const taskId = data.data?.task_id;
+      if (!taskId) {
+        throw new Error("No task_id returned");
+      }
+
+      const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
+      const startTime = Date.now();
+      let attempts = 0;
+      const maxAttempts = 120;
+
+      const poll = async () => {
+        if (attempts >= maxAttempts) {
+          setGenError("Generation timed out");
+          setIsGenerating(false);
+          setProgress(0);
+          return;
+        }
+        attempts++;
+
+        const elapsed = (Date.now() - startTime) / 1000;
+        const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
+        setProgress(Math.round(rawProgress));
+
+        const pollRes = await fetch(`/api/generate/status?taskId=${taskId}&type=video`);
+        const pollData = await pollRes.json();
+        const status = pollData.data?.status || pollData.status || "unknown";
+
+        const remaining = Math.max(0, Math.ceil(etaSeconds - elapsed));
+        const statusText =
+          status === "pending"
+            ? `Queued... ~${remaining}s`
+            : status === "processing"
+            ? `Generating... ~${remaining}s`
+            : status;
+        setTaskStatus(statusText);
+
+        if (status === "completed" || status === "success") {
+          const results = pollData.data?.result || pollData.result || [];
+          const urls = Array.isArray(results)
+            ? results.map((r: any) => (typeof r === "string" ? r : r.url)).filter(Boolean)
+            : [];
+          setGeneratedVideos(urls);
+          setProgress(100);
+          setIsGenerating(false);
+          return;
+        }
+        if (status === "failed" || status === "error") {
+          setGenError(pollData.data?.error || pollData.error || "Generation failed");
+          setIsGenerating(false);
+          setProgress(0);
+          return;
+        }
+        const delay = attempts < 3 ? 1500 : attempts < 10 ? 3000 : 5000;
+        setTimeout(poll, delay);
+      };
+      poll();
+    } catch (err: any) {
+      setGenError(err.message || "Generation failed");
+      setIsGenerating(false);
+      setTaskStatus("");
+    }
+  };
 
   const creditCost = 80;
 
@@ -388,9 +527,8 @@ export default function ImageToVideoPage() {
                     <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-xs font-bold text-white">
                       {currentModel?.logo}
                     </div>
-                    <SelectValue />
+                    <span className="text-sm text-[#F8FAFC]">{currentModel?.name}</span>
                   </div>
-                  <ChevronDown className="w-4 h-4 text-[#64748B]" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#13101F] border-[#1E293B]">
                   {models.map((m) => (
@@ -436,7 +574,6 @@ export default function ImageToVideoPage() {
               <Select value={referenceMode} onValueChange={(v) => v && setReferenceMode(v)}>
                 <SelectTrigger className="h-11 rounded-xl bg-[#13101F] border-[#1E293B] text-sm text-[#CBD5E1] mb-3">
                   <SelectValue />
-                  <ChevronDown className="w-4 h-4 text-[#64748B]" />
                 </SelectTrigger>
                 <SelectContent className="bg-[#13101F] border-[#1E293B]">
                   <SelectItem value="reference" className="text-sm text-[#CBD5E1]">Reference</SelectItem>
@@ -572,13 +709,52 @@ export default function ImageToVideoPage() {
                 <Layers className="w-4 h-4 text-[#818CF8]" />
                 <span>Required credits:</span>
                 <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+                {isGenerating && (
+                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
+                )}
               </div>
+              {isGenerating && (
+                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
+              {genError && (
+                <div className="rounded-xl bg-[rgba(239,68,68,0.1)] border border-[#EF4444]/30 px-4 py-3">
+                  <p className="text-sm text-[#EF4444]">{genError}</p>
+                </div>
+              )}
+              {taskStatus && isGenerating && (
+                <div className="flex items-center gap-2 text-sm text-[#818CF8]">
+                  <div className="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+                  <span>{taskStatus}</span>
+                </div>
+              )}
               <Button
-                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all"
+                onClick={handleGenerate}
+                disabled={isGenerating || authLoading}
+                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
-                Generate
+                {authLoading
+                  ? "Checking..."
+                  : !user
+                  ? "Sign in to Generate"
+                  : isGenerating
+                  ? "Generating..."
+                  : "Generate"}
               </Button>
+              {!user && !authLoading && (
+                <p className="text-xs text-center text-[#64748B]">
+                  Please{" "}
+                  <Link href="/auth" className="text-[#818CF8] hover:underline">
+                    sign in
+                  </Link>{" "}
+                  to generate videos
+                </p>
+              )}
             </div>
           </div>
         </main>
@@ -595,27 +771,45 @@ export default function ImageToVideoPage() {
           </div>
           <div className="flex-1 flex items-center justify-center p-6">
             <div className="w-full aspect-video rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden">
-              {/* Video thumbnail placeholder */}
-              <div
-                className="absolute inset-0 opacity-30"
-                style={{
-                  background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)",
-                }}
-              />
-              <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center cursor-pointer hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                  <Play className="w-6 h-6 text-[#818CF8] ml-1" />
-                </div>
-                <p className="text-xs text-[#64748B]">Sample preview will appear here</p>
-              </div>
-              {/* Progress bar */}
-              <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#1E293B]">
-                <div className="h-full w-1/3 bg-[#6366F1] rounded-full" />
-              </div>
-              {/* Controls */}
-              <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                <span className="text-[10px] text-[#64748B]">0:00 / 0:05</span>
-                <div className="flex items-center gap-3">
+              {generatedVideos.length > 0 ? (
+                <video
+                  src={generatedVideos[0]}
+                  controls
+                  className="w-full h-full object-contain"
+                />
+              ) : isGenerating ? (
+                <>
+                  <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
+                      <div className="w-6 h-6 border-2 border-[#818CF8] border-t-transparent rounded-full animate-spin" />
+                    </div>
+                    <p className="text-xs text-[#64748B]">{taskStatus || "Generating..."}</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Video thumbnail placeholder */}
+                  <div
+                    className="absolute inset-0 opacity-30"
+                    style={{
+                      background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)",
+                    }}
+                  />
+                  <div className="relative z-10 flex flex-col items-center gap-3">
+                    <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center cursor-pointer hover:bg-[rgba(99,102,241,0.3)] transition-colors">
+                      <Play className="w-6 h-6 text-[#818CF8] ml-1" />
+                    </div>
+                    <p className="text-xs text-[#64748B]">Sample preview will appear here</p>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-[#1E293B]">
+                    <div className="h-full w-1/3 bg-[#6366F1] rounded-full" />
+                  </div>
+                  {/* Controls */}
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                    <span className="text-[10px] text-[#64748B]">0:00 / 0:05</span>
+                    <div className="flex items-center gap-3">
                   <button className="text-[#64748B] hover:text-[#CBD5E1] transition-colors">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
                   </button>
@@ -627,9 +821,11 @@ export default function ImageToVideoPage() {
                   </button>
                 </div>
               </div>
-            </div>
-          </div>
-        </aside>
+            </>
+          )}
+        </div>
+      </div>
+    </aside>
       </div>
 
       {/* ─── Marketing Content ─── */}

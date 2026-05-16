@@ -42,6 +42,8 @@ function loadEnv(key: string, defaultValue?: string): string {
 const baseUrl = loadEnv("APIPOD_BASE_URL", "https://api.apipod.ai/v1");
 const apiKey = loadEnv("APIPOD_API_KEY");
 
+console.log("[apipod-v3] Loaded apiKey:", apiKey ? `${apiKey.slice(0, 8)}...` : "MISSING", "baseUrl:", baseUrl);
+
 const headers = {
   "Content-Type": "application/json",
   Authorization: `Bearer ${apiKey}`,
