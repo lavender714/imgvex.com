@@ -18,11 +18,11 @@ function getHeaders() {
 }
 
 function normalizeResult(raw: any): ProviderStatusResult {
-  // KIE 的响应格式可能与 APIPod 不同，这里需要根据实际格式调整
-  // 当前先假设与 APIPod 格式一致，后续联调时修正
+  // KIE 响应格式: { taskId, status, result?[], error? }
+  // 也可能嵌套在 data 中: { data: { taskId, status, result?[] } }
   const status = raw.data?.status || raw.status || "unknown";
   const result = raw.data?.result || raw.result || [];
-  const error = raw.data?.error || raw.error || raw.msg;
+  const error = raw.data?.error || raw.error || raw.msg || raw.message;
 
   const urls = Array.isArray(result)
     ? result.map((r: any) => (typeof r === "string" ? r : r.url)).filter(Boolean)
@@ -41,10 +41,10 @@ export const kieProvider: Provider = {
   timeoutMs: 10000,
 
   async createImageTask(options: GenerateOptions) {
-    const res = await fetch(`${baseUrl}/images/generations`, {
+    const res = await fetch(`${baseUrl}/jobs/createTask`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify(options),
+      body: JSON.stringify({ ...options, type: "image" }),
     });
 
     if (!res.ok) {
@@ -53,16 +53,16 @@ export const kieProvider: Provider = {
     }
 
     const data = await res.json();
-    const taskId = data.data?.task_id || data.task_id;
+    const taskId = data.data?.taskId || data.data?.task_id || data.taskId || data.task_id;
     if (!taskId) throw new Error("No task_id returned from KIE");
     return { task_id: taskId };
   },
 
   async createVideoTask(options: GenerateOptions) {
-    const res = await fetch(`${baseUrl}/videos/generations`, {
+    const res = await fetch(`${baseUrl}/jobs/createTask`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify(options),
+      body: JSON.stringify({ ...options, type: "video" }),
     });
 
     if (!res.ok) {
@@ -71,13 +71,13 @@ export const kieProvider: Provider = {
     }
 
     const data = await res.json();
-    const taskId = data.data?.task_id || data.task_id;
+    const taskId = data.data?.taskId || data.data?.task_id || data.taskId || data.task_id;
     if (!taskId) throw new Error("No task_id returned from KIE");
     return { task_id: taskId };
   },
 
   async queryImageTask(taskId: string) {
-    const res = await fetch(`${baseUrl}/images/status/${taskId}`, {
+    const res = await fetch(`${baseUrl}/jobs/recordInfo?taskId=${taskId}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
 
@@ -91,16 +91,6 @@ export const kieProvider: Provider = {
   },
 
   async queryVideoTask(taskId: string) {
-    const res = await fetch(`${baseUrl}/videos/status/${taskId}`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`KIE query failed: ${res.status} ${err}`);
-    }
-
-    const raw = await res.json();
-    return normalizeResult(raw);
+    return this.queryImageTask(taskId);
   },
 };

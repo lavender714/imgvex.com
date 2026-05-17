@@ -29,7 +29,7 @@ export const PROVIDER_CONFIGS: ProviderConfig[] = [
     baseUrlEnv: "KIE_BASE_URL",
     apiKeyEnv: "KIE_API_KEY",
     timeoutMs: 10000,
-    defaultBaseUrl: "https://kie.ai/api/v1",
+    defaultBaseUrl: "https://api.kie.ai/api/v1",
   },
 ];
 
