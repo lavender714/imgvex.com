@@ -30,26 +30,30 @@ function sizeToResolution(size?: string): string {
 }
 
 function buildKieImageBody(options: GenerateOptions): any {
+  const modelId = options.model || "";
+  const isImageToImage = modelId.includes("image-to-image");
+  const isTextToImage = modelId.includes("text-to-image");
+
   const input: Record<string, any> = {
     prompt: options.prompt,
+    aspect_ratio: options.aspect_ratio || (isImageToImage ? "auto" : "1:1"),
+    resolution: options.resolution || sizeToResolution(options.size),
   };
 
-  if (options.input_urls && options.input_urls.length > 0) {
+  if (isImageToImage && options.input_urls && options.input_urls.length > 0) {
     input.input_urls = options.input_urls;
   }
 
-  if (options.aspect_ratio) {
-    input.aspect_ratio = options.aspect_ratio;
+  if (options.quality) {
+    input.quality = options.quality;
   }
 
-  if (options.resolution) {
-    input.resolution = options.resolution;
-  } else if (options.size) {
-    input.resolution = sizeToResolution(options.size);
+  if (options.style) {
+    input.style = options.style;
   }
 
   return {
-    model: options.model,
+    model: modelId,
     input,
   };
 }
