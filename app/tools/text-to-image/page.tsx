@@ -117,7 +117,7 @@ const models = [
   { id: "gpt-image-1-5", name: "GPT Image 1.5", logo: "G", comingSoon: true },
   { id: "grok-imagine", name: "Grok", logo: "G", comingSoon: true },
   { id: "ideogram", name: "Ideogram", logo: "I", comingSoon: true },
-  { id: "flux", name: "Flux", logo: "F", comingSoon: true },
+  { id: "flux", name: "Flux", logo: "F" },
   { id: "midjourney", name: "Midjourney", logo: "M", comingSoon: true },
 ];
 
@@ -388,6 +388,7 @@ export default function TextToImagePage() {
           model: selectedModel,
           prompt: prompt.trim(),
           size: mapResolution(resolution),
+          aspect_ratio: aspectRatio,
           n: 1,
         }),
       });

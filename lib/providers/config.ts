@@ -38,7 +38,7 @@ export const PROVIDER_CONFIGS: ProviderConfig[] = [
 export const MODEL_PROVIDER_MAP: Record<string, ModelProviderMapping[]> = {
   // 图片模型
   "flux": [
-    { providerId: "apipod", providerModelId: "flux-pro", priority: 1, etaSeconds: 18 },
+    { providerId: "kie", providerModelId: "flux-2/flex-text-to-image", priority: 1, etaSeconds: 15 },
   ],
   "gpt-image-2": [
     { providerId: "apipod", providerModelId: "gpt-image-2", priority: 1, etaSeconds: 25 },
