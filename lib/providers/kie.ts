@@ -17,9 +17,44 @@ function getHeaders() {
   };
 }
 
+function sizeToResolution(size?: string): string {
+  const map: Record<string, string> = {
+    "1024x1024": "1K",
+    "2048x2048": "2K",
+    "4096x4096": "4K",
+    "1K": "1K",
+    "2K": "2K",
+    "4K": "4K",
+  };
+  return map[size || ""] || "1K";
+}
+
+function buildKieImageBody(options: GenerateOptions): any {
+  const input: Record<string, any> = {
+    prompt: options.prompt,
+  };
+
+  if (options.input_urls && options.input_urls.length > 0) {
+    input.input_urls = options.input_urls;
+  }
+
+  if (options.aspect_ratio) {
+    input.aspect_ratio = options.aspect_ratio;
+  }
+
+  if (options.resolution) {
+    input.resolution = options.resolution;
+  } else if (options.size) {
+    input.resolution = sizeToResolution(options.size);
+  }
+
+  return {
+    model: options.model,
+    input,
+  };
+}
+
 function normalizeResult(raw: any): ProviderStatusResult {
-  // KIE 响应格式: { taskId, status, result?[], error? }
-  // 也可能嵌套在 data 中: { data: { taskId, status, result?[] } }
   const status = raw.data?.status || raw.status || "unknown";
   const result = raw.data?.result || raw.result || [];
   const error = raw.data?.error || raw.error || raw.msg || raw.message;
@@ -41,10 +76,11 @@ export const kieProvider: Provider = {
   timeoutMs: 10000,
 
   async createImageTask(options: GenerateOptions) {
+    const body = buildKieImageBody(options);
     const res = await fetch(`${baseUrl}/jobs/createTask`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ ...options, type: "image" }),
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
@@ -62,7 +98,14 @@ export const kieProvider: Provider = {
     const res = await fetch(`${baseUrl}/jobs/createTask`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ ...options, type: "video" }),
+      body: JSON.stringify({
+        model: options.model,
+        input: {
+          prompt: options.prompt,
+          ...(options.aspect_ratio ? { aspect_ratio: options.aspect_ratio } : {}),
+          ...(options.duration ? { duration: options.duration } : {}),
+        },
+      }),
     });
 
     if (!res.ok) {

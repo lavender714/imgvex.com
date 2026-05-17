@@ -7,6 +7,8 @@ export interface GenerateOptions {
   style?: string;
   duration?: number;
   aspect_ratio?: string;
+  resolution?: string;
+  input_urls?: string[];
   callback_url?: string;
   [key: string]: unknown;
 }
