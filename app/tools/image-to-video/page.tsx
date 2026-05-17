@@ -274,6 +274,7 @@ export default function ImageToVideoPage() {
   const [taskStatus, setTaskStatus] = useState<string>("");
   const [genError, setGenError] = useState<string>("");
   const [progress, setProgress] = useState(0);
+  const providerRef = useRef("");
 
   const ETA_SECONDS: Record<string, number> = {
     "seedance-2.0-r2v": 75,
@@ -334,6 +335,8 @@ export default function ImageToVideoPage() {
         throw new Error(data.error || `Failed: ${res.status}`);
       }
       const taskId = data.data?.task_id;
+      const provider = data.data?.provider || "";
+      providerRef.current = provider;
       if (!taskId) {
         throw new Error("No task_id returned");
       }
@@ -356,7 +359,7 @@ export default function ImageToVideoPage() {
         const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
         setProgress(Math.round(rawProgress));
 
-        const pollRes = await fetch(`/api/generate/status?taskId=${taskId}&type=video`);
+        const pollRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=video`);
         const pollData = await pollRes.json();
         const status = pollData.data?.status || pollData.status || "unknown";
 

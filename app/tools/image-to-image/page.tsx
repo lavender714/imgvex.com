@@ -362,6 +362,7 @@ export default function ImageToImagePage() {
   const [taskStatus, setTaskStatus] = useState("");
   const [genError, setGenError] = useState("");
   const [progress, setProgress] = useState(0);
+  const providerRef = useRef("");
 
   const ETA_SECONDS: Record<string, number> = {
     "nano-banana-2": 18,
@@ -451,7 +452,9 @@ export default function ImageToImagePage() {
         throw new Error(createData.error || "Failed to create task");
       }
 
-      const taskId = createData.data?.task_id || createData.task_id;
+      const taskId = createData.data?.task_id;
+      const provider = createData.data?.provider || "";
+      providerRef.current = provider;
       if (!taskId) {
         throw new Error("No task ID returned");
       }
@@ -472,7 +475,7 @@ export default function ImageToImagePage() {
           const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
           setProgress(Math.round(rawProgress));
 
-          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&type=image`);
+          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=image`);
           const statusData = await statusRes.json();
 
           if (!statusRes.ok) {

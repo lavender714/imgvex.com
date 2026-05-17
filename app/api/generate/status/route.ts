@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { queryImageTask, queryVideoTask } from "@/lib/apipod";
+import { queryTask } from "@/lib/providers";
 
 export async function GET(request: Request) {
   const supabase = await createClient();
@@ -12,31 +12,32 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const taskId = searchParams.get("taskId");
+  const provider = searchParams.get("provider");
   const type = searchParams.get("type");
 
-  if (!taskId || !type) {
+  if (!taskId || !provider || !type) {
     return NextResponse.json(
-      { error: "Missing taskId or type" },
+      { error: "Missing required params: taskId, provider, type" },
+      { status: 400 }
+    );
+  }
+
+  if (type !== "image" && type !== "video") {
+    return NextResponse.json(
+      { error: "Invalid type. Must be 'image' or 'video'" },
       { status: 400 }
     );
   }
 
   try {
-    let result;
-    if (type === "image") {
-      result = await queryImageTask(taskId);
-    } else if (type === "video") {
-      result = await queryVideoTask(taskId);
-    } else {
-      return NextResponse.json(
-        { error: "Invalid type. Must be 'image' or 'video'" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(result);
+    const result = await queryTask(provider, taskId, type);
+    return NextResponse.json({
+      code: 200,
+      message: "success",
+      data: result,
+    });
   } catch (error) {
-    console.error("Query status error:", error);
+    console.error("[status-api] ERROR:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Query failed" },
       { status: 500 }

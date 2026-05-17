@@ -315,6 +315,7 @@ export default function TextToImagePage() {
   const [taskStatus, setTaskStatus] = useState<string>("");
   const [genError, setGenError] = useState("");
   const [progress, setProgress] = useState(0);
+  const providerRef = useRef("");
 
   const ETA_SECONDS: Record<string, number> = {
     "nano-banana": 18,
@@ -398,8 +399,11 @@ export default function TextToImagePage() {
         throw new Error(createData.error || "Failed to create task");
       }
 
-      const taskId = createData.data?.task_id || createData.task_id;
-      console.log("[frontend] Got taskId:", taskId);
+      const taskId = createData.data?.task_id;
+      const provider = createData.data?.provider || "";
+      const attempts = createData.data?.attempts || 1;
+      providerRef.current = provider;
+      console.log("[frontend] Got taskId:", taskId, "provider:", provider, "attempts:", attempts);
       if (!taskId) {
         throw new Error("No task ID returned");
       }
@@ -422,7 +426,7 @@ export default function TextToImagePage() {
           const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
           setProgress(Math.round(rawProgress));
 
-          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&type=image`);
+          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=image`);
           const statusData = await statusRes.json();
 
           if (!statusRes.ok) {
