@@ -17,8 +17,16 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "imgvex.AI — AI Video & Image Generation",
-  description: "One console. Every AI model. Generate stunning videos and images with 20+ leading AI models.",
+  metadataBase: new URL("https://www.imgvex.com"),
+  title: {
+    template: "%s | imgvex.AI",
+    default: "imgvex.AI — AI Video & Image Generation Platform",
+  },
+  description:
+    "One console. Every AI model. Generate stunning videos and images with 20+ leading AI models including Flux, GPT Image, Midjourney, and more.",
+  alternates: {
+    canonical: "/",
+  },
 };
 
 export default function RootLayout({
