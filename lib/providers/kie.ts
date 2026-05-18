@@ -212,15 +212,32 @@ export const kieProvider: Provider = {
       body: JSON.stringify(body),
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`KIE image generation failed: ${res.status} ${err}`);
+    const rawText = await res.text();
+    let data: any;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      data = rawText;
     }
 
-    const data = await res.json();
-    const taskId = data.data?.taskId || data.data?.task_id || data.taskId || data.task_id;
-    if (!taskId) throw new Error("No task_id returned from KIE");
-    return { task_id: taskId };
+    console.log(`[KIE] createTask response (${res.status}):`, JSON.stringify(data, null, 2));
+
+    if (!res.ok) {
+      throw new Error(`KIE image generation failed: ${res.status} ${rawText}`);
+    }
+
+    // KIE may return taskId under various field names
+    const taskId =
+      data.data?.taskId ??
+      data.data?.task_id ??
+      data.data?.id ??
+      data.data?.taskId ??
+      data.taskId ??
+      data.task_id ??
+      data.id ??
+      data.taskId;
+    if (!taskId) throw new Error(`No task_id returned from KIE. Body: ${rawText}`);
+    return { task_id: String(taskId) };
   },
 
   async createVideoTask(options: GenerateOptions) {
@@ -237,15 +254,31 @@ export const kieProvider: Provider = {
       }),
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`KIE video generation failed: ${res.status} ${err}`);
+    const rawText = await res.text();
+    let data: any;
+    try {
+      data = JSON.parse(rawText);
+    } catch {
+      data = rawText;
     }
 
-    const data = await res.json();
-    const taskId = data.data?.taskId || data.data?.task_id || data.taskId || data.task_id;
-    if (!taskId) throw new Error("No task_id returned from KIE");
-    return { task_id: taskId };
+    console.log(`[KIE] createVideoTask response (${res.status}):`, JSON.stringify(data, null, 2));
+
+    if (!res.ok) {
+      throw new Error(`KIE video generation failed: ${res.status} ${rawText}`);
+    }
+
+    const taskId =
+      data.data?.taskId ??
+      data.data?.task_id ??
+      data.data?.id ??
+      data.data?.taskId ??
+      data.taskId ??
+      data.task_id ??
+      data.id ??
+      data.taskId;
+    if (!taskId) throw new Error(`No task_id returned from KIE. Body: ${rawText}`);
+    return { task_id: String(taskId) };
   },
 
   async queryImageTask(taskId: string) {
