@@ -59,9 +59,24 @@ function buildKieImageBody(options: GenerateOptions): any {
 }
 
 function normalizeResult(raw: any): ProviderStatusResult {
-  const status = raw.data?.status || raw.status || "unknown";
+  const rawStatus = raw.data?.status || raw.status || "unknown";
   const result = raw.data?.result || raw.result || [];
   const error = raw.data?.error || raw.error || raw.msg || raw.message;
+
+  // Map KIE status values to unified status
+  const statusMap: Record<string, ProviderStatusResult["status"]> = {
+    success: "completed",
+    completed: "completed",
+    done: "completed",
+    processing: "processing",
+    running: "processing",
+    pending: "pending",
+    queued: "pending",
+    failed: "failed",
+    error: "failed",
+    fail: "failed",
+  };
+  const status = statusMap[rawStatus] || (rawStatus as ProviderStatusResult["status"]);
 
   const urls = Array.isArray(result)
     ? result.map((r: any) => (typeof r === "string" ? r : r.url)).filter(Boolean)
