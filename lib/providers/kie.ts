@@ -220,10 +220,12 @@ export const kieProvider: Provider = {
       data = rawText;
     }
 
-    console.log(`[KIE] createTask response (${res.status}):`, JSON.stringify(data, null, 2));
-
     if (!res.ok) {
-      throw new Error(`KIE image generation failed: ${res.status} ${rawText}`);
+      const msg = data?.msg || data?.message || rawText;
+      if (res.status === 402 || data?.code === 402) {
+        throw new Error(`KIE 账户余额不足，请联系管理员充值`);
+      }
+      throw new Error(`KIE image generation failed: ${res.status} ${msg}`);
     }
 
     // KIE may return taskId under various field names
@@ -262,10 +264,12 @@ export const kieProvider: Provider = {
       data = rawText;
     }
 
-    console.log(`[KIE] createVideoTask response (${res.status}):`, JSON.stringify(data, null, 2));
-
     if (!res.ok) {
-      throw new Error(`KIE video generation failed: ${res.status} ${rawText}`);
+      const msg = data?.msg || data?.message || rawText;
+      if (res.status === 402 || data?.code === 402) {
+        throw new Error(`KIE 账户余额不足，请联系管理员充值`);
+      }
+      throw new Error(`KIE video generation failed: ${res.status} ${msg}`);
     }
 
     const taskId =
@@ -286,12 +290,22 @@ export const kieProvider: Provider = {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`KIE query failed: ${res.status} ${err}`);
+    const rawText = await res.text();
+    let raw: any;
+    try {
+      raw = JSON.parse(rawText);
+    } catch {
+      raw = rawText;
     }
 
-    const raw = await res.json();
+    if (!res.ok) {
+      const msg = raw?.msg || raw?.message || rawText;
+      if (res.status === 402 || raw?.code === 402) {
+        throw new Error(`KIE 账户余额不足，请联系管理员充值`);
+      }
+      throw new Error(`KIE query failed: ${res.status} ${msg}`);
+    }
+
     return normalizeResult(raw);
   },
 
