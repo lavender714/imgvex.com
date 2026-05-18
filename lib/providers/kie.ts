@@ -58,7 +58,35 @@ function buildKieImageBody(options: GenerateOptions): any {
   };
 }
 
+function isHttpUrl(value: any): boolean {
+  return typeof value === "string" && value.startsWith("http");
+}
+
+function extractUrls(value: any): string[] {
+  if (!value) return [];
+  if (typeof value === "string" && value.startsWith("http")) return [value];
+  if (Array.isArray(value)) {
+    return value
+      .flatMap((item) => extractUrls(item))
+      .filter((url): url is string => typeof url === "string" && url.startsWith("http"));
+  }
+  if (typeof value === "object") {
+    const urls: string[] = [];
+    for (const key of Object.keys(value)) {
+      const v = value[key];
+      if (typeof v === "string" && v.startsWith("http")) urls.push(v);
+      else if (Array.isArray(v)) urls.push(...extractUrls(v));
+      else if (typeof v === "object" && v !== null) urls.push(...extractUrls(v));
+    }
+    return urls;
+  }
+  return [];
+}
+
 function normalizeResult(raw: any): ProviderStatusResult {
+  // Log full raw response for debugging (visible in Vercel function logs)
+  console.log("[KIE] raw response:", JSON.stringify(raw, null, 2));
+
   // KIE may return nested data or flat structures — probe multiple paths
   const d = raw?.data ?? raw;
 
@@ -77,16 +105,44 @@ function normalizeResult(raw: any): ProviderStatusResult {
     d?.urls ??
     d?.output ??
     d?.imageUrls ??
+    d?.image_url ??
+    d?.imageUrl ??
+    d?.url ??
+    d?.output_url ??
+    d?.outputUrl ??
+    d?.file ??
+    d?.files ??
+    d?.media ??
+    d?.medias ??
+    d?.link ??
+    d?.links ??
+    d?.src ??
+    d?.sources ??
     raw?.result ??
     [];
 
   // Sometimes result is nested under data.data
-  if (!Array.isArray(result) && raw?.data?.data) {
+  if (!Array.isArray(result) && !isHttpUrl(result) && raw?.data?.data) {
     result =
       raw.data.data.result ??
       raw.data.data.results ??
       raw.data.data.images ??
       raw.data.data.urls ??
+      raw.data.data.output ??
+      raw.data.data.imageUrls ??
+      raw.data.data.image_url ??
+      raw.data.data.imageUrl ??
+      raw.data.data.url ??
+      raw.data.data.output_url ??
+      raw.data.data.outputUrl ??
+      raw.data.data.file ??
+      raw.data.data.files ??
+      raw.data.data.media ??
+      raw.data.data.medias ??
+      raw.data.data.link ??
+      raw.data.data.links ??
+      raw.data.data.src ??
+      raw.data.data.sources ??
       [];
   }
 
@@ -101,6 +157,18 @@ function normalizeResult(raw: any): ProviderStatusResult {
 
   // "success" in msg field is not an error
   if (error === "success" || error === "SUCCESS") error = undefined;
+
+  // If still no result array found, recursively scan the entire raw object for URLs
+  let urls: string[] = [];
+  if (result && (Array.isArray(result) || isHttpUrl(result))) {
+    urls = extractUrls(result);
+  }
+  if (urls.length === 0) {
+    urls = extractUrls(raw);
+    if (urls.length > 0) {
+      console.log("[KIE] URLs found via deep scan:", urls);
+    }
+  }
 
   // Map KIE status values to unified status
   const statusMap: Record<string, ProviderStatusResult["status"]> = {
@@ -123,10 +191,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
 
   const statusKey = String(rawStatus).toLowerCase();
   const status = statusMap[statusKey] || (rawStatus as ProviderStatusResult["status"]);
-
-  const urls = Array.isArray(result)
-    ? result.map((r: any) => (typeof r === "string" ? r : r?.url)).filter(Boolean)
-    : [];
 
   return {
     status,
