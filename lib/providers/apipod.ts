@@ -1,15 +1,14 @@
-import { GenerateOptions, Provider, ProviderStatusResult } from "./types";
+import { GenerateOptions, Provider, ProviderStatusResult } from "./index";
 
 function loadEnv(key: string, defaultValue?: string): string {
   const envValue = process.env[key];
   if (envValue) return envValue;
-
-  if (defaultValue) return defaultValue;
+  if (defaultValue !== undefined) return defaultValue;
   throw new Error(`[provider:apipod] Missing env var: ${key}`);
 }
 
 const baseUrl = loadEnv("APIPOD_BASE_URL", "https://api.apipod.ai/v1");
-const apiKey = loadEnv("APIPOD_API_KEY");
+const apiKey = loadEnv("APIPOD_API_KEY", "");
 
 function getHeaders() {
   return {

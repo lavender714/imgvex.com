@@ -1,14 +1,14 @@
-import { GenerateOptions, Provider, ProviderStatusResult } from "./types";
+import { GenerateOptions, Provider, ProviderStatusResult } from "./index";
 
 function loadEnv(key: string, defaultValue?: string): string {
   const envValue = process.env[key];
   if (envValue) return envValue;
-  if (defaultValue) return defaultValue;
+  if (defaultValue !== undefined) return defaultValue;
   throw new Error(`[provider:kie] Missing env var: ${key}`);
 }
 
 const baseUrl = loadEnv("KIE_BASE_URL", "https://kie.ai/api/v1");
-const apiKey = loadEnv("KIE_API_KEY");
+const apiKey = loadEnv("KIE_API_KEY", "");
 
 function getHeaders() {
   return {

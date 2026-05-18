@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
@@ -412,15 +412,15 @@ export default function TextToImagePage() {
       // 2. Poll for result
       const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
       const startTime = Date.now();
-      let attempts = 0;
+      let pollAttempts = 0;
       const maxAttempts = 120;
 
       const poll = async () => {
         try {
-          if (attempts >= maxAttempts) {
+          if (pollAttempts >= maxAttempts) {
             throw new Error("Generation timed out");
           }
-          attempts++;
+          pollAttempts++;
 
           // Update progress based on elapsed time / ETA (cap at 95% until confirmed)
           const elapsed = (Date.now() - startTime) / 1000;
