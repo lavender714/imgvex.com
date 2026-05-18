@@ -110,7 +110,7 @@ const sidebarTools: SidebarItem[] = [
 ];
 
 const models = [
-  { id: "nano-banana", name: "Nano Banana", logo: "N", comingSoon: true },
+  { id: "nano-banana", name: "Nano Banana", logo: "N" },
   { id: "nano-banana-pro", name: "Nano Banana Pro", logo: "N+" },
   { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
   { id: "gpt-image-2", name: "GPT Image 2.0", logo: "G" },
