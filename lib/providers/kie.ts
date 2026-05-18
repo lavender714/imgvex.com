@@ -59,27 +59,73 @@ function buildKieImageBody(options: GenerateOptions): any {
 }
 
 function normalizeResult(raw: any): ProviderStatusResult {
-  const rawStatus = raw.data?.status || raw.status || "unknown";
-  const result = raw.data?.result || raw.result || [];
-  const error = raw.data?.error || raw.error || raw.msg || raw.message;
+  // KIE may return nested data or flat structures — probe multiple paths
+  const d = raw?.data ?? raw;
+
+  const rawStatus =
+    d?.status ??
+    d?.state ??
+    d?.taskStatus ??
+    d?.task_status ??
+    raw?.status ??
+    "unknown";
+
+  let result =
+    d?.result ??
+    d?.results ??
+    d?.images ??
+    d?.urls ??
+    d?.output ??
+    d?.imageUrls ??
+    raw?.result ??
+    [];
+
+  // Sometimes result is nested under data.data
+  if (!Array.isArray(result) && raw?.data?.data) {
+    result =
+      raw.data.data.result ??
+      raw.data.data.results ??
+      raw.data.data.images ??
+      raw.data.data.urls ??
+      [];
+  }
+
+  let error =
+    d?.error ??
+    d?.errMsg ??
+    d?.err_msg ??
+    d?.message ??
+    raw?.error ??
+    raw?.msg ??
+    raw?.message;
+
+  // "success" in msg field is not an error
+  if (error === "success" || error === "SUCCESS") error = undefined;
 
   // Map KIE status values to unified status
   const statusMap: Record<string, ProviderStatusResult["status"]> = {
     success: "completed",
     completed: "completed",
     done: "completed",
+    finish: "completed",
+    finished: "completed",
     processing: "processing",
     running: "processing",
+    in_progress: "processing",
     pending: "pending",
     queued: "pending",
+    wait: "pending",
     failed: "failed",
     error: "failed",
     fail: "failed",
+    refused: "failed",
   };
-  const status = statusMap[rawStatus] || (rawStatus as ProviderStatusResult["status"]);
+
+  const statusKey = String(rawStatus).toLowerCase();
+  const status = statusMap[statusKey] || (rawStatus as ProviderStatusResult["status"]);
 
   const urls = Array.isArray(result)
-    ? result.map((r: any) => (typeof r === "string" ? r : r.url)).filter(Boolean)
+    ? result.map((r: any) => (typeof r === "string" ? r : r?.url)).filter(Boolean)
     : [];
 
   return {
