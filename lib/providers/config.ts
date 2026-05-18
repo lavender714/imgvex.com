@@ -36,42 +36,63 @@ export const PROVIDER_CONFIGS: ProviderConfig[] = [
 // 模型 → 供应商映射（按 priority 排序，priority 越小越优先）
 // 注意：providerModelId 是供应商内部的模型 ID，和前端展示的 model id 不同
 export const MODEL_PROVIDER_MAP: Record<string, ModelProviderMapping[]> = {
-  // 图片模型
+  // 文生图
+  "nano-banana": [
+    { providerId: "kie", providerModelId: "google/nano-banana", priority: 1, etaSeconds: 18 },
+    { providerId: "apipod", providerModelId: "nano-banana", priority: 2, etaSeconds: 18 },
+  ],
+  "nano-banana-pro": [
+    { providerId: "kie", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
+    { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 2, etaSeconds: 22 },
+  ],
+  "nano-banana-2": [
+    { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
+    { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
+  ],
+  "gpt-image-2": [
+    { providerId: "kie", providerModelId: "gpt-image-2-text-to-image", priority: 1, etaSeconds: 25 },
+    { providerId: "apipod", providerModelId: "gpt-image-2", priority: 2, etaSeconds: 25 },
+  ],
+  "gpt-image-1-5": [
+    { providerId: "kie", providerModelId: "gpt-image/1.5-text-to-image", priority: 1, etaSeconds: 25 },
+    { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 2, etaSeconds: 25 },
+  ],
+  "grok-imagine": [
+    { providerId: "kie", providerModelId: "grok-imagine/text-to-image", priority: 1, etaSeconds: 25 },
+    { providerId: "apipod", providerModelId: "grok-imagine", priority: 2, etaSeconds: 25 },
+  ],
+  "ideogram": [
+    { providerId: "kie", providerModelId: "ideogram/v3-text-to-image", priority: 1, etaSeconds: 20 },
+    { providerId: "apipod", providerModelId: "ideogram", priority: 2, etaSeconds: 20 },
+  ],
   "flux": [
     { providerId: "kie", providerModelId: "flux-2/flex-text-to-image", priority: 1, etaSeconds: 15 },
   ],
-  "gpt-image-2": [
-    { providerId: "apipod", providerModelId: "gpt-image-2", priority: 1, etaSeconds: 25 },
-  ],
-  "nano-banana-2": [
-    { providerId: "apipod", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
-  ],
-  "nano-banana-pro": [
-    { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
-  ],
-  "nano-banana": [
-    { providerId: "apipod", providerModelId: "nano-banana", priority: 1, etaSeconds: 18 },
-  ],
-  "gpt-image-1-5": [
-    { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 1, etaSeconds: 25 },
-  ],
-  "grok-imagine": [
-    { providerId: "apipod", providerModelId: "grok-imagine", priority: 1, etaSeconds: 25 },
-  ],
-  "ideogram": [
-    { providerId: "apipod", providerModelId: "ideogram", priority: 1, etaSeconds: 20 },
-  ],
   "flux-2": [
-    { providerId: "apipod", providerModelId: "flux-2", priority: 1, etaSeconds: 18 },
+    { providerId: "kie", providerModelId: "flux-2/flex-image-to-image", priority: 1, etaSeconds: 18 },
+    { providerId: "apipod", providerModelId: "flux-2", priority: 2, etaSeconds: 18 },
   ],
   "flux-kontext": [
-    { providerId: "apipod", providerModelId: "flux-kontext", priority: 1, etaSeconds: 20 },
-  ],
-  "wan2.7-image-edit": [
-    { providerId: "apipod", providerModelId: "wan2.7-image-edit", priority: 1, etaSeconds: 20 },
+    { providerId: "kie", providerModelId: "flux1-kontext", priority: 1, etaSeconds: 20 },
+    { providerId: "apipod", providerModelId: "flux-kontext", priority: 2, etaSeconds: 20 },
   ],
   "midjourney": [
     { providerId: "apipod", providerModelId: "midjourney", priority: 1, etaSeconds: 30 },
+  ],
+  "wan2.7-image-edit": [
+    { providerId: "kie", providerModelId: "wan/2-7-image", priority: 1, etaSeconds: 20 },
+    { providerId: "apipod", providerModelId: "wan2.7-image-edit", priority: 2, etaSeconds: 20 },
+  ],
+
+  // 图生图（独立 model id 避免与文生图冲突）
+  "nano-banana-edit": [
+    { providerId: "kie", providerModelId: "google/nano-banana-edit", priority: 1, etaSeconds: 22 },
+  ],
+  "gpt-image-2-image": [
+    { providerId: "kie", providerModelId: "gpt-image-2-image-to-image", priority: 1, etaSeconds: 25 },
+  ],
+  "gpt-image-1-5-image": [
+    { providerId: "kie", providerModelId: "gpt-image/1.5-image-to-image", priority: 1, etaSeconds: 25 },
   ],
 
   // 视频模型

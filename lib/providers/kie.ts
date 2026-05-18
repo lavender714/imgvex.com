@@ -31,8 +31,10 @@ function sizeToResolution(size?: string): string {
 
 function buildKieImageBody(options: GenerateOptions): any {
   const modelId = options.model || "";
-  const isImageToImage = modelId.includes("image-to-image");
-  const isTextToImage = modelId.includes("text-to-image");
+  const isImageToImage =
+    modelId.includes("image-to-image") ||
+    (!!options.input_urls && options.input_urls.length > 0);
+  const isTextToImage = modelId.includes("text-to-image") || !isImageToImage;
 
   const input: Record<string, any> = {
     prompt: options.prompt,

@@ -118,11 +118,11 @@ const sidebarTools: SidebarItem[] = [
 
 const models = [
   { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
-  { id: "nano-banana-pro", name: "Nano Banana Edit", logo: "N+" },
-  { id: "gpt-image-2", name: "GPT Image 2.0", logo: "G" },
+  { id: "nano-banana-edit", name: "Nano Banana Edit", logo: "N+" },
+  { id: "gpt-image-2-image", name: "GPT Image 2.0", logo: "G" },
   { id: "wan2.7-image-edit", name: "Wan 2.7", logo: "W" },
   { id: "flux-2", name: "Flux 2", logo: "F", comingSoon: true },
-  { id: "gpt-image-1-5", name: "GPT Image 1.5", logo: "G", comingSoon: true },
+  { id: "gpt-image-1-5-image", name: "GPT Image 1.5", logo: "G", comingSoon: true },
   { id: "flux-kontext", name: "Flux Kontext", logo: "F", comingSoon: true },
 ];
 
