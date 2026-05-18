@@ -99,28 +99,41 @@ function normalizeResult(raw: any): ProviderStatusResult {
     raw?.status ??
     "unknown";
 
-  let result =
-    d?.result ??
-    d?.results ??
-    d?.images ??
-    d?.urls ??
-    d?.output ??
-    d?.imageUrls ??
-    d?.image_url ??
-    d?.imageUrl ??
-    d?.url ??
-    d?.output_url ??
-    d?.outputUrl ??
-    d?.file ??
-    d?.files ??
-    d?.media ??
-    d?.medias ??
-    d?.link ??
-    d?.links ??
-    d?.src ??
-    d?.sources ??
-    raw?.result ??
-    [];
+  // KIE puts URLs inside a JSON string field named resultJson
+  let result: any = null;
+  if (typeof d?.resultJson === "string") {
+    try {
+      const parsed = JSON.parse(d.resultJson);
+      result = parsed?.resultUrls ?? parsed?.urls ?? parsed?.images ?? parsed?.result ?? [];
+    } catch {
+      result = d.resultJson;
+    }
+  }
+
+  if (!result || (Array.isArray(result) && result.length === 0)) {
+    result =
+      d?.result ??
+      d?.results ??
+      d?.images ??
+      d?.urls ??
+      d?.output ??
+      d?.imageUrls ??
+      d?.image_url ??
+      d?.imageUrl ??
+      d?.url ??
+      d?.output_url ??
+      d?.outputUrl ??
+      d?.file ??
+      d?.files ??
+      d?.media ??
+      d?.medias ??
+      d?.link ??
+      d?.links ??
+      d?.src ??
+      d?.sources ??
+      raw?.result ??
+      [];
+  }
 
   // Sometimes result is nested under data.data
   if (!Array.isArray(result) && !isHttpUrl(result) && raw?.data?.data) {
