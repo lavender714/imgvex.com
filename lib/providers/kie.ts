@@ -37,7 +37,7 @@ function buildKieImageBody(options: GenerateOptions): any {
   const input: Record<string, any> = {
     prompt: options.prompt,
     aspect_ratio: options.aspect_ratio || (isImageToImage ? "auto" : "1:1"),
-    resolution: options.resolution || options.size || sizeToResolution(options.size),
+    resolution: options.resolution || sizeToResolution(options.size),
     ...(options.n ? { n: options.n } : {}),
   };
 
