@@ -40,6 +40,7 @@ import {
   Tag,
   Newspaper,
   Upload,
+  X,
   Star,
   Briefcase,
   Crown,
@@ -269,6 +270,12 @@ export default function VideoToVideoPage() {
   const [progress, setProgress] = useState(0);
   const providerRef = useRef("");
   const taskTypeRef = useRef("image-to-video");
+  const [uploadedVideo, setUploadedVideo] = useState<File | null>(null);
+  const [inputVideoUrl, setInputVideoUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const etaSeconds = getEtaSeconds(selectedModel);
 
@@ -284,9 +291,78 @@ export default function VideoToVideoPage() {
     checkAuth();
   }, []);
 
+  const uploadToR2 = async (file: File) => {
+    setIsUploading(true);
+    setUploadError("");
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      const putRes = await fetch(data.signedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!putRes.ok) throw new Error("Failed to upload to storage");
+
+      setInputVideoUrl(data.downloadUrl);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Upload failed");
+      setInputVideoUrl(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    if (files.length > 0 && (files[0].type.startsWith("video/") || files[0].type.startsWith("image/"))) {
+      setUploadedVideo(files[0]);
+      uploadToR2(files[0]);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0 && (files[0].type.startsWith("video/") || files[0].type.startsWith("image/"))) {
+      setUploadedVideo(files[0]);
+      uploadToR2(files[0]);
+    }
+  };
+
+  const handleRemoveVideo = () => {
+    setUploadedVideo(null);
+    setInputVideoUrl(null);
+    setUploadError("");
+  };
+
   const handleGenerate = async () => {
     if (!user) {
       router.push("/auth");
+      return;
+    }
+    if (!inputVideoUrl) {
+      setGenError("Please upload a video first");
       return;
     }
     setGenError("");
@@ -297,14 +373,18 @@ export default function VideoToVideoPage() {
 
     try {
       const styleName = stylePresets.find((s) => s.id === selectedStyle)?.name || selectedStyle;
+      const body: Record<string, any> = {
+        taskType: "text-to-video",
+        model: selectedModel,
+        prompt: `Transform this video to ${styleName} style`,
+      };
+      if (inputVideoUrl) {
+        body.inputUrls = [inputVideoUrl];
+      }
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          taskType: "text-to-video",
-          model: selectedModel,
-          prompt: `Transform this video to ${styleName} style`,
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -476,17 +556,50 @@ export default function VideoToVideoPage() {
             </div>
 
             {/* Upload Area */}
-            <div className="relative rounded-2xl border-2 border-dashed border-[#334155] bg-[#13101F] hover:border-[#475569] transition-all cursor-pointer">
-              <div className="flex flex-col items-center gap-3 py-10 px-6">
-                <div className="w-12 h-12 rounded-xl bg-[#1E293B] flex items-center justify-center">
-                  <Upload className="w-5 h-5 text-[#64748B]" />
+            {uploadedVideo ? (
+              <div className="relative rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden">
+                <div className="p-4">
+                  <p className="text-sm text-[#CBD5E1]">{uploadedVideo.name}</p>
                 </div>
-                <div className="text-center">
-                  <p className="text-sm font-medium text-[#CBD5E1]">Upload video or drag and drop the file here</p>
-                  <p className="text-xs text-[#64748B] mt-1">(MP4 and MOV formats supported; max file size: 50 MB.)</p>
+                {isUploading && (
+                  <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                    <div className="flex items-center gap-2 text-white">
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span className="text-sm">Uploading...</span>
+                    </div>
+                  </div>
+                )}
+                <button
+                  onClick={handleRemoveVideo}
+                  disabled={isUploading}
+                  className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors disabled:opacity-50"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`relative rounded-2xl border-2 border-dashed transition-all cursor-pointer ${
+                  isDragging ? "border-[#8B5CF6] bg-[rgba(139,92,246,0.08)]" : "border-[#334155] bg-[#13101F] hover:border-[#475569]"
+                }`}
+              >
+                <input ref={fileInputRef} type="file" accept="video/*,image/*" onChange={handleFileSelect} className="hidden" />
+                <div className="flex flex-col items-center gap-3 py-10 px-6">
+                  <div className="w-12 h-12 rounded-xl bg-[#1E293B] flex items-center justify-center">
+                    <Upload className="w-5 h-5 text-[#64748B]" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-sm font-medium text-[#CBD5E1]">Upload video or drag and drop the file here</p>
+                    <p className="text-xs text-[#64748B] mt-1">(MP4 and MOV formats supported; max file size: 50 MB.)</p>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
+            {uploadError && <p className="text-xs text-red-400 mt-2">{uploadError}</p>}
 
             <p className="text-xs text-[#64748B]">
               Free users can only generate videos of 3 to 5 seconds in length, while paid users can create videos of{" "}

@@ -61,9 +61,7 @@ function buildApiPodRequest(taskType: TaskType, options: TaskOptions, providerMo
   if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
   if (options.duration) body.duration = options.duration;
 
-  // NOTE: APIPod 目前不支持图生图/图生视频。
-  // 当以后支持时，在此处添加 inputUrls 的映射逻辑。
-  // if (options.inputUrls?.length) body.input_urls = options.inputUrls;
+  if (options.inputUrls?.length) body.input_urls = options.inputUrls;
 
   return body;
 }

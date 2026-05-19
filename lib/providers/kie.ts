@@ -56,13 +56,19 @@ function buildKieImageRequest(taskType: TaskType, options: TaskOptions, provider
 }
 
 function buildKieVideoRequest(options: TaskOptions, providerModelId: string): unknown {
+  const input: Record<string, any> = {
+    prompt: options.prompt,
+    ...(options.aspectRatio ? { aspect_ratio: options.aspectRatio } : {}),
+    ...(options.duration ? { duration: options.duration } : {}),
+  };
+
+  if (options.inputUrls && options.inputUrls.length > 0) {
+    input.input_urls = options.inputUrls;
+  }
+
   return {
     model: providerModelId,
-    input: {
-      prompt: options.prompt,
-      ...(options.aspectRatio ? { aspect_ratio: options.aspectRatio } : {}),
-      ...(options.duration ? { duration: options.duration } : {}),
-    },
+    input,
   };
 }
 

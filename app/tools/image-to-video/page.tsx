@@ -252,6 +252,9 @@ export default function ImageToVideoPage() {
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [inputUrl, setInputUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [user, setUser] = useState<any>(null);
@@ -294,14 +297,18 @@ export default function ImageToVideoPage() {
     setProgress(0);
 
     try {
+      const body: Record<string, any> = {
+        taskType: "text-to-video",
+        model: selectedModel,
+        prompt: prompt.trim(),
+      };
+      if (inputUrl) {
+        body.inputUrls = [inputUrl];
+      }
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          taskType: "text-to-video",
-          model: selectedModel,
-          prompt: prompt.trim(),
-        }),
+        body: JSON.stringify(body),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -385,12 +392,44 @@ export default function ImageToVideoPage() {
     setIsDragging(false);
   }, []);
 
+  const uploadToR2 = async (file: File) => {
+    setIsUploading(true);
+    setUploadError("");
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      const putRes = await fetch(data.signedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!putRes.ok) throw new Error("Failed to upload to storage");
+
+      setInputUrl(data.downloadUrl);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Upload failed");
+      setInputUrl(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
     const files = Array.from(e.dataTransfer.files);
     if (files.length > 0) {
       setUploadedFiles((prev) => [...prev, ...files].slice(0, 9));
+      uploadToR2(files[0]);
     }
   }, []);
 
@@ -398,8 +437,15 @@ export default function ImageToVideoPage() {
     const files = Array.from(e.target.files || []);
     if (files.length > 0) {
       setUploadedFiles((prev) => [...prev, ...files].slice(0, 9));
+      uploadToR2(files[0]);
     }
   }, []);
+
+  const handleRemoveFiles = () => {
+    setUploadedFiles([]);
+    setInputUrl(null);
+    setUploadError("");
+  };
 
   const currentModel = models.find((m) => m.id === selectedModel);
 
@@ -619,6 +665,24 @@ export default function ImageToVideoPage() {
                   )}
                 </div>
               </div>
+              {isUploading && (
+                <div className="flex items-center gap-2 text-[#CBD5E1] mt-2">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  <span className="text-xs">Uploading...</span>
+                </div>
+              )}
+              {uploadError && (
+                <p className="text-xs text-red-400 mt-2">{uploadError}</p>
+              )}
+              {uploadedFiles.length > 0 && (
+                <button
+                  onClick={handleRemoveFiles}
+                  disabled={isUploading}
+                  className="text-xs text-[#64748B] hover:text-[#F8FAFC] mt-2 disabled:opacity-50"
+                >
+                  Remove all files
+                </button>
+              )}
 
               {/* Select Creations hint */}
               <button className="flex items-center gap-2 mx-auto mt-3 text-sm text-[#64748B] hover:text-[#CBD5E1] transition-colors">
