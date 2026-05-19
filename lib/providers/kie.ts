@@ -1,4 +1,4 @@
-import { GenerateOptions, Provider, ProviderStatusResult } from "./index";
+import { ProviderAdapter, ProviderStatusResult, TaskOptions, TaskType } from "./index";
 
 function loadEnv(key: string, defaultValue?: string): string {
   const envValue = process.env[key];
@@ -29,22 +29,16 @@ function sizeToResolution(size?: string): string {
   return map[size || ""] || "1K";
 }
 
-function buildKieImageBody(options: GenerateOptions): any {
-  const modelId = options.model || "";
-  const isImageToImage =
-    modelId.includes("image-to-image") ||
-    (!!options.input_urls && options.input_urls.length > 0);
-  const isTextToImage = modelId.includes("text-to-image") || !isImageToImage;
-
+function buildKieImageRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
   const input: Record<string, any> = {
     prompt: options.prompt,
-    aspect_ratio: options.aspect_ratio || (isImageToImage ? "auto" : "1:1"),
+    aspect_ratio: options.aspectRatio || (taskType === "image-to-image" ? "auto" : "1:1"),
     resolution: options.resolution || sizeToResolution(options.size),
     ...(options.n ? { n: options.n } : {}),
   };
 
-  if (isImageToImage && options.input_urls && options.input_urls.length > 0) {
-    input.input_urls = options.input_urls;
+  if (taskType === "image-to-image" && options.inputUrls && options.inputUrls.length > 0) {
+    input.input_urls = options.inputUrls;
   }
 
   if (options.quality) {
@@ -56,8 +50,19 @@ function buildKieImageBody(options: GenerateOptions): any {
   }
 
   return {
-    model: modelId,
+    model: providerModelId,
     input,
+  };
+}
+
+function buildKieVideoRequest(options: TaskOptions, providerModelId: string): unknown {
+  return {
+    model: providerModelId,
+    input: {
+      prompt: options.prompt,
+      ...(options.aspectRatio ? { aspect_ratio: options.aspectRatio } : {}),
+      ...(options.duration ? { duration: options.duration } : {}),
+    },
   };
 }
 
@@ -87,10 +92,8 @@ function extractUrls(value: any): string[] {
 }
 
 function normalizeResult(raw: any): ProviderStatusResult {
-  // Log full raw response for debugging (visible in Vercel function logs)
   console.log("[KIE] raw response:", JSON.stringify(raw, null, 2));
 
-  // KIE may return nested data or flat structures — probe multiple paths
   const d = raw?.data ?? raw;
 
   const rawStatus =
@@ -101,7 +104,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
     raw?.status ??
     "unknown";
 
-  // KIE puts URLs inside a JSON string field named resultJson
   let result: any = null;
   if (typeof d?.resultJson === "string") {
     try {
@@ -137,7 +139,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
       [];
   }
 
-  // Sometimes result is nested under data.data
   if (!Array.isArray(result) && !isHttpUrl(result) && raw?.data?.data) {
     result =
       raw.data.data.result ??
@@ -171,10 +172,8 @@ function normalizeResult(raw: any): ProviderStatusResult {
     raw?.msg ??
     raw?.message;
 
-  // "success" in msg field is not an error
   if (error === "success" || error === "SUCCESS") error = undefined;
 
-  // If still no result array found, recursively scan the entire raw object for URLs
   let urls: string[] = [];
   if (result && (Array.isArray(result) || isHttpUrl(result))) {
     urls = extractUrls(result);
@@ -186,7 +185,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
     }
   }
 
-  // Map KIE status values to unified status
   const statusMap: Record<string, ProviderStatusResult["status"]> = {
     success: "completed",
     completed: "completed",
@@ -215,13 +213,27 @@ function normalizeResult(raw: any): ProviderStatusResult {
   };
 }
 
-export const kieProvider: Provider = {
+export const kieAdapter: ProviderAdapter = {
   id: "kie",
   name: "KIE",
   timeoutMs: 10000,
 
-  async createImageTask(options: GenerateOptions) {
-    const body = buildKieImageBody(options);
+  supports(taskType: TaskType): boolean {
+    return [
+      "text-to-image",
+      "image-to-image",
+      "text-to-video",
+    ].includes(taskType);
+  },
+
+  buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+    if (taskType === "text-to-image" || taskType === "image-to-image") {
+      return buildKieImageRequest(taskType, options, providerModelId);
+    }
+    return buildKieVideoRequest(options, providerModelId);
+  },
+
+  async sendRequest(body: unknown, _taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }> {
     const res = await fetch(`${baseUrl}/jobs/createTask`, {
       method: "POST",
       headers: getHeaders(),
@@ -241,67 +253,22 @@ export const kieProvider: Provider = {
       if (res.status === 402 || data?.code === 402) {
         throw new Error(`KIE 账户余额不足，请联系管理员充值`);
       }
-      throw new Error(`KIE image generation failed: ${res.status} ${msg}`);
-    }
-
-    // KIE may return taskId under various field names
-    const taskId =
-      data.data?.taskId ??
-      data.data?.task_id ??
-      data.data?.id ??
-      data.data?.taskId ??
-      data.taskId ??
-      data.task_id ??
-      data.id ??
-      data.taskId;
-    if (!taskId) throw new Error(`No task_id returned from KIE. Body: ${rawText}`);
-    return { task_id: String(taskId) };
-  },
-
-  async createVideoTask(options: GenerateOptions) {
-    const res = await fetch(`${baseUrl}/jobs/createTask`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify({
-        model: options.model,
-        input: {
-          prompt: options.prompt,
-          ...(options.aspect_ratio ? { aspect_ratio: options.aspect_ratio } : {}),
-          ...(options.duration ? { duration: options.duration } : {}),
-        },
-      }),
-    });
-
-    const rawText = await res.text();
-    let data: any;
-    try {
-      data = JSON.parse(rawText);
-    } catch {
-      data = rawText;
-    }
-
-    if (!res.ok) {
-      const msg = data?.msg || data?.message || rawText;
-      if (res.status === 402 || data?.code === 402) {
-        throw new Error(`KIE 账户余额不足，请联系管理员充值`);
-      }
-      throw new Error(`KIE video generation failed: ${res.status} ${msg}`);
+      throw new Error(`KIE task creation failed: ${res.status} ${msg}`);
     }
 
     const taskId =
       data.data?.taskId ??
       data.data?.task_id ??
       data.data?.id ??
-      data.data?.taskId ??
       data.taskId ??
       data.task_id ??
-      data.id ??
-      data.taskId;
+      data.id;
+
     if (!taskId) throw new Error(`No task_id returned from KIE. Body: ${rawText}`);
-    return { task_id: String(taskId) };
+    return { taskId: String(taskId), rawResponse: data };
   },
 
-  async queryImageTask(taskId: string) {
+  async queryStatus(taskId: string): Promise<unknown> {
     const res = await fetch(`${baseUrl}/jobs/recordInfo?taskId=${taskId}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
@@ -322,10 +289,10 @@ export const kieProvider: Provider = {
       throw new Error(`KIE query failed: ${res.status} ${msg}`);
     }
 
-    return normalizeResult(raw);
+    return raw;
   },
 
-  async queryVideoTask(taskId: string) {
-    return this.queryImageTask(taskId);
+  parseResponse(raw: unknown): ProviderStatusResult {
+    return normalizeResult(raw);
   },
 };

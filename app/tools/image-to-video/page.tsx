@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -105,21 +106,7 @@ const sidebarTools: SidebarItem[] = [
   },
 ];
 
-const models = [
-  { id: "seedance-2.0-r2v", name: "Seedance 2.0", logo: "S" },
-  { id: "seedance-2.0-fast-t2v", name: "Seedance 2.0 fast", logo: "S" },
-  { id: "veo3-1-lite", name: "Veo 3.1 Lite", logo: "V" },
-  { id: "veo3-1-fast", name: "Veo 3.1 Fast", logo: "V" },
-  { id: "veo3-1-quality", name: "Veo 3.1 Quality", logo: "V" },
-  { id: "sora-2-vip", name: "Sora 2", logo: "S" },
-  { id: "sora-2-pro", name: "Sora 2 Pro", logo: "S", comingSoon: true },
-  { id: "runway-gen4", name: "Runway", logo: "R" },
-  { id: "kling-3", name: "Kling 3.0", logo: "K" },
-  { id: "kling-2.6-motion-control", name: "Kling V2.6", logo: "K" },
-  { id: "hailuo-02", name: "Hailuo 02", logo: "H", comingSoon: true },
-  { id: "hailuo-02-pro", name: "Hailuo 02 Pro", logo: "H", comingSoon: true },
-  { id: "grok-imagine-t2v", name: "Grok", logo: "G" },
-];
+const models = getModelsByTaskType("image-to-video");
 
 const videoRatios = ["16:9", "9:16", "4:3", "3:4", "1:1", "21:9"];
 
@@ -275,23 +262,9 @@ export default function ImageToVideoPage() {
   const [genError, setGenError] = useState<string>("");
   const [progress, setProgress] = useState(0);
   const providerRef = useRef("");
+  const taskTypeRef = useRef("image-to-video");
 
-  const ETA_SECONDS: Record<string, number> = {
-    "seedance-2.0-r2v": 75,
-    "seedance-2.0-fast-t2v": 45,
-    "veo3-1-lite": 60,
-    "veo3-1-fast": 45,
-    "veo3-1-quality": 90,
-    "sora-2-vip": 90,
-    "sora-2-pro": 90,
-    "runway-gen4": 60,
-    "kling-3": 60,
-    "kling-2.6-motion-control": 60,
-    "hailuo-02": 60,
-    "hailuo-02-pro": 60,
-    "grok-imagine-t2v": 60,
-    "default": 75,
-  };
+  const etaSeconds = getEtaSeconds(selectedModel);
 
   const router = useRouter();
 
@@ -325,7 +298,7 @@ export default function ImageToVideoPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "video",
+          taskType: "text-to-video",
           model: selectedModel,
           prompt: prompt.trim(),
         }),
@@ -337,11 +310,12 @@ export default function ImageToVideoPage() {
       const taskId = data.data?.task_id;
       const provider = data.data?.provider || "";
       providerRef.current = provider;
+      taskTypeRef.current = "text-to-video";
       if (!taskId) {
         throw new Error("No task_id returned");
       }
 
-      const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
+      const etaSeconds = getEtaSeconds(selectedModel);
       const startTime = Date.now();
       let attempts = 0;
       const maxAttempts = 120;
@@ -359,7 +333,7 @@ export default function ImageToVideoPage() {
         const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
         setProgress(Math.round(rawProgress));
 
-        const pollRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=video`);
+        const pollRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&taskType=${taskTypeRef.current}`);
         const pollData = await pollRes.json();
         const status = pollData.data?.status || pollData.status || "unknown";
 

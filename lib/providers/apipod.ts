@@ -1,4 +1,4 @@
-import { GenerateOptions, Provider, ProviderStatusResult } from "./index";
+import { ProviderAdapter, ProviderStatusResult, TaskOptions, TaskType } from "./index";
 
 function loadEnv(key: string, defaultValue?: string): string {
   const envValue = process.env[key];
@@ -22,7 +22,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
   const result = raw.data?.result || raw.result || [];
   const error = raw.data?.error || raw.error;
 
-  // Map APIPod status values to unified status
   const statusMap: Record<string, ProviderStatusResult["status"]> = {
     success: "completed",
     completed: "completed",
@@ -48,49 +47,73 @@ function normalizeResult(raw: any): ProviderStatusResult {
   };
 }
 
-export const apipodProvider: Provider = {
+function buildApiPodRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+  // 只包含 APIPod 认识的字段，禁止透传未知字段
+  const body: Record<string, any> = {
+    model: providerModelId,
+    prompt: options.prompt,
+  };
+
+  if (options.size) body.size = options.size;
+  if (options.n) body.n = options.n;
+  if (options.quality) body.quality = options.quality;
+  if (options.style) body.style = options.style;
+  if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+  if (options.duration) body.duration = options.duration;
+
+  // NOTE: APIPod 目前不支持图生图/图生视频。
+  // 当以后支持时，在此处添加 inputUrls 的映射逻辑。
+  // if (options.inputUrls?.length) body.input_urls = options.inputUrls;
+
+  return body;
+}
+
+function getEndpoint(taskType: TaskType): string {
+  if (taskType === "text-to-video" || taskType === "image-to-video") {
+    return "videos";
+  }
+  return "images";
+}
+
+export const apipodAdapter: ProviderAdapter = {
   id: "apipod",
   name: "APIPod",
   timeoutMs: 10000,
 
-  async createImageTask(options: GenerateOptions) {
-    const res = await fetch(`${baseUrl}/images/generations`, {
+  supports(taskType: TaskType): boolean {
+    // APIPod 目前支持文生图和文生视频
+    return taskType === "text-to-image" || taskType === "text-to-video";
+  },
+
+  buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+    return buildApiPodRequest(taskType, options, providerModelId);
+  },
+
+  async sendRequest(body: unknown, taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }> {
+    const endpoint = getEndpoint(taskType);
+
+    const res = await fetch(`${baseUrl}/${endpoint}/generations`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify(options),
+      body: JSON.stringify(body),
     });
 
     if (!res.ok) {
       const err = await res.text();
-      throw new Error(`APIPod image generation failed: ${res.status} ${err}`);
+      throw new Error(`APIPod task creation failed: ${res.status} ${err}`);
     }
 
     const data = await res.json();
     const taskId = data.data?.task_id || data.task_id;
     if (!taskId) throw new Error("No task_id returned from APIPod");
-    return { task_id: taskId };
+
+    return { taskId, rawResponse: data };
   },
 
-  async createVideoTask(options: GenerateOptions) {
-    const res = await fetch(`${baseUrl}/videos/generations`, {
-      method: "POST",
-      headers: getHeaders(),
-      body: JSON.stringify(options),
-    });
+  async queryStatus(taskId: string, taskType: TaskType): Promise<unknown> {
+    const endpoint = getEndpoint(taskType);
 
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`APIPod video generation failed: ${res.status} ${err}`);
-    }
-
-    const data = await res.json();
-    const taskId = data.data?.task_id || data.task_id;
-    if (!taskId) throw new Error("No task_id returned from APIPod");
-    return { task_id: taskId };
-  },
-
-  async queryImageTask(taskId: string) {
-    const res = await fetch(`${baseUrl}/images/status/${taskId}`, {
+    const res = await fetch(`${baseUrl}/${endpoint}/status/${taskId}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
 
@@ -99,21 +122,10 @@ export const apipodProvider: Provider = {
       throw new Error(`APIPod query failed: ${res.status} ${err}`);
     }
 
-    const raw = await res.json();
-    return normalizeResult(raw);
+    return await res.json();
   },
 
-  async queryVideoTask(taskId: string) {
-    const res = await fetch(`${baseUrl}/videos/status/${taskId}`, {
-      headers: { Authorization: `Bearer ${apiKey}` },
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error(`APIPod query failed: ${res.status} ${err}`);
-    }
-
-    const raw = await res.json();
+  parseResponse(raw: unknown): ProviderStatusResult {
     return normalizeResult(raw);
   },
 };

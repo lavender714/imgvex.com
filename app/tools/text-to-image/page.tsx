@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
+import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import {
   Select,
   SelectContent,
@@ -109,17 +110,7 @@ const sidebarTools: SidebarItem[] = [
   },
 ];
 
-const models = [
-  { id: "nano-banana", name: "Nano Banana", logo: "N" },
-  { id: "nano-banana-pro", name: "Nano Banana Pro", logo: "N+" },
-  { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
-  { id: "gpt-image-2", name: "GPT Image 2.0", logo: "G" },
-  { id: "gpt-image-1-5", name: "GPT Image 1.5", logo: "G", comingSoon: true },
-  { id: "grok-imagine", name: "Grok", logo: "G", comingSoon: true },
-  { id: "ideogram", name: "Ideogram", logo: "I", comingSoon: true },
-  { id: "flux", name: "Flux", logo: "F" },
-  { id: "midjourney", name: "Midjourney", logo: "M", comingSoon: true },
-];
+const models = getModelsByTaskType("text-to-image");
 
 const supportedModelTags = [
   { name: "Nano Banana", color: "#F59E0B" },
@@ -316,19 +307,9 @@ export default function TextToImagePage() {
   const [genError, setGenError] = useState("");
   const [progress, setProgress] = useState(0);
   const providerRef = useRef("");
+  const taskTypeRef = useRef("text-to-image");
 
-  const ETA_SECONDS: Record<string, number> = {
-    "nano-banana": 18,
-    "nano-banana-pro": 22,
-    "nano-banana-2": 18,
-    "gpt-image-2": 25,
-    "gpt-image-1-5": 25,
-    "grok-imagine": 25,
-    "ideogram": 20,
-    "flux": 18,
-    "midjourney": 30,
-    "default": 20,
-  };
+  const etaSeconds = getEtaSeconds(selectedModel);
 
   useEffect(() => {
     const supabase = createClient();
@@ -384,11 +365,11 @@ export default function TextToImagePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "image",
+          taskType: "text-to-image",
           model: selectedModel,
           prompt: prompt.trim(),
           size: mapResolution(resolution),
-          aspect_ratio: aspectRatio,
+          aspectRatio: aspectRatio,
           n: 1,
         }),
       });
@@ -404,13 +385,14 @@ export default function TextToImagePage() {
       const provider = createData.data?.provider || "";
       const attempts = createData.data?.attempts || 1;
       providerRef.current = provider;
+      taskTypeRef.current = "text-to-image";
       console.log("[frontend] Got taskId:", taskId, "provider:", provider, "attempts:", attempts);
       if (!taskId) {
         throw new Error("No task ID returned");
       }
 
       // 2. Poll for result
-      const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
+      const etaSeconds = getEtaSeconds(selectedModel);
       const startTime = Date.now();
       let pollAttempts = 0;
       const maxAttempts = 120;
@@ -427,7 +409,7 @@ export default function TextToImagePage() {
           const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
           setProgress(Math.round(rawProgress));
 
-          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=image`);
+          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&taskType=${taskTypeRef.current}`);
           const statusData = await statusRes.json();
 
           if (!statusRes.ok) {

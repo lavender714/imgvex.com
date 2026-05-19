@@ -1,3 +1,5 @@
+import { TaskType } from "./index";
+
 export interface ProviderConfig {
   id: string;
   name: string;
@@ -7,11 +9,20 @@ export interface ProviderConfig {
   defaultBaseUrl: string;
 }
 
-export interface ModelProviderMapping {
+export interface ModelRegistrationProviderMapping {
   providerId: string;
   providerModelId: string;
   priority: number;
   etaSeconds: number;
+}
+
+export interface ModelRegistration {
+  id: string;
+  name: string;
+  taskType: TaskType;
+  logo?: string;
+  comingSoon?: boolean;
+  providers: ModelRegistrationProviderMapping[];
 }
 
 export const PROVIDER_CONFIGS: ProviderConfig[] = [
@@ -33,117 +44,325 @@ export const PROVIDER_CONFIGS: ProviderConfig[] = [
   },
 ];
 
-// 模型 → 供应商映射（按 priority 排序，priority 越小越优先）
-// 注意：providerModelId 是供应商内部的模型 ID，和前端展示的 model id 不同
-export const MODEL_PROVIDER_MAP: Record<string, ModelProviderMapping[]> = {
+// 模型注册表 — 每个模型明确声明 taskType 和支持的供应商
+export const MODEL_REGISTRY: ModelRegistration[] = [
   // 文生图
-  "nano-banana": [
-    { providerId: "kie", providerModelId: "google/nano-banana", priority: 1, etaSeconds: 18 },
-    { providerId: "apipod", providerModelId: "nano-banana", priority: 2, etaSeconds: 18 },
-  ],
-  "nano-banana-pro": [
-    { providerId: "kie", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
-    { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 2, etaSeconds: 22 },
-  ],
-  "nano-banana-2": [
-    { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
-    { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
-  ],
-  "gpt-image-2": [
-    { providerId: "kie", providerModelId: "gpt-image-2-text-to-image", priority: 1, etaSeconds: 25 },
-    { providerId: "apipod", providerModelId: "gpt-image-2", priority: 2, etaSeconds: 25 },
-  ],
-  "gpt-image-1-5": [
-    { providerId: "kie", providerModelId: "gpt-image/1.5-text-to-image", priority: 1, etaSeconds: 25 },
-    { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 2, etaSeconds: 25 },
-  ],
-  "grok-imagine": [
-    { providerId: "kie", providerModelId: "grok-imagine/text-to-image", priority: 1, etaSeconds: 25 },
-    { providerId: "apipod", providerModelId: "grok-imagine", priority: 2, etaSeconds: 25 },
-  ],
-  "ideogram": [
-    { providerId: "kie", providerModelId: "ideogram/v3-text-to-image", priority: 1, etaSeconds: 20 },
-    { providerId: "apipod", providerModelId: "ideogram", priority: 2, etaSeconds: 20 },
-  ],
-  "flux": [
-    { providerId: "kie", providerModelId: "flux-2/flex-text-to-image", priority: 1, etaSeconds: 15 },
-  ],
-  "flux-2": [
-    { providerId: "kie", providerModelId: "flux-2/flex-image-to-image", priority: 1, etaSeconds: 18 },
-    { providerId: "apipod", providerModelId: "flux-2", priority: 2, etaSeconds: 18 },
-  ],
-  "flux-kontext": [
-    { providerId: "kie", providerModelId: "flux1-kontext", priority: 1, etaSeconds: 20 },
-    { providerId: "apipod", providerModelId: "flux-kontext", priority: 2, etaSeconds: 20 },
-  ],
-  "midjourney": [
-    { providerId: "apipod", providerModelId: "midjourney", priority: 1, etaSeconds: 30 },
-  ],
-  "wan2.7-image-edit": [
-    { providerId: "kie", providerModelId: "wan/2-7-image", priority: 1, etaSeconds: 20 },
-    { providerId: "apipod", providerModelId: "wan2.7-image-edit", priority: 2, etaSeconds: 20 },
-  ],
+  {
+    id: "nano-banana",
+    name: "Nano Banana",
+    taskType: "text-to-image",
+    logo: "N",
+    providers: [
+      { providerId: "kie", providerModelId: "google/nano-banana", priority: 1, etaSeconds: 18 },
+      { providerId: "apipod", providerModelId: "nano-banana", priority: 2, etaSeconds: 18 },
+    ],
+  },
+  {
+    id: "nano-banana-pro",
+    name: "Nano Banana Pro",
+    taskType: "text-to-image",
+    logo: "N+",
+    providers: [
+      { providerId: "kie", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
+      { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 2, etaSeconds: 22 },
+    ],
+  },
+  {
+    id: "nano-banana-2",
+    name: "Nano Banana 2",
+    taskType: "text-to-image",
+    logo: "N",
+    providers: [
+      { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
+      { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
+    ],
+  },
+  {
+    id: "gpt-image-2",
+    name: "GPT Image 2.0",
+    taskType: "text-to-image",
+    logo: "G",
+    providers: [
+      { providerId: "kie", providerModelId: "gpt-image-2-text-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "apipod", providerModelId: "gpt-image-2", priority: 2, etaSeconds: 25 },
+    ],
+  },
+  {
+    id: "gpt-image-1-5",
+    name: "GPT Image 1.5",
+    taskType: "text-to-image",
+    logo: "G",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "gpt-image/1.5-text-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 2, etaSeconds: 25 },
+    ],
+  },
+  {
+    id: "grok-imagine",
+    name: "Grok",
+    taskType: "text-to-image",
+    logo: "G",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "grok-imagine/text-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "apipod", providerModelId: "grok-imagine", priority: 2, etaSeconds: 25 },
+    ],
+  },
+  {
+    id: "ideogram",
+    name: "Ideogram",
+    taskType: "text-to-image",
+    logo: "I",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "ideogram/v3-text-to-image", priority: 1, etaSeconds: 20 },
+      { providerId: "apipod", providerModelId: "ideogram", priority: 2, etaSeconds: 20 },
+    ],
+  },
+  {
+    id: "flux",
+    name: "Flux",
+    taskType: "text-to-image",
+    logo: "F",
+    providers: [
+      { providerId: "kie", providerModelId: "flux-2/flex-text-to-image", priority: 1, etaSeconds: 15 },
+    ],
+  },
+  {
+    id: "flux-kontext",
+    name: "Flux Kontext",
+    taskType: "text-to-image",
+    logo: "F",
+    providers: [
+      { providerId: "kie", providerModelId: "flux1-kontext", priority: 1, etaSeconds: 20 },
+      { providerId: "apipod", providerModelId: "flux-kontext", priority: 2, etaSeconds: 20 },
+    ],
+  },
+  {
+    id: "midjourney",
+    name: "Midjourney",
+    taskType: "text-to-image",
+    logo: "M",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "midjourney", priority: 1, etaSeconds: 30 },
+    ],
+  },
 
-  // 图生图（独立 model id 避免与文生图冲突）
-  "nano-banana-edit": [
-    { providerId: "kie", providerModelId: "google/nano-banana-edit", priority: 1, etaSeconds: 22 },
-  ],
-  "gpt-image-2-image": [
-    { providerId: "kie", providerModelId: "gpt-image-2-image-to-image", priority: 1, etaSeconds: 25 },
-  ],
-  "gpt-image-1-5-image": [
-    { providerId: "kie", providerModelId: "gpt-image/1.5-image-to-image", priority: 1, etaSeconds: 25 },
-  ],
+  // 图生图
+  {
+    id: "flux-2",
+    name: "Flux 2",
+    taskType: "image-to-image",
+    logo: "F",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "flux-2/flex-image-to-image", priority: 1, etaSeconds: 18 },
+      { providerId: "apipod", providerModelId: "flux-2", priority: 2, etaSeconds: 18 },
+    ],
+  },
+  {
+    id: "wan2.7-image-edit",
+    name: "Wan 2.7",
+    taskType: "image-to-image",
+    logo: "W",
+    providers: [
+      { providerId: "kie", providerModelId: "wan/2-7-image", priority: 1, etaSeconds: 20 },
+      { providerId: "apipod", providerModelId: "wan2.7-image-edit", priority: 2, etaSeconds: 20 },
+    ],
+  },
+  {
+    id: "nano-banana-edit",
+    name: "Nano Banana Edit",
+    taskType: "image-to-image",
+    logo: "N+",
+    providers: [
+      { providerId: "kie", providerModelId: "google/nano-banana-edit", priority: 1, etaSeconds: 22 },
+    ],
+  },
+  {
+    id: "gpt-image-2-image",
+    name: "GPT Image 2.0",
+    taskType: "image-to-image",
+    logo: "G",
+    providers: [
+      { providerId: "kie", providerModelId: "gpt-image-2-image-to-image", priority: 1, etaSeconds: 25 },
+    ],
+  },
+  {
+    id: "gpt-image-1-5-image",
+    name: "GPT Image 1.5",
+    taskType: "image-to-image",
+    logo: "G",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "gpt-image/1.5-image-to-image", priority: 1, etaSeconds: 25 },
+    ],
+  },
 
-  // 视频模型
-  "seedance-2.0-t2v": [
-    { providerId: "apipod", providerModelId: "seedance-2.0-t2v", priority: 1, etaSeconds: 75 },
-  ],
-  "seedance-2.0-fast-t2v": [
-    { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 1, etaSeconds: 45 },
-  ],
-  "seedance-2.0-r2v": [
-    { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 1, etaSeconds: 75 },
-  ],
-  "veo3-1-lite": [
-    { providerId: "apipod", providerModelId: "veo3-1-lite", priority: 1, etaSeconds: 60 },
-  ],
-  "veo3-1-fast": [
-    { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 1, etaSeconds: 45 },
-  ],
-  "veo3-1-quality": [
-    { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 1, etaSeconds: 90 },
-  ],
-  "sora-2-vip": [
-    { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
-  ],
-  "sora-2-pro": [
-    { providerId: "apipod", providerModelId: "sora-2-pro", priority: 1, etaSeconds: 90 },
-  ],
-  "runway-gen4": [
-    { providerId: "apipod", providerModelId: "runway-gen4", priority: 1, etaSeconds: 60 },
-  ],
-  "kling-3": [
-    { providerId: "apipod", providerModelId: "kling-3", priority: 1, etaSeconds: 60 },
-  ],
-  "kling-2.6-motion-control": [
-    { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 1, etaSeconds: 60 },
-  ],
-  "hailuo-02": [
-    { providerId: "apipod", providerModelId: "hailuo-02", priority: 1, etaSeconds: 60 },
-  ],
-  "hailuo-02-pro": [
-    { providerId: "apipod", providerModelId: "hailuo-02-pro", priority: 1, etaSeconds: 60 },
-  ],
-  "grok-imagine-t2v": [
-    { providerId: "apipod", providerModelId: "grok-imagine-t2v", priority: 1, etaSeconds: 60 },
-  ],
-};
+  // 文生视频
+  {
+    id: "seedance-2.0-t2v",
+    name: "Seedance 2.0",
+    taskType: "text-to-video",
+    logo: "S",
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-t2v", priority: 1, etaSeconds: 75 },
+    ],
+  },
+  {
+    id: "seedance-2.0-fast-t2v",
+    name: "Seedance 2.0 Fast",
+    taskType: "text-to-video",
+    logo: "S",
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 1, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "seedance-2.0-r2v",
+    name: "Seedance 2.0 R2V",
+    taskType: "image-to-video",
+    logo: "S",
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 1, etaSeconds: 75 },
+    ],
+  },
+  {
+    id: "veo3-1-lite",
+    name: "Veo 3.1 Lite",
+    taskType: "text-to-video",
+    logo: "V",
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-lite", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "veo3-1-fast",
+    name: "Veo 3.1 Fast",
+    taskType: "text-to-video",
+    logo: "V",
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 1, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "veo3-1-quality",
+    name: "Veo 3.1 Quality",
+    taskType: "text-to-video",
+    logo: "V",
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 1, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "sora-2-vip",
+    name: "Sora 2",
+    taskType: "text-to-video",
+    logo: "S",
+    providers: [
+      { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "sora-2-pro",
+    name: "Sora 2 Pro",
+    taskType: "text-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "sora-2-pro", priority: 1, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "runway-gen4",
+    name: "Runway",
+    taskType: "text-to-video",
+    logo: "R",
+    providers: [
+      { providerId: "apipod", providerModelId: "runway-gen4", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "kling-3",
+    name: "Kling 3.0",
+    taskType: "text-to-video",
+    logo: "K",
+    providers: [
+      { providerId: "apipod", providerModelId: "kling-3", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "kling-2.6-motion-control",
+    name: "Kling V2.6",
+    taskType: "text-to-video",
+    logo: "K",
+    providers: [
+      { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "hailuo-02",
+    name: "Hailuo 02",
+    taskType: "text-to-video",
+    logo: "H",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "hailuo-02", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "hailuo-02-pro",
+    name: "Hailuo 02 Pro",
+    taskType: "text-to-video",
+    logo: "H",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "hailuo-02-pro", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "grok-imagine-t2v",
+    name: "Grok",
+    taskType: "text-to-video",
+    logo: "G",
+    providers: [
+      { providerId: "apipod", providerModelId: "grok-imagine-t2v", priority: 1, etaSeconds: 60 },
+    ],
+  },
+];
 
-export function getProvidersForModel(modelId: string): ModelProviderMapping[] {
-  const mappings = MODEL_PROVIDER_MAP[modelId];
-  if (!mappings || mappings.length === 0) {
-    return [];
-  }
-  return [...mappings].sort((a, b) => a.priority - b.priority);
+const modelRegistryMap: Record<string, ModelRegistration> = {};
+for (const m of MODEL_REGISTRY) {
+  modelRegistryMap[m.id] = m;
+}
+
+export function getModelRegistration(modelId: string): ModelRegistration | undefined {
+  return modelRegistryMap[modelId];
+}
+
+// 兼容旧接口：获取模型支持的供应商（不区分 taskType 过滤，由调用方过滤）
+export function getProvidersForModel(modelId: string): ModelRegistrationProviderMapping[] {
+  const reg = getModelRegistration(modelId);
+  if (!reg) return [];
+  return [...reg.providers].sort((a, b) => a.priority - b.priority);
+}
+
+// 按任务类型获取前端模型列表（用于替换页面中硬编码的 models 数组）
+export function getModelsByTaskType(taskType: TaskType): ModelRegistration[] {
+  return MODEL_REGISTRY.filter((m) => m.taskType === taskType);
+}
+
+// 获取模型预估耗时（取最高优先级 provider 的 etaSeconds）
+export function getEtaSeconds(modelId: string): number {
+  const reg = getModelRegistration(modelId);
+  if (!reg || reg.providers.length === 0) return 20;
+  const sorted = [...reg.providers].sort((a, b) => a.priority - b.priority);
+  return sorted[0].etaSeconds;
+}
+
+// 按供应商获取其支持的所有模型注册项
+export function getModelsByProvider(providerId: string): ModelRegistration[] {
+  return MODEL_REGISTRY.filter((m) => m.providers.some((p) => p.providerId === providerId));
 }

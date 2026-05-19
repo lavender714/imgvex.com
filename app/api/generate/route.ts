@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { createTaskWithFailover } from "@/lib/providers";
+import { executeTaskWithFailover } from "@/lib/providers";
 
 export async function POST(request: Request) {
   console.log("[generate-api] Request received");
@@ -16,23 +16,24 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     console.log("[generate-api] Body:", JSON.stringify(body));
-    const { type, model, prompt, ...rest } = body;
+    const { taskType, model, prompt, ...rest } = body;
 
-    if (!type || !model || !prompt) {
+    if (!taskType || !model || !prompt) {
       return NextResponse.json(
-        { error: "Missing required fields: type, model, prompt" },
+        { error: "Missing required fields: taskType, model, prompt" },
         { status: 400 }
       );
     }
 
-    if (type !== "image" && type !== "video") {
+    const validTaskTypes = ["text-to-image", "image-to-image", "text-to-video", "image-to-video"];
+    if (!validTaskTypes.includes(taskType)) {
       return NextResponse.json(
-        { error: "Invalid type. Must be 'image' or 'video'" },
+        { error: `Invalid taskType. Must be one of: ${validTaskTypes.join(", ")}` },
         { status: 400 }
       );
     }
 
-    const result = await createTaskWithFailover(model, type, {
+    const result = await executeTaskWithFailover(model, taskType, {
       model,
       prompt: prompt.trim(),
       ...rest,

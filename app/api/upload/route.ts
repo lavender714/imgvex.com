@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getUploadUrl, getUserPrefix } from "@/lib/r2";
+import { getUploadUrl, getDownloadUrl, getUserPrefix } from "@/lib/r2";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -18,8 +18,9 @@ export async function POST(request: Request) {
 
     const key = `${getUserPrefix(user.id)}${Date.now()}-${filename}`;
     const signedUrl = await getUploadUrl(key, contentType);
+    const downloadUrl = await getDownloadUrl(key);
 
-    return NextResponse.json({ signedUrl, key });
+    return NextResponse.json({ signedUrl, key, downloadUrl });
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json({ error: "Failed to generate upload URL" }, { status: 500 });

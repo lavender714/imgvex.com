@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -116,15 +117,7 @@ const sidebarTools: SidebarItem[] = [
   },
 ];
 
-const models = [
-  { id: "nano-banana-2", name: "Nano Banana 2", logo: "N" },
-  { id: "nano-banana-edit", name: "Nano Banana Edit", logo: "N+" },
-  { id: "gpt-image-2-image", name: "GPT Image 2.0", logo: "G" },
-  { id: "wan2.7-image-edit", name: "Wan 2.7", logo: "W" },
-  { id: "flux-2", name: "Flux 2", logo: "F", comingSoon: true },
-  { id: "gpt-image-1-5-image", name: "GPT Image 1.5", logo: "G", comingSoon: true },
-  { id: "flux-kontext", name: "Flux Kontext", logo: "F", comingSoon: true },
-];
+const models = getModelsByTaskType("image-to-image");
 
 const supportedModelTags = [
   { name: "Nano Banana 2", color: "#EC4899" },
@@ -363,17 +356,12 @@ export default function ImageToImagePage() {
   const [genError, setGenError] = useState("");
   const [progress, setProgress] = useState(0);
   const providerRef = useRef("");
+  const taskTypeRef = useRef("image-to-image");
+  const [inputImageUrl, setInputImageUrl] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState("");
 
-  const ETA_SECONDS: Record<string, number> = {
-    "nano-banana-2": 18,
-    "nano-banana-pro": 22,
-    "flux-2": 18,
-    "gpt-image-2": 25,
-    "gpt-image-1-5": 25,
-    "flux-kontext": 20,
-    "wan2.7-image-edit": 20,
-    "default": 20,
-  };
+  const etaSeconds = getEtaSeconds(selectedModel);
 
   useEffect(() => {
     const supabase = createClient();
@@ -396,6 +384,37 @@ export default function ImageToImagePage() {
     setIsDragging(false);
   }, []);
 
+  const uploadToR2 = async (file: File) => {
+    setIsUploading(true);
+    setUploadError("");
+    try {
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          filename: file.name,
+          contentType: file.type,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Upload failed");
+
+      const putRes = await fetch(data.signedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+      if (!putRes.ok) throw new Error("Failed to upload to storage");
+
+      setInputImageUrl(data.downloadUrl);
+    } catch (e) {
+      setUploadError(e instanceof Error ? e.message : "Upload failed");
+      setInputImageUrl(null);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
@@ -403,6 +422,7 @@ export default function ImageToImagePage() {
     if (files.length > 0 && files[0].type.startsWith("image/")) {
       const url = URL.createObjectURL(files[0]);
       setUploadedImage(url);
+      uploadToR2(files[0]);
     }
   }, []);
 
@@ -411,12 +431,15 @@ export default function ImageToImagePage() {
     if (files.length > 0 && files[0].type.startsWith("image/")) {
       const url = URL.createObjectURL(files[0]);
       setUploadedImage(url);
+      uploadToR2(files[0]);
     }
   }, []);
 
   const handleRemoveImage = () => {
     if (uploadedImage) URL.revokeObjectURL(uploadedImage);
     setUploadedImage(null);
+    setInputImageUrl(null);
+    setUploadError("");
   };
 
   const handleGenerate = async () => {
@@ -426,6 +449,10 @@ export default function ImageToImagePage() {
     }
     if (!prompt.trim()) {
       setGenError("Please enter a prompt");
+      return;
+    }
+    if (!inputImageUrl) {
+      setGenError("Please upload an image first");
       return;
     }
     setIsGenerating(true);
@@ -439,11 +466,12 @@ export default function ImageToImagePage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          type: "image",
+          taskType: "image-to-image",
           model: selectedModel,
           prompt: prompt.trim(),
           size: resolution === "1K" ? "1024x1024" : resolution === "2K" ? "2048x2048" : "4096x4096",
           n: 1,
+          inputUrls: [inputImageUrl],
         }),
       });
 
@@ -455,11 +483,12 @@ export default function ImageToImagePage() {
       const taskId = createData.data?.task_id;
       const provider = createData.data?.provider || "";
       providerRef.current = provider;
+      taskTypeRef.current = "image-to-image";
       if (!taskId) {
         throw new Error("No task ID returned");
       }
 
-      const etaSeconds = ETA_SECONDS[selectedModel] || ETA_SECONDS.default;
+      const etaSeconds = getEtaSeconds(selectedModel);
       const startTime = Date.now();
       let attempts = 0;
       const maxAttempts = 120;
@@ -475,7 +504,7 @@ export default function ImageToImagePage() {
           const rawProgress = Math.min((elapsed / etaSeconds) * 100, 95);
           setProgress(Math.round(rawProgress));
 
-          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&type=image`);
+          const statusRes = await fetch(`/api/generate/status?taskId=${taskId}&provider=${providerRef.current}&taskType=${taskTypeRef.current}`);
           const statusData = await statusRes.json();
 
           if (!statusRes.ok) {
@@ -639,9 +668,18 @@ export default function ImageToImagePage() {
               {uploadedImage ? (
                 <div className="relative rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden">
                   <img src={uploadedImage} alt="Uploaded" className="w-full max-h-[200px] object-contain" />
+                  {isUploading && (
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                      <div className="flex items-center gap-2 text-white">
+                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        <span className="text-sm">Uploading...</span>
+                      </div>
+                    </div>
+                  )}
                   <button
                     onClick={handleRemoveImage}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors"
+                    disabled={isUploading}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-lg bg-black/50 flex items-center justify-center text-white hover:bg-black/70 transition-colors disabled:opacity-50"
                   >
                     <X className="w-4 h-4" />
                   </button>
@@ -669,6 +707,9 @@ export default function ImageToImagePage() {
                     </div>
                   </div>
                 </div>
+              )}
+              {uploadError && (
+                <p className="text-xs text-red-400 mt-2">{uploadError}</p>
               )}
             </div>
 
