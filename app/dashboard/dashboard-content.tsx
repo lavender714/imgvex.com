@@ -1,19 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CreditPill } from "@/components/credit-pill";
-import { createClient } from "@/lib/supabase/client";
-
-interface User {
-  email?: string;
-  user_metadata?: {
-    full_name?: string;
-    avatar_url?: string;
-    name?: string;
-  };
-}
+import { useAuth } from "@/components/auth-provider";
+import { Play, Image, Video, Wand2, ArrowRight } from "lucide-react";
 
 const sidebarItems = [
   { icon: "◆", label: "Overview", href: "/dashboard", active: true },
@@ -23,19 +14,23 @@ const sidebarItems = [
   { icon: "◊", label: "Settings", href: "/dashboard/settings", active: false },
 ];
 
-const stats = [
-  { label: "Total Generations", value: "1,247", color: "#F8FAFC" },
+const baseStats = [
   { label: "Credits Left", value: "48", color: "#14B8A6" },
-  { label: "This Month", value: "86", color: "#F8FAFC" },
-  { label: "Avg. Time", value: "42s", color: "#F8FAFC" },
+  { label: "This Month", value: "0", color: "#F8FAFC" },
+  { label: "Avg. Time", value: "--", color: "#F8FAFC" },
 ];
 
-const recentGenerations = [
-  { id: "1", title: "Neon cityscape at night", model: "Kling 2.0", resolution: "1080p", duration: "5s", time: "2h ago", status: "completed" as const },
-  { id: "2", title: "Abstract fluid portrait", model: "Midjourney v7", resolution: "2048px", duration: "", time: "5h ago", status: "completed" as const },
-  { id: "3", title: "Ocean waves slow-mo", model: "Runway Gen-4", resolution: "1080p", duration: "10s", time: "1m ago", status: "generating" as const, progress: 67 },
-  { id: "4", title: "Product showcase reel", model: "Pika 2.0", resolution: "720p", duration: "3s", time: "1d ago", status: "completed" as const },
-];
+// TODO: fetch real generations from API
+const recentGenerations: Array<{
+  id: string;
+  title: string;
+  model: string;
+  resolution: string;
+  duration: string;
+  time: string;
+  status: "completed" | "generating";
+  progress?: number;
+}> = [];
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -50,20 +45,20 @@ function getInitials(email?: string, name?: string) {
   return "U";
 }
 
-function getDisplayName(user: User) {
+function getDisplayName(user: NonNullable<ReturnType<typeof useAuth>["user"]>) {
   return user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split("@")[0] || "User";
 }
 
-export default function DashboardContent({ user }: { user: User }) {
-  const router = useRouter();
-  const displayName = getDisplayName(user);
-  const initials = getInitials(user.email, displayName);
+export default function DashboardContent() {
+  const { user, credits, signOut } = useAuth();
+  const displayName = user ? getDisplayName(user) : "Guest";
+  const initials = getInitials(user?.email, displayName);
 
-  const handleSignOut = async () => {
-    const supabase = createClient();
-    await supabase.auth.signOut();
-    router.push("/auth");
-  };
+  const totalGenerations = recentGenerations.length;
+  const stats = [
+    { label: "Total Generations", value: totalGenerations.toString(), color: "#F8FAFC" },
+    ...baseStats,
+  ];
 
   return (
     <div className="min-h-screen bg-[#0B0817] flex flex-col">
@@ -80,7 +75,7 @@ export default function DashboardContent({ user }: { user: User }) {
           </Button>
           <CreditPill credits={48} />
           <button
-            onClick={handleSignOut}
+            onClick={signOut}
             className="w-9 h-9 rounded-full bg-[#6366F1] flex items-center justify-center text-sm font-semibold text-white hover:bg-[#4F52E6] transition-colors"
             title="Sign out"
           >
@@ -134,36 +129,66 @@ export default function DashboardContent({ user }: { user: User }) {
             <div className="flex flex-col gap-5">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-[#F8FAFC]">Recent Generations</h2>
-                <Link href="#" className="text-sm text-[#818CF8] hover:underline">View all →</Link>
+                {recentGenerations.length > 0 && (
+                  <Link href="#" className="text-sm text-[#818CF8] hover:underline">View all →</Link>
+                )}
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                {recentGenerations.map((gen) => (
-                  <div key={gen.id} className="flex flex-col rounded-2xl bg-[#0F0F1A] border border-[#1E293B] overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
-                    <div className="h-[140px] bg-[#1E293B] flex items-center justify-center text-xs text-[#64748B]">
-                      {gen.status === "generating" ? (
-                        <span className="text-[#818CF8]">Generating...</span>
-                      ) : (
-                        "Preview"
-                      )}
-                    </div>
-                    <div className="p-4 flex flex-col gap-2">
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm font-semibold text-[#F8FAFC] truncate">{gen.title}</p>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                          gen.status === "completed"
-                            ? "bg-[rgba(20,184,166,0.12)] text-[#14B8A6]"
-                            : "bg-[rgba(99,102,241,0.12)] text-[#818CF8]"
-                        }`}>
-                          {gen.status === "generating" ? `${gen.progress}%` : "Done"}
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#64748B]">
-                        {gen.model} • {gen.resolution}{gen.duration ? ` • ${gen.duration}` : ""} • {gen.time}
-                      </p>
-                    </div>
+              {recentGenerations.length === 0 ? (
+                <div className="flex flex-col items-center justify-center gap-6 py-16 px-6 rounded-2xl bg-[#0F0F1A] border border-[#1E293B] border-dashed">
+                  <div className="w-14 h-14 rounded-2xl bg-[rgba(99,102,241,0.12)] flex items-center justify-center">
+                    <Wand2 className="w-7 h-7 text-[#818CF8]" />
                   </div>
-                ))}
-              </div>
+                  <div className="flex flex-col items-center gap-2 text-center max-w-[320px]">
+                    <p className="text-base font-semibold text-[#F8FAFC]">No generations yet</p>
+                    <p className="text-sm text-[#64748B] leading-relaxed">
+                      Create your first AI image or video to see it here. Choose any model from our catalog.
+                    </p>
+                  </div>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Button className="rounded-xl bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm h-10 px-5" asChild>
+                      <Link href="/generate">
+                        <Play className="w-4 h-4 mr-2" />
+                        Start Generating
+                      </Link>
+                    </Button>
+                    <Button variant="outline" className="rounded-xl border-[#1E293B] bg-transparent text-[#CBD5E1] hover:bg-[#1E293B] hover:text-[#F8FAFC] font-medium text-sm h-10 px-5" asChild>
+                      <Link href="/tools/text-to-image">
+                        <Image className="w-4 h-4 mr-2" />
+                        Text to Image
+                      </Link>
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {recentGenerations.map((gen) => (
+                    <div key={gen.id} className="flex flex-col rounded-2xl bg-[#0F0F1A] border border-[#1E293B] overflow-hidden hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                      <div className="h-[140px] bg-[#1E293B] flex items-center justify-center text-xs text-[#64748B]">
+                        {gen.status === "generating" ? (
+                          <span className="text-[#818CF8]">Generating...</span>
+                        ) : (
+                          "Preview"
+                        )}
+                      </div>
+                      <div className="p-4 flex flex-col gap-2">
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm font-semibold text-[#F8FAFC] truncate">{gen.title}</p>
+                          <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                            gen.status === "completed"
+                              ? "bg-[rgba(20,184,166,0.12)] text-[#14B8A6]"
+                              : "bg-[rgba(99,102,241,0.12)] text-[#818CF8]"
+                          }`}>
+                            {gen.status === "generating" ? `${gen.progress}%` : "Done"}
+                          </span>
+                        </div>
+                        <p className="text-xs text-[#64748B]">
+                          {gen.model} • {gen.resolution}{gen.duration ? ` • ${gen.duration}` : ""} • {gen.time}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Quick Actions */}
@@ -185,7 +210,7 @@ export default function DashboardContent({ user }: { user: User }) {
                   </div>
                   <div>
                     <p className="text-sm font-medium text-[#F8FAFC]">Top up credits</p>
-                    <p className="text-xs text-[#64748B]">You have 48 credits remaining</p>
+                    <p className="text-xs text-[#64748B]">Check your balance and top up</p>
                   </div>
                 </Link>
               </div>

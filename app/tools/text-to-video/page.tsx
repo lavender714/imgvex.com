@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { Navbar } from "@/components/navbar";
@@ -317,6 +317,7 @@ export default function TextToVideoPage() {
   const etaSeconds = getEtaSeconds(selectedModel);
 
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -330,7 +331,7 @@ export default function TextToVideoPage() {
 
   const handleGenerate = async () => {
     if (!user) {
-      router.push("/auth");
+      router.push(`/auth?next=${encodeURIComponent(pathname)}`);
       return;
     }
     if (!prompt.trim()) {

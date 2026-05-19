@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { Navbar } from "@/components/navbar";
@@ -348,6 +348,7 @@ export default function ImageToImagePage() {
   const [activeAudience, setActiveAudience] = useState("photographers");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -444,7 +445,7 @@ export default function ImageToImagePage() {
 
   const handleGenerate = async () => {
     if (!user) {
-      router.push("/auth");
+      router.push(`/auth?next=${encodeURIComponent(pathname)}`);
       return;
     }
     if (!prompt.trim()) {

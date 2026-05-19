@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
@@ -294,6 +294,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 
 export default function TextToImagePage() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [selectedModel, setSelectedModel] = useState("nano-banana-pro");
@@ -345,7 +346,7 @@ export default function TextToImagePage() {
   const handleGenerate = async () => {
     console.log("[frontend-v2] handleGenerate called. user:", !!user);
     if (!user) {
-      router.push("/auth");
+      router.push(`/auth?next=${encodeURIComponent(pathname)}`);
       return;
     }
     if (!prompt.trim()) {

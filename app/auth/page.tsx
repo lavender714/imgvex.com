@@ -2,11 +2,15 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { createClient } from "@/lib/supabase/client";
 
 export default function AuthPage() {
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next") ?? "/dashboard";
+
   const [tab, setTab] = useState<"signin" | "signup">("signin");
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -21,7 +25,7 @@ export default function AuthPage() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
     if (error) {
@@ -71,7 +75,7 @@ export default function AuthPage() {
         setErrorMsg(error.message);
         setIsLoading(false);
       } else {
-        window.location.href = "/dashboard";
+        window.location.href = next;
       }
     }
   };
@@ -92,20 +96,23 @@ export default function AuthPage() {
           className="absolute top-[100px] left-[200px] w-[500px] h-[500px] rounded-full pointer-events-none"
           style={{ background: "radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%)" }}
         />
-        <div className="relative flex flex-col items-center gap-6 max-w-[400px] text-center">
+        <div className="relative flex flex-col items-center gap-6 max-w-[420px] text-center">
           <h1 className="text-[42px] font-bold text-[#F8FAFC]">imgvex.AI</h1>
           <p className="text-base text-[#94A3B8] leading-relaxed">
             The unified console for AI video and image generation. One account, every model.
           </p>
-          <div className="flex gap-10">
+          <div className="flex flex-col gap-3 w-full mt-2">
             {[
-              { value: "20+", label: "AI Models" },
-              { value: "12K+", label: "Creators" },
-              { value: "1M+", label: "Generations" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center gap-1">
-                <span className="text-[28px] font-bold text-[#F8FAFC]">{stat.value}</span>
-                <span className="text-xs text-[#64748B]">{stat.label}</span>
+              { title: "Text to Image", desc: "Flux, GPT-Image, Ideogram, Midjourney and more" },
+              { title: "Text to Video", desc: "Sora, Runway Gen-4, Kling, Haiper, Veo 3" },
+              { title: "Image to Video", desc: "Animate any image with state-of-the-art models" },
+            ].map((feature) => (
+              <div
+                key={feature.title}
+                className="flex flex-col items-start gap-1 px-5 py-4 rounded-xl bg-[#13131F]/60 border border-[#1E293B]/60 text-left"
+              >
+                <span className="text-sm font-semibold text-[#F8FAFC]">{feature.title}</span>
+                <span className="text-xs text-[#64748B]">{feature.desc}</span>
               </div>
             ))}
           </div>

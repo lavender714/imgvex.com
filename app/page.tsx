@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
+import { useAuth } from "@/components/auth-provider";
 import { Sparkles, Play, Image, Wand2, ChevronRight, Video, Upload } from "lucide-react";
 
 const models = [
@@ -104,6 +105,7 @@ const stagger = {
 
 export default function HomePage() {
   const [heroTab, setHeroTab] = useState<"video" | "image" | "agent">("video");
+  const { user } = useAuth();
 
   return (
     <div className="min-h-full bg-[#0B0817]">
@@ -203,9 +205,11 @@ export default function HomePage() {
                   16:9
                 </span>
                 <div className="flex-1" />
-                <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm px-5 h-9">
-                  <Sparkles className="w-4 h-4 mr-1.5" />
-                  Generate 10
+                <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm px-5 h-9" asChild>
+                  <Link href={user ? "/generate" : "/auth?next=/generate"}>
+                    <Sparkles className="w-4 h-4 mr-1.5" />
+                    {user ? "Start Creating" : "Generate 10"}
+                  </Link>
                 </Button>
               </div>
             </div>
