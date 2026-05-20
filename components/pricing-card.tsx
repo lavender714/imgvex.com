@@ -5,9 +5,10 @@ import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 
 interface PricingCardProps {
-  tier: "free" | "starter" | "pro" | "studio";
+  tier: "lite" | "pro" | "ultra";
   name: string;
   price: number;
+  originalPrice?: number;
   period?: string;
   features: string[];
   isPopular?: boolean;
@@ -16,28 +17,21 @@ interface PricingCardProps {
 }
 
 const tierStyles = {
-  free: {
+  lite: {
     border: "border-[#1E293B]",
     buttonBg: "bg-[#13131F]",
     buttonBorder: "border border-[#1E293B]",
     buttonText: "text-[#F8FAFC]",
     buttonHover: "hover:bg-[#1E293B]",
   },
-  starter: {
-    border: "border-2 border-[#6366F1]",
-    buttonBg: "bg-[#6366F1]",
-    buttonBorder: "",
-    buttonText: "text-white",
-    buttonHover: "hover:bg-[#4F52E6]",
-  },
   pro: {
-    border: "border-[#1E293B]",
-    buttonBg: "bg-[#6366F1]",
+    border: "border-2 border-[#EC4899]",
+    buttonBg: "bg-[#EC4899]",
     buttonBorder: "",
     buttonText: "text-white",
-    buttonHover: "hover:bg-[#4F52E6]",
+    buttonHover: "hover:bg-[#DB2777]",
   },
-  studio: {
+  ultra: {
     border: "border-[#1E293B]",
     buttonBg: "bg-[#13131F]",
     buttonBorder: "border border-[#1E293B]",
@@ -50,6 +44,7 @@ export function PricingCard({
   tier,
   name,
   price,
+  originalPrice,
   period = "/month",
   features,
   isPopular,
@@ -64,7 +59,7 @@ export function PricingCard({
     >
       {isPopular && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <Badge className="bg-[rgba(99,102,241,0.15)] text-[#818CF8] border-0 text-[11px] font-semibold px-2.5 py-0.5">
+          <Badge className="bg-[rgba(236,72,153,0.15)] text-[#EC4899] border-0 text-[11px] font-semibold px-2.5 py-0.5">
             Most Popular
           </Badge>
         </div>
@@ -78,10 +73,15 @@ export function PricingCard({
       )}
       <div className="flex flex-col gap-2">
         <p className="text-sm font-semibold text-[#64748B]">{name}</p>
-        <div className="flex items-end gap-1">
+        <div className="flex items-end gap-2">
           <span className="text-[40px] font-bold text-[#F8FAFC] leading-none">
             ${price}
           </span>
+          {originalPrice && originalPrice > price && (
+            <span className="text-lg text-[#64748B] line-through mb-1.5">
+              ${originalPrice}
+            </span>
+          )}
           <span className="text-sm text-[#64748B] mb-1.5">{period}</span>
         </div>
       </div>
@@ -98,7 +98,7 @@ export function PricingCard({
         className={`w-full h-12 rounded-[14px] font-semibold text-[15px] ${styles.buttonBg} ${styles.buttonBorder} ${styles.buttonText} ${styles.buttonHover}`}
         onClick={onSelect}
       >
-        {isCurrent ? "Current Plan" : "Get Started"}
+        {isCurrent ? "Current Plan" : tier === "pro" ? "Upgrade to Pro" : tier === "ultra" ? "Go Ultra" : "Get Started"}
       </Button>
     </div>
   );

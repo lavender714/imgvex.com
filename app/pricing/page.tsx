@@ -32,114 +32,102 @@ const stagger = {
 
 const pricingTiersMonthly = [
   {
-    tier: "free" as const,
-    name: "Free",
-    price: 0,
+    tier: "lite" as const,
+    name: "Lite",
+    price: 15,
+    originalPrice: 15,
     period: "/month",
     features: [
-      "10 credits / month",
-      "480p output (watermarked)",
-      "2 starter models",
+      "300 credits / month",
+      "720p output",
+      "Starter models only",
+      "2 concurrent jobs",
+      "Watermarked outputs",
       "Community support",
     ],
   },
   {
-    tier: "starter" as const,
-    name: "Starter",
-    price: 15,
-    period: "/month",
-    features: [
-      "300 credits / month",
-      "1080p output",
-      "All 20+ models",
-      "Batch generation",
-      "Priority queue",
-      "No watermark",
-    ],
-  },
-  {
     tier: "pro" as const,
-    name: "Pro · Most Popular",
+    name: "Pro",
     price: 29,
+    originalPrice: 29,
     period: "/month",
     features: [
       "800 credits / month",
-      "4K output",
-      "3 concurrent jobs",
-      "Copyright protection",
-      "API access + Webhooks",
-      "Everything in Starter",
+      "1080p output",
+      "All 20+ models",
+      "4 concurrent jobs",
+      "No watermark",
+      "Commercial license",
+      "Priority support",
     ],
     isPopular: true,
   },
   {
-    tier: "studio" as const,
-    name: "Studio",
-    price: 79,
+    tier: "ultra" as const,
+    name: "Ultra",
+    price: 139,
+    originalPrice: 139,
     period: "/month",
     features: [
-      "2,500 credits / month",
-      "Video Agent",
-      "Multi-project workspace",
-      "Priority support",
-      "Everything in Pro",
+      "5,000 credits / month",
+      "4K output",
+      "All 20+ models + Unlimited",
+      "6 concurrent jobs",
+      "No watermark",
+      "Commercial license",
+      "Dedicated support",
     ],
   },
 ];
 
 const pricingTiersYearly = [
   {
-    tier: "free" as const,
-    name: "Free",
-    price: 0,
+    tier: "lite" as const,
+    name: "Lite",
+    price: 10,
+    originalPrice: 15,
     period: "/month",
     features: [
-      "10 credits / month",
-      "480p output (watermarked)",
-      "2 starter models",
+      "300 credits / month",
+      "720p output",
+      "Starter models only",
+      "2 concurrent jobs",
+      "Watermarked outputs",
       "Community support",
     ],
   },
   {
-    tier: "starter" as const,
-    name: "Starter",
-    price: 12,
-    period: "/month",
-    features: [
-      "300 credits / month",
-      "1080p output",
-      "All 20+ models",
-      "Batch generation",
-      "Priority queue",
-      "No watermark",
-    ],
-  },
-  {
     tier: "pro" as const,
-    name: "Pro · Most Popular",
-    price: 24,
+    name: "Pro",
+    price: 14.5,
+    originalPrice: 29,
     period: "/month",
     features: [
       "800 credits / month",
-      "4K output",
-      "3 concurrent jobs",
-      "Copyright protection",
-      "API access + Webhooks",
-      "Everything in Starter",
+      "1080p output",
+      "All 20+ models",
+      "4 concurrent jobs",
+      "No watermark",
+      "Commercial license",
+      "Priority support",
     ],
     isPopular: true,
   },
   {
-    tier: "studio" as const,
-    name: "Studio",
-    price: 66,
+    tier: "ultra" as const,
+    name: "Ultra",
+    price: 109,
+    originalPrice: 139,
     period: "/month",
     features: [
-      "2,500 credits / month",
-      "Video Agent",
-      "Multi-project workspace",
-      "Priority support",
-      "Everything in Pro",
+      "5,000 credits / month",
+      "4K output",
+      "All 20+ models + Unlimited",
+      "6 concurrent jobs",
+      "No watermark",
+      "Commercial license",
+      "Dedicated support",
     ],
   },
 ];
@@ -153,7 +141,7 @@ const creditPacks = [
 const faqs = [
   {
     q: "What are credits and how do they work?",
-    a: "Credits are our platform currency. Each generation consumes a specific amount of credits based on the model and resolution. Video generations typically cost 10-20 credits, while image generations cost 2-4 credits. Unused credits from subscriptions expire at the end of the billing cycle, but one-time credit packs never expire.",
+    a: "Credits are our platform currency. Each generation consumes a specific amount of credits based on the model. Images cost 2-9 credits, videos cost 6-165 credits depending on the model. Unused credits from subscriptions expire at the end of the billing cycle, but one-time credit packs never expire.",
   },
   {
     q: "Can I switch plans at any time?",
@@ -165,31 +153,29 @@ const faqs = [
   },
   {
     q: "What happens if a generation fails?",
-    a: "Failed generations are automatically refunded. The credits will be returned to your account within a few minutes. If you experience repeated failures, our support team is here to help.",
+    a: "Failed generations are automatically refunded. The credits will be returned to your account within a few minutes. If you experience repeated failures, contact our support team at support@imgvex.com.",
   },
   {
     q: "Is there a refund policy?",
     a: "Yes, we offer a 3-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 3 days of your purchase for a full refund. Credit packs are non-refundable once credits have been used.",
   },
   {
-    q: "What payment methods do you accept?",
-    a: "We accept all major credit cards (Visa, Mastercard, American Express), PayPal, and Alipay. For Enterprise plans, we also support wire transfers and invoicing.",
+    q: "Why do some models cost more credits?",
+    a: "Different models have different compute costs. High-end video models like Seedance 2.0 and Sora 2 Pro require significantly more GPU resources than image models like GPT Image 2.0. We pass these costs through transparently so you only pay for what you use.",
   },
 ];
 
 const comparisonFeatures = [
-  { name: "Credits per month", free: "10", starter: "300", pro: "800", studio: "2,500" },
-  { name: "Video resolution", free: "480p", starter: "1080p", pro: "4K", studio: "4K" },
-  { name: "Image resolution", free: "1024px", starter: "2048px", pro: "4096px", studio: "4096px" },
-  { name: "Available models", free: "2", starter: "20+", pro: "20+", studio: "20+" },
-  { name: "Concurrent jobs", free: "1", starter: "1", pro: "3", studio: "10" },
-  { name: "Batch generation", free: false, starter: true, pro: true, studio: true },
-  { name: "No watermark", free: false, starter: true, pro: true, studio: true },
-  { name: "Priority queue", free: false, starter: true, pro: true, studio: true },
-  { name: "API access", free: false, starter: false, pro: true, studio: true },
-  { name: "Video Agent", free: false, starter: false, pro: false, studio: true },
-  { name: "Copyright protection", free: false, starter: false, pro: true, studio: true },
-  { name: "Support", free: "Community", starter: "Email", pro: "Priority", studio: "Dedicated" },
+  { name: "Credits per month", lite: "300", pro: "800", ultra: "5,000" },
+  { name: "Video resolution", lite: "720p", pro: "1080p", ultra: "4K" },
+  { name: "Image resolution", lite: "1024px", pro: "2048px", ultra: "4096px" },
+  { name: "Available models", lite: "Starter only", pro: "All 20+", ultra: "All 20+ + Unlimited" },
+  { name: "Concurrent jobs", lite: "2", pro: "4", ultra: "6" },
+  { name: "No watermark", lite: false, pro: true, ultra: true },
+  { name: "Commercial license", lite: false, pro: true, ultra: true },
+  { name: "Priority support", lite: false, pro: true, ultra: true },
+  { name: "Dedicated support", lite: false, pro: false, ultra: true },
+  { name: "Support", lite: "Community", pro: "Priority", ultra: "Dedicated" },
 ];
 
 function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boolean; onToggle: () => void }) {
@@ -254,7 +240,7 @@ export default function PricingPage() {
               Plans &amp; Pricing
             </h1>
             <p className="text-base text-[#94A3B8] max-w-[520px] mx-auto">
-              Start free and scale as you grow. No hidden fees, cancel anytime.
+              Get 25 free credits on sign up. Upgrade to Pro when you need more power. No hidden fees, cancel anytime.
             </p>
           </motion.div>
 
@@ -277,8 +263,8 @@ export default function PricingPage() {
               Yearly
             </span>
             {isYearly && (
-              <span className="px-2 py-0.5 rounded-full bg-[#14B8A6]/15 text-[#14B8A6] text-[10px] font-bold">
-                Save 20%
+              <span className="px-2 py-0.5 rounded-full bg-[#EC4899]/15 text-[#EC4899] text-[10px] font-bold">
+                Save up to 50%
               </span>
             )}
           </motion.div>
@@ -294,7 +280,7 @@ export default function PricingPage() {
           viewport={{ once: true, margin: "-50px" }}
           variants={stagger}
         >
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {tiers.map((tier) => (
               <PricingCard key={tier.tier} {...tier} />
             ))}
@@ -308,7 +294,6 @@ export default function PricingPage() {
           {[
             { icon: Shield, label: "Secure Payments", desc: "256-bit SSL encryption" },
             { icon: Clock, label: "Auto Refund", desc: "Failed generations refunded" },
-            { icon: Users, label: "12K+ Users", desc: "Trust imgvex.AI daily" },
             { icon: CreditCard, label: "Flexible Billing", desc: "Monthly or yearly" },
           ].map(({ icon: Icon, label, desc }) => (
             <div key={label} className="flex items-center gap-3">
@@ -343,17 +328,16 @@ export default function PricingPage() {
               <thead>
                 <tr className="border-b border-[#1E293B]">
                   <th className="text-left py-4 px-4 text-sm font-medium text-[#64748B]">Feature</th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#F8FAFC]">Free</th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#818CF8]">Starter</th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#F8FAFC]">Pro</th>
-                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#F8FAFC]">Studio</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#F8FAFC]">Lite</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#EC4899]">Pro</th>
+                  <th className="text-center py-4 px-4 text-sm font-semibold text-[#F8FAFC]">Ultra</th>
                 </tr>
               </thead>
               <tbody>
                 {comparisonFeatures.map((feature, i) => (
                   <tr key={i} className="border-b border-[#1E293B]/50">
                     <td className="py-3.5 px-4 text-sm text-[#CBD5E1]">{feature.name}</td>
-                    {["free", "starter", "pro", "studio"].map((tier) => {
+                    {["lite", "pro", "ultra"].map((tier) => {
                       const value = feature[tier as keyof typeof feature];
                       return (
                         <td key={tier} className="text-center py-3.5 px-4">
@@ -466,26 +450,12 @@ export default function PricingPage() {
           viewport={{ once: true, margin: "-50px" }}
           variants={stagger}
         >
-          <motion.div variants={fadeInUp} className="flex items-center gap-2">
-            <div className="flex -space-x-2">
-              {["bg-[#6366F1]", "bg-[#14B8A6]", "bg-[#F59E0B]", "bg-[#EC4899]"].map((color, i) => (
-                <div
-                  key={i}
-                  className={`w-8 h-8 rounded-full ${color} border-2 border-[#0B0817] flex items-center justify-center text-[10px] font-bold text-white`}
-                >
-                  {String.fromCharCode(65 + i)}
-                </div>
-              ))}
-            </div>
-            <span className="text-sm text-[#64748B]">Join 12,000+ creators</span>
-          </motion.div>
-
           <motion.div variants={fadeInUp} className="flex flex-col gap-3">
             <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
               Ready to Create?
             </h2>
             <p className="text-base text-[#94A3B8] max-w-[440px] mx-auto">
-              Start with our free plan and upgrade when you need more power. No credit card required.
+              Get 25 free credits on sign up. Upgrade to Pro when you need more power.
             </p>
           </motion.div>
 
@@ -496,7 +466,7 @@ export default function PricingPage() {
             >
               <Link href="/generate">
                 <Sparkles className="w-4 h-4 mr-1.5" />
-                Start Creating Free
+                Start Creating
               </Link>
             </Button>
             <Button
