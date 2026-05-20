@@ -11,7 +11,7 @@ interface PricingCardProps {
   originalPrice?: number;
   period?: string;
   features: string[];
-  isPopular?: boolean;
+  discountLabel?: string;
   isCurrent?: boolean;
   onSelect?: () => void;
 }
@@ -25,11 +25,11 @@ const tierStyles = {
     buttonHover: "hover:bg-[#1E293B]",
   },
   pro: {
-    border: "border-2 border-[#EC4899]",
-    buttonBg: "bg-[#EC4899]",
+    border: "border-2 border-[#6366F1]",
+    buttonBg: "bg-[#6366F1]",
     buttonBorder: "",
     buttonText: "text-white",
-    buttonHover: "hover:bg-[#DB2777]",
+    buttonHover: "hover:bg-[#4F52E6]",
   },
   ultra: {
     border: "border-[#1E293B]",
@@ -47,7 +47,7 @@ export function PricingCard({
   originalPrice,
   period = "/month",
   features,
-  isPopular,
+  discountLabel,
   isCurrent,
   onSelect,
 }: PricingCardProps) {
@@ -57,13 +57,6 @@ export function PricingCard({
     <div
       className={`relative flex flex-col gap-0 p-8 rounded-[20px] bg-[#0F0F1A] border ${styles.border} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
     >
-      {isPopular && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <Badge className="bg-[rgba(236,72,153,0.15)] text-[#EC4899] border-0 text-[11px] font-semibold px-2.5 py-0.5">
-            Most Popular
-          </Badge>
-        </div>
-      )}
       {isCurrent && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
           <Badge className="bg-[rgba(20,184,166,0.15)] text-[#14B8A6] border-0 text-[11px] font-semibold px-2.5 py-0.5">
@@ -72,7 +65,14 @@ export function PricingCard({
         </div>
       )}
       <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold text-[#64748B]">{name}</p>
+        <div className="flex items-center gap-2">
+          <p className="text-sm font-semibold text-[#64748B]">{name}</p>
+          {discountLabel && (
+            <span className="px-1.5 py-0.5 rounded bg-[#6366F1]/15 text-[#6366F1] text-[10px] font-bold">
+              {discountLabel}
+            </span>
+          )}
+        </div>
         <div className="flex items-end gap-2">
           <span className="text-[40px] font-bold text-[#F8FAFC] leading-none">
             ${price}

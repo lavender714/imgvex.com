@@ -60,7 +60,6 @@ const pricingTiersMonthly = [
       "Commercial license",
       "Priority support",
     ],
-    isPopular: true,
   },
   {
     tier: "ultra" as const,
@@ -111,7 +110,7 @@ const pricingTiersYearly = [
       "Commercial license",
       "Priority support",
     ],
-    isPopular: true,
+    discountLabel: "-50%",
   },
   {
     tier: "ultra" as const,
@@ -128,6 +127,7 @@ const pricingTiersYearly = [
       "Commercial license",
       "Dedicated support",
     ],
+    discountLabel: "-22%",
   },
 ];
 
