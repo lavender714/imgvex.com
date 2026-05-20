@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { PricingCard } from "@/components/pricing-card";
 import { motion } from "framer-motion";
 import {
@@ -445,17 +446,7 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-6 md:px-12 border-t border-[#1E293B]">
-        <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-[#475569]">
-          <span>© 2026 imgvex.AI. All rights reserved.</span>
-          <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-[#64748B] transition-colors">Privacy</Link>
-            <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
-            <Link href="#" className="hover:text-[#64748B] transition-colors">Cookies</Link>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { motion } from "framer-motion";
 
 const sections = [
@@ -152,75 +153,7 @@ export default function PrivacyPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 px-6 md:px-12 bg-[#040408]">
-        <div className="max-w-[1200px] mx-auto">
-          <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
-            <div className="max-w-[280px]">
-              <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">imgvex.AI</h3>
-              <p className="text-[13px] text-[#64748B] leading-relaxed">
-                The unified console for AI video and image generation. Built for creators who demand precision.
-              </p>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
-              <div className="flex flex-col gap-2.5">
-                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Creative Tools</h4>
-                <Link href="/generate" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Video Generator</Link>
-                <Link href="/generate" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Text to Video AI</Link>
-                <Link href="/tools/image-to-video" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Image to Video AI</Link>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Photo Editor</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">AI Video Extender</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Mimic Motion</a>
-              </div>
-              <div className="flex flex-col gap-2.5">
-                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Video Models</h4>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Pollo 2.5</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Veo 3</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Sora 2</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Kling 3.0</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Seanceance 2.0</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Runway</a>
-              </div>
-              <div className="flex flex-col gap-2.5">
-                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Image Models</h4>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">GPT Image 2</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Nano Banana 2</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Recraft</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Ideogram</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Stable Diffusion</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Flux AI</a>
-              </div>
-              <div className="flex flex-col gap-2.5">
-                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Apps</h4>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Clone Viral Video</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">UGC Video Ads</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Anime Video</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Story Video</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Music Video</a>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">News Video</a>
-              </div>
-              <div className="flex flex-col gap-2.5">
-                <h4 className="text-[13px] font-semibold text-[#F8FAFC]">Company</h4>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">About Us</a>
-                <a href="mailto:support@imgvex.com?subject=Contact%20imgvex.AI" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Contact Us</a>
-                <Link href="/pricing" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Pricing</Link>
-                <a href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">API</a>
-                <Link href="/terms" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Terms</Link>
-                <Link href="/privacy" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">Privacy</Link>
-              </div>
-            </div>
-          </div>
-          <div className="h-px bg-[#1E293B] mb-6" />
-          <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
-            <span>© 2026 imgvex.AI. All rights reserved.</span>
-            <div className="flex gap-4">
-              <Link href="/privacy" className="hover:text-[#64748B] transition-colors">Privacy</Link>
-              <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
-              <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -199,13 +200,6 @@ const discoverLinks = [
   { label: "Sora Pro 2K", href: "#" },
   { label: "Veo 3.1", href: "#" },
 ];
-
-const footerLinks = {
-  "AI Video": ["Sora 2", "Kling 3.0", "Veo 3.1", "Runway Gen-4", "Pika 2.0", "Seedance 2.0"],
-  "AI Image": ["Midjourney v7", "Flux Pro", "DALL-E 4", "Ideogram", "Recraft", "Stable Diffusion"],
-  "Tools": ["Image to Video", "Text to Video", "Video to Video", "AI Avatar", "Lip Sync", "Motion Control"],
-  "Company": ["About", "Pricing", "Contact", "API", "Blog", "Terms of Service"],
-};
 
 /* ─── Animation variants ─── */
 
@@ -1071,38 +1065,7 @@ export default function ImageToVideoPage() {
           </motion.div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-16 px-6 md:px-12 border-t border-[#1E293B]">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
-              <div className="max-w-[280px]">
-                <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">imgvex.AI</h3>
-                <p className="text-[13px] text-[#64748B] leading-relaxed">
-                  The unified console for AI video and image generation. Built for creators who demand precision.
-                </p>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-8">
-                {Object.entries(footerLinks).map(([title, links]) => (
-                  <div key={title} className="flex flex-col gap-2.5">
-                    <h4 className="text-[13px] font-semibold text-[#F8FAFC]">{title}</h4>
-                    {links.map((link) => (
-                      <a key={link} href="#" className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">{link}</a>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="h-px bg-[#1E293B] mb-6" />
-            <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
-              <span>© 2026 imgvex.AI. All rights reserved.</span>
-              <div className="flex gap-4">
-                <Link href="/privacy" className="hover:text-[#64748B] transition-colors">Privacy</Link>
-                <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
-                <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   );

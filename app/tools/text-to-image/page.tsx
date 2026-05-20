@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
@@ -212,49 +213,6 @@ const faqs = [
     a: "We offer 50+ visual styles including realistic, anime, 3D render, oil painting, sketch, pop art, pixel art, cinematic, and more. New styles are added regularly.",
   },
 ];
-
-const footerLinks: Record<string, { label: string; href: string }[]> = {
-  "Creative Tools": [
-    { label: "AI Video Generator", href: "/generate" },
-    { label: "Text to Video AI", href: "/tools/text-to-video" },
-    { label: "Image to Video AI", href: "/tools/image-to-video" },
-    { label: "Text to Image AI", href: "/tools/text-to-image" },
-    { label: "AI Photo Editor", href: "#" },
-    { label: "AI Video Extender", href: "#" },
-  ],
-  "Video Models": [
-    { label: "Pollo 2.5", href: "#" },
-    { label: "Veo 3", href: "#" },
-    { label: "Sora 2", href: "#" },
-    { label: "Kling 3.0", href: "#" },
-    { label: "Seanceance 2.0", href: "#" },
-    { label: "Runway", href: "#" },
-  ],
-  "Image Models": [
-    { label: "GPT Image 2", href: "#" },
-    { label: "Nano Banana 2", href: "#" },
-    { label: "Recraft", href: "#" },
-    { label: "Ideogram", href: "#" },
-    { label: "Stable Diffusion", href: "#" },
-    { label: "Flux AI", href: "#" },
-  ],
-  "Apps": [
-    { label: "Clone Viral Video", href: "#" },
-    { label: "UGC Video Ads", href: "#" },
-    { label: "Anime Video", href: "#" },
-    { label: "Story Video", href: "#" },
-    { label: "Music Video", href: "#" },
-    { label: "News Video", href: "#" },
-  ],
-  "Company": [
-    { label: "About Us", href: "#" },
-    { label: "Contact Us", href: "mailto:support@imgvex.com?subject=Contact%20imgvex.AI" },
-    { label: "Pricing", href: "/pricing" },
-    { label: "API", href: "#" },
-    { label: "Terms", href: "/terms" },
-    { label: "Privacy", href: "/privacy" },
-  ],
-};
 
 /* ─── Animation ─── */
 
@@ -997,40 +955,7 @@ export default function TextToImagePage() {
           </motion.div>
         </section>
 
-        {/* Footer */}
-        <footer className="py-16 px-6 md:px-12 bg-[#040408]">
-          <div className="max-w-[1200px] mx-auto">
-            <div className="flex flex-col md:flex-row justify-between gap-12 mb-10">
-              <div className="max-w-[280px]">
-                <h3 className="text-xl font-bold text-[#F8FAFC] mb-3">imgvex.AI</h3>
-                <p className="text-[13px] text-[#64748B] leading-relaxed">
-                  The unified console for AI video and image generation. Built for creators who demand precision.
-                </p>
-              </div>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8">
-                {Object.entries(footerLinks).map(([title, links]) => (
-                  <div key={title} className="flex flex-col gap-2.5">
-                    <h4 className="text-[13px] font-semibold text-[#F8FAFC]">{title}</h4>
-                    {links.map((link) => (
-                      <Link key={link.label} href={link.href} className="text-[12px] text-[#64748B] hover:text-[#94A3B8] transition-colors">
-                        {link.label}
-                      </Link>
-                    ))}
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="h-px bg-[#1E293B] mb-6" />
-            <div className="flex flex-col sm:flex-row justify-between gap-4 text-xs text-[#475569]">
-              <span>© 2026 imgvex.AI. All rights reserved.</span>
-              <div className="flex gap-4">
-                <Link href="/privacy" className="hover:text-[#64748B] transition-colors">Privacy</Link>
-                <Link href="/terms" className="hover:text-[#64748B] transition-colors">Terms</Link>
-                <a href="#" className="hover:text-[#64748B] transition-colors">Cookies</a>
-              </div>
-            </div>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </div>
   );
