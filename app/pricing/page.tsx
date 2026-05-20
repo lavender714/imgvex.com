@@ -5,7 +5,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { PricingCard } from "@/components/pricing-card";
-import { CreditPackCard } from "@/components/credit-pack-card";
 import { motion } from "framer-motion";
 import {
   ChevronDown,
@@ -132,24 +131,14 @@ const pricingTiersYearly = [
   },
 ];
 
-const creditPacks = [
-  { credits: 2000, price: 19 },
-  { credits: 10000, price: 79 },
-  { credits: 50000, price: 349 },
-];
-
 const faqs = [
   {
     q: "What are credits and how do they work?",
-    a: "Credits are our platform currency. Each generation consumes a specific amount of credits based on the model. Images cost 2-9 credits, videos cost 6-165 credits depending on the model. Unused credits from subscriptions expire at the end of the billing cycle, but one-time credit packs never expire.",
+    a: "Credits are our platform currency. Each generation consumes a specific amount of credits based on the model. Images cost 2-9 credits, videos cost 6-165 credits depending on the model. Unused credits from subscriptions expire at the end of the billing cycle.",
   },
   {
     q: "Can I switch plans at any time?",
     a: "Yes! You can upgrade or downgrade your plan at any time. When you upgrade, you'll be charged a prorated amount for the remainder of your billing cycle. When you downgrade, the new rate takes effect at the start of your next billing cycle.",
-  },
-  {
-    q: "Do credits from credit packs expire?",
-    a: "No. One-time credit packs never expire. You can use them whenever you want, even if you cancel your subscription. They remain in your account until you use them.",
   },
   {
     q: "What happens if a generation fails?",
@@ -157,7 +146,7 @@ const faqs = [
   },
   {
     q: "Is there a refund policy?",
-    a: "Yes, we offer a 3-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 3 days of your purchase for a full refund. Credit packs are non-refundable once credits have been used.",
+    a: "Yes, we offer a 3-day money-back guarantee on all paid plans. If you're not satisfied, contact us within 3 days of your purchase for a full refund.",
   },
   {
     q: "Why do some models cost more credits?",
@@ -205,7 +194,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 }
 
 export default function PricingPage() {
-  const [isYearly, setIsYearly] = useState(false);
+  const [isYearly, setIsYearly] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   const tiers = isYearly ? pricingTiersYearly : pricingTiersMonthly;
@@ -220,7 +209,7 @@ export default function PricingPage() {
           <div className="max-w-[1200px] mx-auto px-6 py-3 flex items-center justify-center gap-2 text-sm">
             <Zap className="w-4 h-4 text-[#F59E0B]" />
             <span className="text-[#CBD5E1]">
-              Save up to <span className="text-[#F59E0B] font-semibold">20%</span> with annual billing
+              Save up to <span className="text-[#F59E0B] font-semibold">50%</span> with annual billing
             </span>
             <ArrowRight className="w-3.5 h-3.5 text-[#64748B]" />
           </div>
@@ -357,30 +346,6 @@ export default function PricingPage() {
                 ))}
               </tbody>
             </table>
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Credit Packs */}
-      <section className="py-16 px-6 md:px-12 bg-[#06060A]">
-        <motion.div
-          className="max-w-[1200px] mx-auto flex flex-col gap-8"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={stagger}
-        >
-          <motion.div variants={fadeInUp} className="text-center flex flex-col gap-2">
-            <h2 className="text-2xl font-bold text-[#F8FAFC]">One-Time Credit Packs</h2>
-            <p className="text-sm text-[#64748B] max-w-[480px] mx-auto">
-              Need more credits? Buy packs that never expire. Use them anytime, even after canceling your subscription.
-            </p>
-          </motion.div>
-
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-[800px] mx-auto w-full">
-            {creditPacks.map((pack) => (
-              <CreditPackCard key={pack.credits} {...pack} />
-            ))}
           </motion.div>
         </motion.div>
       </section>
