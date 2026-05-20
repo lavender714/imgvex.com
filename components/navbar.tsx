@@ -16,21 +16,10 @@ import {
   Clock,
   Sparkles,
   Music,
-  User,
-  Wand2,
-  Eye,
-  Link2,
-  Paintbrush,
-  Clapperboard,
   Copy,
   Type,
   Brush,
   Scissors,
-  Film,
-  Mic,
-  MessageSquare,
-  Newspaper,
-  BarChart3,
   LogOut,
   LayoutDashboard,
   CreditCard,
@@ -58,17 +47,6 @@ type DropdownSection = {
 
 const dropdownMenus: DropdownSection[] = [
   {
-    label: "Apps",
-    items: [
-      { icon: Film, label: "Clone Viral Video", href: "#", desc: "Recreate trending content" },
-      { icon: BarChart3, label: "UGC Video Ads", href: "#", desc: "Product-focused creatives" },
-      { icon: Sparkles, label: "Anime Video", href: "#", desc: "Stylized animation" },
-      { icon: Newspaper, label: "Story Video", href: "#", desc: "Narrative sequences" },
-      { icon: Music, label: "Music Video", href: "#", desc: "Sync visuals to audio" },
-      { icon: Mic, label: "News Video", href: "#", desc: "Automated news content" },
-    ],
-  },
-  {
     label: "Video AI",
     items: [
       { icon: Image, label: "Image to Video", href: "/tools/image-to-video", desc: "Animate any photo" },
@@ -87,17 +65,6 @@ const dropdownMenus: DropdownSection[] = [
       { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", desc: "Restyle & transform" },
       { icon: Brush, label: "AI Photo Editor", href: "#", desc: "Smart editing tools" },
       { icon: Scissors, label: "Background Remover", href: "#", desc: "Clean cutouts" },
-    ],
-  },
-  {
-    label: "AI Tools",
-    items: [
-      { icon: User, label: "AI Avatar", href: "#", desc: "Digital personas" },
-      { icon: Wand2, label: "Lip Sync", href: "#", desc: "Perfect audio matching" },
-      { icon: Eye, label: "Motion Control", href: "#", desc: "Direct camera movement" },
-      { icon: Paintbrush, label: "Video Style Transform", href: "#", desc: "Apply artistic styles" },
-      { icon: Clapperboard, label: "Video Effects", href: "#", desc: "Cinematic filters" },
-      { icon: Link2, label: "Reference To Video", href: "#", desc: "Reference-based generation" },
     ],
   },
 ];
