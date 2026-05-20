@@ -12,14 +12,8 @@ import {
   Image,
   Video,
   Layers,
-  Zap,
-  Clock,
-  Sparkles,
-  Music,
   Copy,
   Type,
-  Brush,
-  Scissors,
   LogOut,
   LayoutDashboard,
   CreditCard,
@@ -49,13 +43,9 @@ const dropdownMenus: DropdownSection[] = [
   {
     label: "Video AI",
     items: [
-      { icon: Image, label: "Image to Video", href: "/tools/image-to-video", desc: "Animate any photo" },
       { icon: Video, label: "Text to Video", href: "/tools/text-to-video", desc: "Prompt-to-video generation" },
+      { icon: Image, label: "Image to Video", href: "/tools/image-to-video", desc: "Animate any photo" },
       { icon: Layers, label: "Video to Video", href: "/tools/video-to-video", desc: "Transform existing footage" },
-      { icon: Zap, label: "Video Transition", href: "#", desc: "Seamless scene changes" },
-      { icon: Clock, label: "Video Extend", href: "#", desc: "Expand video length" },
-      { icon: Sparkles, label: "One-Click Video", href: "#", desc: "Instant generation" },
-      { icon: Music, label: "Music to Video", href: "#", desc: "Audio-driven visuals" },
     ],
   },
   {
@@ -63,8 +53,6 @@ const dropdownMenus: DropdownSection[] = [
     items: [
       { icon: Type, label: "Text to Image", href: "/tools/text-to-image", desc: "Prompt-to-image creation" },
       { icon: Copy, label: "Image to Image", href: "/tools/image-to-image", desc: "Restyle & transform" },
-      { icon: Brush, label: "AI Photo Editor", href: "#", desc: "Smart editing tools" },
-      { icon: Scissors, label: "Background Remover", href: "#", desc: "Clean cutouts" },
     ],
   },
 ];
