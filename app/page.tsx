@@ -135,12 +135,6 @@ const exploreTabs = [
   },
 ] as const;
 
-const exploreTags = [
-  "AI Video Generator", "Text to Video AI", "Image to Video", "AI Photo Editor",
-  "AI Video Extender", "Mimic Motion", "Earth Zoom", "Polaroid Selfie",
-  "AI Walking Video", "AI Selfie", "Face Swap", "Animate Picture",
-  "Remove Object", "AI Dance", "Restyle Video", "AI Sound Effect",
-];
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 24 },
@@ -352,30 +346,6 @@ export default function HomePage() {
       </section>
 
       {/* Explore More */}
-      <section className="py-12 px-6 md:px-12">
-        <motion.div
-          className="max-w-[1200px] mx-auto flex flex-col gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={stagger}
-        >
-          <motion.h2 variants={fadeInUp} className="text-xl font-bold text-[#F8FAFC]">
-            Explore More AI Features
-          </motion.h2>
-          <motion.div variants={fadeInUp} className="flex flex-wrap gap-3">
-            {exploreTags.map((tag) => (
-              <span
-                key={tag}
-                className="px-4 py-2 rounded-full bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1] cursor-pointer transition-colors"
-              >
-                {tag}
-              </span>
-            ))}
-          </motion.div>
-        </motion.div>
-      </section>
-
       {/* Why Choose imgvex.AI */}
       <section id="features" className="py-[100px] px-6 md:px-12">
         <motion.div
