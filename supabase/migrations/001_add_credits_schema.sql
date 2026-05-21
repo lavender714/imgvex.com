@@ -1,5 +1,12 @@
 -- ============================================================
--- Phase 1: Credits schema for imgvex.AI
+-- ⚠️ DEPRECATED — DO NOT RUN
+--
+-- This migration assumed public.profiles already existed and used
+-- ALTER TABLE to add credits columns. In production the table never
+-- existed, so this migration silently failed and broke credits.
+--
+-- USE INSTEAD: 003_profiles_full_setup.sql (idempotent, full setup)
+-- This file is kept for git history only.
 -- ============================================================
 
 -- 1. Extend profiles table with plan & credits fields

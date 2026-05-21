@@ -1,6 +1,11 @@
 -- ============================================================
--- Phase 2: Auto-create public.profiles row on new auth.users signup
--- Fixes bug where users had no profile row, causing credits to show 0.
+-- ⚠️ DEPRECATED — DO NOT RUN
+--
+-- Standalone trigger fix for issue introduced by 001. Superseded by
+-- 003_profiles_full_setup.sql which includes this trigger + table
+-- creation in a single idempotent script.
+--
+-- USE INSTEAD: 003_profiles_full_setup.sql
 -- ============================================================
 
 -- 1. Function that runs after auth.users insert
