@@ -169,7 +169,7 @@ export default function HomePage() {
         </div>
 
         <motion.div
-          className="relative flex flex-col items-center gap-6 max-w-[1100px] w-full text-center mt-12"
+          className="relative flex flex-col items-center gap-6 max-w-[1100px] w-full text-center mt-20"
           initial="hidden"
           animate="visible"
           variants={stagger}
