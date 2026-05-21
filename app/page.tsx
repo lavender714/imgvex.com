@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { Sparkles, Image, ChevronRight, Video } from "lucide-react";
+import { Sparkles, Image as ImageIcon, ChevronRight, Video } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -59,9 +59,6 @@ const stagger = {
 };
 
 export default function HomePage() {
-  const [heroTab, setHeroTab] = useState<"video" | "image" | "agent">("video");
-  const { user } = useAuth();
-
   return (
     <div className="min-h-full bg-[#0B0817]">
       <Navbar variant="landing" />
@@ -136,7 +133,7 @@ export default function HomePage() {
               className="flex flex-col gap-3 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:-translate-y-1 transition-all duration-300 text-left h-[180px]"
             >
               <div className="w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center">
-                <Image className="w-5 h-5 text-[#14B8A6]" />
+                <ImageIcon className="w-5 h-5 text-[#14B8A6]" />
               </div>
               <h3 className="text-base font-semibold text-[#F8FAFC]">Create Image</h3>
               <p className="text-sm text-[#64748B] leading-relaxed flex-1">Flux · MJ · DALL-E 4 and more</p>
