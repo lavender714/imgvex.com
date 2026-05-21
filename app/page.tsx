@@ -24,7 +24,7 @@ const whyChoose = [
     icon: Boxes,
     iconColor: "#818CF8",
     title: "Unified Console for Video & Image",
-    description: "From quick promos to cinematic shorts, Synapse gives you a complete generation toolkit. No platform switching, no juggling credentials.",
+    description: "From quick promos to cinematic shorts, imgvex.AI gives you a complete generation toolkit. No platform switching, no juggling credentials.",
   },
   {
     icon: Sparkles,
@@ -42,7 +42,7 @@ const whyChoose = [
     icon: Lightbulb,
     iconColor: "#F59E0B",
     title: "Built for Modern Creative Workflows",
-    description: "Whether you're creating ads, social shorts, e-commerce visuals or storytelling — Synapse adapts to your goals.",
+    description: "Whether you're creating ads, social shorts, e-commerce visuals or storytelling — imgvex.AI adapts to your goals.",
   },
 ];
 
@@ -326,7 +326,7 @@ export default function HomePage() {
             <a href="https://bfl.ai/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#94A3B8]">
               Flux Pro
             </a>
-            {" "}official showcases. Synapse provides unified access to 20+ models.
+            {" "}official showcases. imgvex.AI provides unified access to 20+ models.
           </motion.p>
         </motion.div>
       </section>
@@ -376,7 +376,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Why Choose Synapse */}
+      {/* Why Choose imgvex.AI */}
       <section id="features" className="py-[100px] px-6 md:px-12">
         <motion.div
           className="max-w-[1200px] mx-auto flex flex-col items-center gap-12"
@@ -387,10 +387,10 @@ export default function HomePage() {
         >
           <motion.div variants={fadeInUp} className="text-center max-w-[820px] flex flex-col gap-4">
             <h2 className="text-3xl md:text-5xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
-              Why Choose Synapse
+              Why Choose imgvex.AI
             </h2>
             <p className="text-base text-[#94A3B8] leading-relaxed">
-              Synapse integrates leading generative models like Veo 3, Sora 2, Kling, Runway, Midjourney, and Flux to empower creators with a unified platform for both video and image. Whether you&apos;re crafting cinematic shorts or product visuals, our advanced workflow helps bring creative ideas to life — faster and better.
+              imgvex.AI integrates leading generative models like Veo 3, Sora 2, Kling, Runway, Midjourney, and Flux to empower creators with a unified platform for both video and image. Whether you&apos;re crafting cinematic shorts or product visuals, our advanced workflow helps bring creative ideas to life — faster and better.
             </p>
           </motion.div>
 
@@ -417,7 +417,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Create with Synapse in Easy Steps */}
+      {/* Create with imgvex.AI in Easy Steps */}
       <section className="py-[100px] px-6 md:px-12 bg-[#0A0712]/60">
         <motion.div
           className="max-w-[1200px] mx-auto flex flex-col items-center gap-14"
@@ -428,16 +428,16 @@ export default function HomePage() {
         >
           <motion.div variants={fadeInUp} className="text-center max-w-[820px] flex flex-col gap-4">
             <h2 className="text-3xl md:text-5xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
-              Create with Synapse in Easy Steps
+              Create with imgvex.AI in Easy Steps
             </h2>
             <p className="text-base text-[#94A3B8]">
               No editing skills needed — just pick, type, and generate using AI video and image tools.
             </p>
           </motion.div>
 
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[1fr,1.1fr] gap-12 items-center w-full">
-            {/* Left: demo previews stacked */}
-            <div className="flex flex-col gap-5">
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[minmax(0,380px),1fr] gap-10 md:gap-16 items-center w-full">
+            {/* Left: 2 compact demo previews stacked */}
+            <div className="flex flex-col gap-5 w-full max-w-[380px] mx-auto md:mx-0">
               {stepDemos.map((d, i) => (
                 <div key={i} className="relative aspect-[4/3] rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5 bg-[#13101F]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
