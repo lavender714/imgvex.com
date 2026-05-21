@@ -518,7 +518,7 @@ export default function TextToImagePage() {
             {/* Editor + Results */}
             <div className="flex gap-6">
               {/* Left: Editor */}
-              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col gap-5 max-h-[calc(100vh-100px)] overflow-y-auto">
+              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col gap-5 max-h-[calc(100vh-76px)] overflow-y-auto mt-[-56px]">
               {/* Model Selector */}
               <div>
                 <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -718,7 +718,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* Right: Results */}
-            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col max-h-[calc(100vh-100px)] overflow-y-auto">
+            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col max-h-[calc(100vh-76px)] overflow-y-auto mt-[-56px]">
               <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}
