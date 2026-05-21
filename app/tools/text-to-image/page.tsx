@@ -54,6 +54,9 @@ import {
   Share2,
   Star,
   Check,
+  CheckCircle2,
+  Trash2,
+  Files,
   Maximize2,
   X,
   Crown,
@@ -265,6 +268,7 @@ export default function TextToImagePage() {
   const [taskStatus, setTaskStatus] = useState<string>("");
   const [genError, setGenError] = useState("");
   const [progress, setProgress] = useState(0);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const providerRef = useRef("");
   const taskTypeRef = useRef("text-to-image");
 
@@ -392,6 +396,18 @@ export default function TextToImagePage() {
             setIsGenerating(false);
             setTaskStatus("");
             setGenError("");
+
+            // Auto-save to user assets
+            if (urls.length > 0 && user) {
+              fetch("/api/assets/download", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  url: urls[0],
+                  filename: `generated-${selectedModel}-${Date.now()}.png`,
+                }),
+              }).catch((err) => console.error("[auto-save] Failed:", err));
+            }
             return;
           }
 
@@ -456,11 +472,11 @@ export default function TextToImagePage() {
                       href={item.href}
                       className={`flex items-center gap-2.5 px-3 py-2 rounded-full text-[13px] transition-colors ${
                         item.active
-                          ? "bg-[rgba(236,72,153,0.12)] text-[#EC4899] font-medium"
+                          ? "bg-[rgba(99,102,241,0.12)] text-[#6366F1] font-medium"
                           : "text-[#94A3B8] hover:bg-[rgba(148,163,184,0.06)] hover:text-[#F8FAFC]"
                       }`}
                     >
-                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#EC4899]" : "text-[#64748B]"}`} />
+                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#6366F1]" : "text-[#64748B]"}`} />
                       <span className="flex-1">{item.label}</span>
                       {item.badge && (
                         <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${item.badge === "Hot" ? "bg-[#EF4444]/15 text-[#EF4444]" : item.badge === "New" ? "bg-[#14B8A6]/15 text-[#14B8A6]" : "bg-[#F59E0B]/15 text-[#F59E0B]"}`}>
@@ -483,7 +499,7 @@ export default function TextToImagePage() {
           </div>
           {/* Upgrade now button */}
           <div className="p-3 border-t border-[#1E293B]">
-            <Button className="w-full rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
+            <Button className="w-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
               <Link href="/pricing">
                 <Crown className="w-4 h-4 mr-2" />
                 Upgrade now
@@ -540,23 +556,47 @@ export default function TextToImagePage() {
                 <textarea
                   value={prompt}
                   onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Describe the image you want to create... For example: A majestic lion standing on a rocky cliff at golden hour, dramatic lighting, photorealistic..."
-                  className="w-full min-h-[120px] p-4 pb-14 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
+                  placeholder="Please enter the prompt for your creation"
+                  className="w-full min-h-[140px] p-4 pb-16 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
                 />
                 <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
                   <button className="flex items-center gap-1.5 text-sm text-[#818CF8] hover:text-[#6366F1] transition-colors">
                     <Sparkles className="w-3.5 h-3.5" />
                     Generate With AI
                   </button>
-                  <div className="flex items-center gap-2">
-                    <button className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] transition-colors" title="Copy">
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => navigator.clipboard.writeText(prompt)}
+                      className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)] transition-colors"
+                      title="Copy"
+                    >
                       <Copy className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => setPrompt("")}
+                      className="p-1.5 rounded-md text-[#475569] hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                      title="Clear"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <button
+                      onClick={() => navigator.clipboard.readText().then(t => setPrompt(t)).catch(() => {})}
+                      className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)] transition-colors"
+                      title="Paste"
+                    >
+                      <Files className="w-4 h-4" />
+                    </button>
+                    <button
+                      className="p-1.5 rounded-md text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)] transition-colors"
+                      title="Optimize"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
                     </button>
                   </div>
                 </div>
               </div>
               <p className="text-xs text-[#64748B] mt-2">
-                Be specific for better results. Include details about lighting, style, mood, and composition.
+                If you&apos;re not satisfied, you can generate again or enter prompt for your own.
               </p>
             </div>
 
@@ -668,17 +708,19 @@ export default function TextToImagePage() {
         </main>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
-          <div className="p-4 border-b border-[#1E293B]">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
-              <span className="px-2.5 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[#6366F1]/30 text-[11px] text-[#818CF8]">
-                {currentModel?.name}: Fast Generation
-              </span>
-            </div>
+        <aside className="w-[440px] 2xl:w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+          {/* Header */}
+          <div className="px-5 py-3 flex items-center justify-between">
+            <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
+            <span className="px-2.5 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[#6366F1]/30 text-[11px] text-[#818CF8]">
+              {currentModel?.name}: Fast Generation
+            </span>
           </div>
-          <div className="flex-1 flex items-center justify-center p-6">
-            <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden`}>
+          {/* Canvas */}
+          <div className="flex-1 flex items-center justify-center px-5 pb-5">
+            <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden cursor-pointer group`}
+              onClick={() => generatedImages.length > 0 && setPreviewImage(generatedImages[0])}
+            >
               {isGenerating ? (
                 <div className="relative z-10 flex flex-col items-center gap-3">
                   <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center animate-pulse">
@@ -687,7 +729,7 @@ export default function TextToImagePage() {
                   <p className="text-sm text-[#818CF8]">{taskStatus || "Generating..."}</p>
                 </div>
               ) : generatedImages.length > 0 ? (
-                <div className="relative z-10 w-full h-full p-4">
+                <div className="relative z-10 w-full h-full p-3">
                   <img
                     src={generatedImages[0]}
                     alt="Generated"
@@ -696,6 +738,25 @@ export default function TextToImagePage() {
                       (e.target as HTMLImageElement).style.display = "none";
                     }}
                   />
+                  {/* Floating actions */}
+                  <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a
+                      href={generatedImages[0]}
+                      download
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      Download
+                    </a>
+                    <button
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
+                      onClick={(e) => { e.stopPropagation(); }}
+                    >
+                      <Share2 className="w-3.5 h-3.5" />
+                      Share
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>
@@ -709,17 +770,6 @@ export default function TextToImagePage() {
                 </>
               )}
             </div>
-          </div>
-          {/* Toolbar */}
-          <div className="p-4 border-t border-[#1E293B] flex items-center justify-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
-              <Download className="w-4 h-4" />
-              Download
-            </button>
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#13101F] border border-[#1E293B] text-sm text-[#64748B] hover:text-[#CBD5E1] hover:border-[#475569] transition-colors">
-              <Share2 className="w-4 h-4" />
-              Share
-            </button>
           </div>
         </aside>
       </div>
@@ -957,6 +1007,35 @@ export default function TextToImagePage() {
 
         <Footer />
       </div>
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] w-full flex flex-col gap-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between"
+            >
+              <h3 className="text-lg font-semibold text-[#F8FAFC]"
+              >Sample Image</h3>
+              <button
+                onClick={() => setPreviewImage(null)}
+                className="p-2 rounded-lg bg-[#1E293B] text-[#94A3B8] hover:text-[#F8FAFC] hover:bg-[#334155] transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="w-full h-full object-contain rounded-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

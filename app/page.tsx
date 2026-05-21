@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { Sparkles, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -79,13 +79,9 @@ export default function HomePage() {
           variants={stagger}
         >
           {/* Title */}
-          <motion.div variants={fadeInUp} className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5 text-[#F59E0B]" />
-            <h1 className="text-4xl md:text-[64px] font-bold text-[#F8FAFC] leading-[1.1] tracking-[-0.03em]">
-              Create at the Speed of Thought
-            </h1>
-            <Sparkles className="w-5 h-5 text-[#F59E0B]" />
-          </motion.div>
+          <motion.h1 variants={fadeInUp} className="text-4xl md:text-[64px] font-bold text-[#F8FAFC] leading-[1.1] tracking-[-0.03em]">
+            Create at the Speed of Thought
+          </motion.h1>
 
           {/* Subtitle */}
           <motion.p variants={fadeInUp} className="text-2xl md:text-[26px] text-[#CBD5E1] font-medium max-w-[700px]">
