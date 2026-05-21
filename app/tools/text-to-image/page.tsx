@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { getModelCreditCost } from "@/lib/credits/model-costs";
+import { useAuth } from "@/components/auth-provider";
 import {
   Select,
   SelectContent,
@@ -259,6 +260,7 @@ export default function TextToImagePage() {
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const { refreshCredits } = useAuth();
   const [selectedModel, setSelectedModel] = useState("nano-banana-pro");
   const [prompt, setPrompt] = useState("");
   const [aspectRatio, setAspectRatio] = useState("1:1");
@@ -344,6 +346,7 @@ export default function TextToImagePage() {
       if (!createRes.ok) {
         throw new Error(createData.error || "Failed to create task");
       }
+      refreshCredits();
 
       const taskId = createData.data?.task_id;
       const provider = createData.data?.provider || "";
@@ -715,7 +718,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* Right: Results */}
-            <div className="w-[360px] lg:w-[400px] flex-shrink-0">
+            <div className="w-[360px] lg:w-[400px] flex-shrink-0 border-2 border-red-500 min-h-[200px]">
               <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}

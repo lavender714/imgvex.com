@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { getModelCreditCost } from "@/lib/credits/model-costs";
+import { useAuth } from "@/components/auth-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -310,6 +311,7 @@ export default function ImageToImagePage() {
   const pathname = usePathname();
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const { refreshCredits } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImages, setGeneratedImages] = useState<string[]>([]);
   const [taskStatus, setTaskStatus] = useState("");
@@ -439,6 +441,7 @@ export default function ImageToImagePage() {
       if (!createRes.ok) {
         throw new Error(createData.error || "Failed to create task");
       }
+      refreshCredits();
 
       const taskId = createData.data?.task_id;
       const provider = createData.data?.provider || "";

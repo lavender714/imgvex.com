@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
 import { getVideoCreditCost } from "@/lib/credits/model-costs";
+import { useAuth } from "@/components/auth-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -265,6 +266,7 @@ export default function TextToVideoPage() {
 
   const [user, setUser] = useState<any>(null);
   const [authLoading, setAuthLoading] = useState(true);
+  const { refreshCredits } = useAuth();
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedVideos, setGeneratedVideos] = useState<string[]>([]);
   const [taskStatus, setTaskStatus] = useState<string>("");
@@ -318,6 +320,7 @@ export default function TextToVideoPage() {
       if (!res.ok || data.error) {
         throw new Error(data.error || `Failed: ${res.status}`);
       }
+      refreshCredits();
       const taskId = data.data?.task_id;
       const provider = data.data?.provider || "";
       providerRef.current = provider;
