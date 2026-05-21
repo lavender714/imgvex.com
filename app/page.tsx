@@ -75,9 +75,9 @@ const exploreTabs = [
     models: ["Midjourney v7", "Flux Pro", "DALL-E 4", "Imagen"],
     href: "/tools/text-to-image",
     samples: [
-      { src: "https://lh3.googleusercontent.com/drrHfIaeqeQm4kXlnH7VdB-NCjnUEz5rEufAZrUZHNOGmJE1tLsfHHG2J1lEI3yhCNEJI46rF4H5uxSyV8HQx6loLUppd8sjn8ZHeLz1rpXsJoBCfQ=w800-h600-n-nu", label: "Style transfer" },
-      { src: "https://lh3.googleusercontent.com/y8iwNOFG7VdNI_X_nGNrLjnLFJGkKJoqQFMw6to6C5l-qmfj9V5of64jwyFF8wRsVliq1jD5GhIkvNmD0KFK2AiX_WJGeC6ehVu3O_rac9hvK6PEBoM=w800-h600-n-nu", label: "Photoreal" },
-      { src: "https://lh3.googleusercontent.com/p_qu1p6DigEfZWOmRCXSnBJ5jIoPrDcz782l4UQetzrGyVwbpKUmdtJDIPVU83IEwtOlZ8ITL8NAnmLJvhBdkpKeFZd3TATQzWXmCbLDBy4T3rlelw=w800-h600-n-nu", label: "Concept art" },
+      { src: "https://cdn.sanity.io/images/2gpum2i6/production/a8548b6a1df6ea698a6fc5c6a377436e98d5d4c1-1073x1600.jpg?w=800&h=1067&fit=crop&auto=format", label: "Concept art" },
+      { src: "https://cdn.sanity.io/images/2gpum2i6/production/5d563b7e80a4544e78cb389bd863d9f26da636a5-1072x1920.png?w=800&h=1067&fit=crop&auto=format", label: "Cinematic" },
+      { src: "https://cdn.sanity.io/images/2gpum2i6/production/b352b23898d0662cac2946c6506e8c6c19996fdb-1024x1280.png?w=800&h=1067&fit=crop&auto=format", label: "Illustration" },
     ],
   },
 ] as const;
@@ -298,7 +298,11 @@ export default function HomePage() {
             <a href="https://deepmind.google/models/veo/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#94A3B8]">
               Google Veo
             </a>
-            {" "}official showcase. Synapse provides unified access to 20+ models.
+            {" & "}
+            <a href="https://bfl.ai/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#94A3B8]">
+              Flux Pro
+            </a>
+            {" "}official showcases. Synapse provides unified access to 20+ models.
           </motion.p>
         </motion.div>
       </section>
