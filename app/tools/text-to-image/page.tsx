@@ -782,7 +782,7 @@ export default function TextToImagePage() {
             {/* ─── Marketing Content ─── */}
             <div className="border-t border-[#1E293B] mt-8 px-6 pt-8 pb-6">
         {/* Supported Models */}
-        <section className="py-12 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-12 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-6"
             initial="hidden"
@@ -854,7 +854,7 @@ export default function TextToImagePage() {
         </section>
 
         {/* Features */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-16"
             initial="hidden"
@@ -929,7 +929,7 @@ export default function TextToImagePage() {
         </section>
 
         {/* Related Tools */}
-        <section className="py-16 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-16 px-6 md:px-12">
           <motion.div
             className="max-w-[1200px] mx-auto flex flex-col gap-8"
             initial="hidden"
@@ -985,7 +985,7 @@ export default function TextToImagePage() {
         </section>
 
         {/* CTA */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+        <section className="py-20 px-6 md:px-12">
           <motion.div
             className="max-w-[800px] mx-auto text-center flex flex-col items-center gap-6"
             initial="hidden"
