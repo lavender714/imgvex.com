@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { useAuth } from "@/components/auth-provider";
-import { Sparkles, Play, Image, Wand2, ChevronRight, Video, Upload } from "lucide-react";
+import { Sparkles, Image, ChevronRight, Video } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -69,7 +66,7 @@ export default function HomePage() {
     <div className="min-h-full bg-[#0B0817]">
       <Navbar variant="landing" />
 
-      {/* Hero Section - Pollo Style */}
+      {/* Hero Section */}
       <section className="relative pt-[72px] flex flex-col items-center px-6 pb-16">
         {/* Glow */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -87,90 +84,64 @@ export default function HomePage() {
           {/* Title */}
           <motion.div variants={fadeInUp} className="flex items-center gap-3">
             <Sparkles className="w-5 h-5 text-[#F59E0B]" />
-            <h1 className="text-4xl md:text-[52px] font-bold text-[#F8FAFC] leading-[1.1] tracking-[-0.02em]">
+            <h1 className="text-4xl md:text-[64px] font-bold text-[#F8FAFC] leading-[1.1] tracking-[-0.03em]">
               Create at the Speed of Thought
             </h1>
             <Sparkles className="w-5 h-5 text-[#F59E0B]" />
           </motion.div>
 
-          {/* Hero Tabs */}
-          <motion.div variants={fadeInUp} className="flex items-center gap-1 p-1 rounded-full bg-[#13101F] border border-[#1E293B]">
-            {([
-              { key: "video", label: "Video", icon: Play },
-              { key: "image", label: "Image", icon: Image },
-              { key: "agent", label: "Agent", icon: Wand2 },
-            ] as const).map((t) => {
-              const Icon = t.icon;
-              const isActive = heroTab === t.key;
-              return (
-                <button
-                  key={t.key}
-                  onClick={() => setHeroTab(t.key as typeof heroTab)}
-                  className={`relative flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                    isActive ? "text-white" : "text-[#64748B] hover:text-[#CBD5E1]"
-                  }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="heroTab"
-                      className="absolute inset-0 rounded-full bg-[#6366F1]"
-                      transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
-                    />
-                  )}
-                  <Icon className="w-4 h-4 relative z-10" />
-                  <span className="relative z-10">{t.label}</span>
-                </button>
-              );
-            })}
+          {/* Subtitle */}
+          <motion.p variants={fadeInUp} className="text-xl text-[#94A3B8] max-w-[600px]">
+            All-in-one AI Video &amp; Image Generator
+          </motion.p>
+
+          {/* Model Strip */}
+          <motion.div variants={fadeInUp} className="flex items-center gap-1 text-sm text-[#64748B] opacity-80">
+            <span>Veo 3 · Sora 2 · Kling · Runway Gen-4 · Midjourney · Flux Pro</span>
+            <span className="text-[#818CF8] font-semibold ml-1">+ 15 more</span>
           </motion.div>
 
-          {/* Big Generator Card */}
-          <motion.div variants={fadeInUp} className="w-full max-w-[900px]">
-            <div className="rounded-[20px] bg-[#13101F] border border-[#1E293B] p-5 flex flex-col gap-4">
-              {/* Input Row */}
-              <div className="relative">
-                <div className="flex items-start gap-3">
-                  <button className="mt-3 w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center text-[#64748B] hover:bg-[#334155] transition-colors shrink-0">
-                    <Upload className="w-4 h-4" />
-                  </button>
-                  <textarea
-                    placeholder="Enter your idea to generate..."
-                    className="flex-1 min-h-[80px] bg-transparent text-base text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none py-3"
-                    defaultValue="A cinematic drone shot flying over a misty mountain valley at golden hour..."
-                  />
-                </div>
-              </div>
+          {/* Announcement Pill */}
+          <motion.div variants={fadeInUp}>
+            <Link
+              href="/generate"
+              className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors"
+            >
+              <span className="px-2 py-0.5 rounded-full bg-[#EF4444] text-white text-[11px] font-bold">
+                New
+              </span>
+              <span className="text-sm text-[#F8FAFC] font-medium">Seedance 2.0 Launched</span>
+              <span className="text-sm text-[#64748B] font-medium">Try Now →</span>
+            </Link>
+          </motion.div>
 
-              {/* Param Pills Row */}
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[#6366F1]/10 border border-[#6366F1]/20 text-xs font-medium text-[#818CF8]">
-                  <Video className="w-3 h-3" />
-                  Video
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#0F0F1A] border border-[#1E293B] text-xs text-[#64748B]">
-                  Text/Image to Video
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#0F0F1A] border border-[#1E293B] text-xs text-[#64748B]">
-                  Pollo 2.0
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#0F0F1A] border border-[#1E293B] text-xs text-[#64748B]">
-                  5s
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#0F0F1A] border border-[#1E293B] text-xs text-[#64748B]">
-                  480p
-                </span>
-                <span className="px-3 py-1.5 rounded-full bg-[#0F0F1A] border border-[#1E293B] text-xs text-[#64748B]">
-                  16:9
-                </span>
-                <div className="flex-1" />
-                <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm px-5 h-9" asChild>
-                  <Link href={user ? "/generate" : "/auth?next=/generate"}>
-                    <Sparkles className="w-4 h-4 mr-1.5" />
-                    {user ? "Start Creating" : "Generate 10"}
-                  </Link>
-                </Button>
+          {/* 2 CTA Cards */}
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-[720px]">
+            {/* Create Video */}
+            <Link
+              href="/generate"
+              className="flex flex-col gap-3 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:-translate-y-1 transition-all duration-300 text-left h-[180px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center">
+                <Video className="w-5 h-5 text-[#818CF8]" />
               </div>
-            </div>
+              <h3 className="text-base font-semibold text-[#F8FAFC]">Create Video</h3>
+              <p className="text-sm text-[#64748B] leading-relaxed flex-1">Text or image to video with 20+ models</p>
+              <span className="text-lg text-[#64748B]">→</span>
+            </Link>
+
+            {/* Create Image */}
+            <Link
+              href="/generate"
+              className="flex flex-col gap-3 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:-translate-y-1 transition-all duration-300 text-left h-[180px]"
+            >
+              <div className="w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center">
+                <Image className="w-5 h-5 text-[#14B8A6]" />
+              </div>
+              <h3 className="text-base font-semibold text-[#F8FAFC]">Create Image</h3>
+              <p className="text-sm text-[#64748B] leading-relaxed flex-1">Flux · MJ · DALL-E 4 and more</p>
+              <span className="text-lg text-[#64748B]">→</span>
+            </Link>
           </motion.div>
         </motion.div>
       </section>
@@ -300,31 +271,6 @@ export default function HomePage() {
                 {tag}
               </span>
             ))}
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Bottom Generator */}
-      <section className="py-16 px-6 md:px-12">
-        <motion.div
-          className="max-w-[900px] mx-auto"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={stagger}
-        >
-          <motion.div variants={fadeInUp} className="rounded-[20px] bg-[#13101F] border border-[#1E293B] p-6 flex flex-col sm:flex-row items-center gap-4">
-            <div className="flex-1 w-full">
-              <input
-                type="text"
-                placeholder="Enter your idea to generate..."
-                className="w-full h-12 bg-[#0F0F1A] border border-[#1E293B] rounded-xl px-4 text-sm text-[#CBD5E1] placeholder:text-[#475569] outline-none focus:border-[#475569]"
-              />
-            </div>
-            <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm px-6 h-11 w-full sm:w-auto">
-              <Sparkles className="w-4 h-4 mr-1.5" />
-              Generate
-            </Button>
           </motion.div>
         </motion.div>
       </section>
