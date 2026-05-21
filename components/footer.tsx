@@ -31,7 +31,6 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
     { label: "Midjourney", href: "/models/midjourney" },
   ],
   "Company": [
-    { label: "About Us", href: "#" },
     { label: "Contact Us", href: "mailto:support@imgvex.com?subject=Contact%20imgvex.AI" },
     { label: "Pricing", href: "/pricing" },
     { label: "API", href: "#" },
