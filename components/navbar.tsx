@@ -254,56 +254,58 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
       <div className="max-w-[1400px] mx-auto h-full flex items-center justify-between px-6 lg:px-12">
         <Link href="/" className="text-[22px] font-bold text-[#F8FAFC]">imgvex.AI</Link>
 
-        <nav className="hidden md:flex items-center gap-1">
-          <Link
-            href="/generate"
-            className="px-3 py-2 text-sm font-medium text-[#EC4899] hover:text-[#F472B6] transition-colors duration-200"
-          >
-            Agent
-          </Link>
+        <div className="flex items-center gap-6">
+          <nav className="hidden md:flex items-center gap-1">
+            <Link
+              href="/generate"
+              className="px-3 py-2 text-sm font-medium text-[#EC4899] hover:text-[#F472B6] transition-colors duration-200"
+            >
+              Agent
+            </Link>
 
-          {dropdownMenus.map((menu) => (
-            <NavDropdown key={menu.label} label={menu.label} items={menu.items} />
-          ))}
+            {dropdownMenus.map((menu) => (
+              <NavDropdown key={menu.label} label={menu.label} items={menu.items} />
+            ))}
 
-          <Link
-            href="#"
-            className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
-          >
-            API
-          </Link>
-          <Link
-            href="/pricing"
-            className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
-          >
-            Pricing
-          </Link>
-        </nav>
+            <Link
+              href="#"
+              className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
+            >
+              API
+            </Link>
+            <Link
+              href="/pricing"
+              className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
+            >
+              Pricing
+            </Link>
+          </nav>
 
-        <div className="flex items-center gap-3">
-          {isLoading ? (
-            <div className="w-20 h-9 rounded-full bg-[#1E293B] animate-pulse" />
-          ) : user ? (
-            <div className="flex items-center gap-3">
-              <CreditPill credits={credits} />
-              <UserMenu user={user} credits={credits} />
-            </div>
-          ) : (
-            <>
-              <Link
-                href={authHref}
-                className="text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200 px-3 py-2"
-              >
-                Login
-              </Link>
-              <Button
-                className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold px-5 py-2 text-sm"
-                asChild
-              >
-                <Link href={authHref}>Get Started</Link>
-              </Button>
-            </>
-          )}
+          <div className="flex items-center gap-3">
+            {isLoading ? (
+              <div className="w-20 h-9 rounded-full bg-[#1E293B] animate-pulse" />
+            ) : user ? (
+              <div className="flex items-center gap-3">
+                <CreditPill credits={credits} />
+                <UserMenu user={user} credits={credits} />
+              </div>
+            ) : (
+              <>
+                <Link
+                  href={authHref}
+                  className="text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200 px-3 py-2"
+                >
+                  Login
+                </Link>
+                <Button
+                  className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold px-5 py-2 text-sm"
+                  asChild
+                >
+                  <Link href={authHref}>Get Started</Link>
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </header>
