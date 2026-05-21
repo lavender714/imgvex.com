@@ -660,7 +660,7 @@ export default function TextToImagePage() {
 
           {/* Fixed bottom bar */}
           <div className="px-6 py-4 border-t border-[#1E293B] bg-[#0A0A12]">
-            <div className="max-w-[640px] mx-auto flex items-center justify-between"
+            <div className="max-w-[640px] mx-auto flex flex-col gap-3"
             >
               <div className="flex items-center gap-2 text-sm text-[#64748B]">
                 <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -670,19 +670,28 @@ export default function TextToImagePage() {
                 </svg>
                 <span>Required credits:</span>
                 <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+                {isGenerating && (
+                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
+                )}
               </div>
-
-              {/* Floating generate pill */}
+              {isGenerating && (
+                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${progress}%` }}
+                  />
+                </div>
+              )}
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || authLoading || !prompt.trim()}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                disabled={isGenerating || authLoading}
+                className={`w-full h-[52px] rounded-2xl font-semibold text-[15px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
                   prompt.trim() && !isGenerating
-                    ? "bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] text-white shadow-lg shadow-purple-500/25 hover:shadow-purple-500/40"
-                    : "bg-[#13101F] text-[#475569] border border-[#1E293B]"
-                } disabled:opacity-50`}
+                    ? "bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white"
+                    : "bg-[#1E293B] text-[#475569]"
+                }`}
               >
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-5 h-5" />
                 <span>
                   {authLoading
                     ? "Checking..."
@@ -690,23 +699,19 @@ export default function TextToImagePage() {
                     ? taskStatus || "Generating..."
                     : user
                     ? "Generate"
-                    : "Sign in"}
-                </span>
-                <span className={`text-xs px-1.5 py-0.5 rounded-md ${prompt.trim() && !isGenerating ? "bg-white/15" : "bg-[#1E293B]"}`}>
-                  {creditCost}
+                    : "Sign in to Generate"}
                 </span>
               </button>
+              {!user && !authLoading && (
+                <p className="text-xs text-[#64748B] text-center">
+                  You need to{" "}
+                  <Link href="/auth" className="text-[#818CF8] hover:underline">
+                    sign in
+                  </Link>{" "}
+                  before generating images
+                </p>
+              )}
             </div>
-            {isGenerating && (
-              <div className="max-w-[640px] mx-auto mt-3">
-                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              </div>
-            )}
           </div>
         </main>
 
