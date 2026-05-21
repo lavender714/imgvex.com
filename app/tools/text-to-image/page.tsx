@@ -513,12 +513,12 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12]">
+        <main className="flex-1 min-w-0">
           <div className="px-6 pt-6">
             {/* Editor + Results */}
             <div className="flex gap-6">
               {/* Left: Editor */}
-              <div className="flex-1 flex flex-col gap-5">
+              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col gap-5">
               {/* Model Selector */}
               <div>
                 <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -718,7 +718,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* Right: Results */}
-            <div className="flex-1 flex flex-col">
+            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col">
               <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}
@@ -778,7 +778,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* ─── Marketing Content ─── */}
-            <div className="border-t border-[#1E293B] mt-8 -mx-6 px-6 pt-8 pb-6">
+            <div className="border-t border-[#1E293B] mt-8 px-6 pt-8 pb-6">
         {/* Supported Models */}
         <section className="py-12 px-6 md:px-12 bg-[#06060A]">
           <motion.div
