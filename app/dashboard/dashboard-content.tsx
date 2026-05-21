@@ -130,7 +130,7 @@ export default function DashboardContent() {
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-[#F8FAFC]">Recent Generations</h2>
                 {recentGenerations.length > 0 && (
-                  <Link href="/dashboard/assets" className="text-sm text-[#818CF8] hover:underline">View all →</Link>
+                  <Link href="#" className="text-sm text-[#818CF8] hover:underline">View all →</Link>
                 )}
               </div>
               {recentGenerations.length === 0 ? (

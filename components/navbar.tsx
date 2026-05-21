@@ -271,6 +271,12 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
             ))}
 
             <Link
+              href="#"
+              className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
+            >
+              API
+            </Link>
+            <Link
               href="/pricing"
               className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
             >

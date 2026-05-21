@@ -100,7 +100,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
+      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
+      { icon: Link2, label: "API", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -190,11 +194,13 @@ const faqs = [
 
 const discoverLinks = [
   { label: "Text to Video", href: "/tools/text-to-video" },
-  { label: "Video to Video", href: "/tools/video-to-video" },
-  { label: "Text to Image", href: "/tools/text-to-image" },
-  { label: "Image to Image", href: "/tools/image-to-image" },
-  { label: "Sora 2 Pro", href: "/models/sora-2-pro" },
-  { label: "Veo 3.1", href: "/models/veo3-1-quality" },
+  { label: "Video to Video", href: "#" },
+  { label: "Text to Image", href: "/tools/text-to-video" },
+  { label: "Image to Image", href: "#" },
+  { label: "Text to Speech", href: "#" },
+  { label: "AI Avatar", href: "#" },
+  { label: "Sora Pro 2K", href: "#" },
+  { label: "Veo 3.1", href: "#" },
 ];
 
 /* ─── Animation variants ─── */

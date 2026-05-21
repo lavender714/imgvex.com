@@ -107,7 +107,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
+      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
+      { icon: Link2, label: "API", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -182,10 +186,10 @@ const howToSteps = [
 ];
 
 const relatedTools = [
-  { name: "Image to Image", desc: "Restyle & transform", href: "/tools/image-to-image" },
-  { name: "Text to Video", desc: "Animate from prompts", href: "/tools/text-to-video" },
-  { name: "Image to Video", desc: "Animate any photo", href: "/tools/image-to-video" },
-  { name: "Video to Video", desc: "Restyle existing clips", href: "/tools/video-to-video" },
+  { name: "Image to Image", desc: "Restyle & transform", href: "#" },
+  { name: "AI Photo Editor", desc: "Smart editing tools", href: "#" },
+  { name: "Background Remover", desc: "Clean cutouts", href: "#" },
+  { name: "AI Avatar", desc: "Digital personas", href: "#" },
 ];
 
 const faqs = [
