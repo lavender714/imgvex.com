@@ -677,7 +677,7 @@ export default function TextToImagePage() {
               {isGenerating && (
                 <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
+                    className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
                     style={{ width: `${progress}%` }}
                   />
                 </div>
@@ -687,7 +687,7 @@ export default function TextToImagePage() {
                 disabled={isGenerating || authLoading}
                 className={`w-full h-[52px] rounded-2xl font-semibold text-[15px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
                   prompt.trim() && !isGenerating
-                    ? "bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white"
+                    ? "bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]"
                     : "bg-[#1E293B] text-[#475569]"
                 }`}
               >
