@@ -88,20 +88,20 @@ export default function HomePage() {
           </motion.div>
 
           {/* Subtitle */}
-          <motion.p variants={fadeInUp} className="text-xl text-[#94A3B8] max-w-[600px]">
+          <motion.p variants={fadeInUp} className="text-2xl md:text-[26px] text-[#CBD5E1] font-medium max-w-[700px]">
             All-in-one AI Video &amp; Image Generator
           </motion.p>
 
           {/* Model Strip */}
-          <motion.div variants={fadeInUp} className="flex items-center gap-1 text-sm text-[#64748B] opacity-80">
+          <motion.div variants={fadeInUp} className="flex items-center gap-1 text-base text-[#94A3B8] font-medium">
             <span>Veo 3 · Sora 2 · Kling · Runway Gen-4 · Midjourney · Flux Pro</span>
-            <span className="text-[#818CF8] font-semibold ml-1">+ 15 more</span>
+            <span className="text-[#A78BFA] font-semibold ml-2">+ 15 more</span>
           </motion.div>
 
           {/* Announcement Pill */}
           <motion.div variants={fadeInUp}>
             <Link
-              href="/generate"
+              href="/tools/text-to-video"
               className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors"
             >
               <span className="px-2 py-0.5 rounded-full bg-[#EF4444] text-white text-[11px] font-bold">
@@ -115,14 +115,14 @@ export default function HomePage() {
           {/* 2 CTA Buttons */}
           <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-5 mt-2">
             <Link
-              href="/generate"
+              href="/tools/text-to-video"
               className="inline-flex items-center justify-center min-w-[200px] h-14 px-10 rounded-2xl text-white text-lg font-bold tracking-wide shadow-lg shadow-[#6366F1]/40 hover:shadow-xl hover:shadow-[#7C3AED]/50 hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-inset ring-white/30"
               style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
             >
               Create Video
             </Link>
             <Link
-              href="/generate"
+              href="/tools/text-to-image"
               className="inline-flex items-center justify-center min-w-[200px] h-14 px-10 rounded-2xl text-white text-lg font-bold tracking-wide shadow-lg shadow-[#6366F1]/40 hover:shadow-xl hover:shadow-[#7C3AED]/50 hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-inset ring-white/30"
               style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
             >
