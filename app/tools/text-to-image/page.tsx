@@ -656,6 +656,238 @@ export default function TextToImagePage() {
                 <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
               )}
             </div>
+
+            {/* ─── Marketing Content ─── */}
+            <div className="border-t border-[#1E293B] mt-8 -mx-6 px-6 pt-8">
+              {/* Supported Models */}
+              <section className="py-12 px-6 md:px-12 bg-[#06060A]">
+                <motion.div
+                  className="max-w-[1200px] mx-auto flex flex-col gap-6"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.div variants={fadeInUp} className="text-center flex flex-col gap-2">
+                    <h2 className="text-2xl md:text-3xl font-bold text-[#F8FAFC]">
+                      All-in-One AI Image Generator
+                    </h2>
+                    <p className="text-sm text-[#94A3B8] max-w-[520px] mx-auto">
+                      Access the world's top image models from a single platform
+                    </p>
+                  </motion.div>
+                  <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-3">
+                    {supportedModelTags.map((tag) => (
+                      <div
+                        key={tag.name}
+                        className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors cursor-pointer"
+                      >
+                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
+                        <span className="text-sm text-[#CBD5E1] font-medium">{tag.name}</span>
+                      </div>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </section>
+
+              {/* Showcase Gallery */}
+              <section className="py-20 px-6 md:px-12">
+                <motion.div
+                  className="max-w-[1200px] mx-auto flex flex-col gap-8"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
+                    <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
+                      Turn Words Into Stunning Images
+                    </h2>
+                    <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
+                      Explore the endless possibilities of AI image generation. From photorealistic scenes to artistic masterpieces.
+                    </p>
+                  </motion.div>
+                  <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {imageExamples.map((img) => (
+                      <div
+                        key={img.id}
+                        className={`relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden group cursor-pointer hover:border-[#475569] transition-all ${
+                          img.aspect === "3:4" || img.aspect === "9:16" ? "aspect-[3/4]" : img.aspect === "16:9" ? "aspect-video" : "aspect-square"
+                        }`}
+                      >
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/5" />
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-10 h-10 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
+                            <Image className="w-4 h-4 text-[#818CF8]" />
+                          </div>
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
+                          <p className="text-xs text-white/80 font-medium">{img.title}</p>
+                          <p className="text-[10px] text-white/50">{img.style}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </section>
+
+              {/* Features */}
+              <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+                <motion.div
+                  className="max-w-[1200px] mx-auto flex flex-col gap-16"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.div variants={fadeInUp} className="text-center">
+                    <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
+                      The Features of AI Image Generator for Text to Image
+                    </h2>
+                  </motion.div>
+                  {featureCards.map((card, i) => (
+                    <motion.div
+                      key={i}
+                      variants={fadeInUp}
+                      className={`flex flex-col ${card.image === "right" ? "lg:flex-row-reverse" : "lg:flex-row"} gap-8 items-center`}
+                    >
+                      <div className="flex-1 flex flex-col gap-4">
+                        <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${card.iconColor}15` }}>
+                          <card.icon className="w-6 h-6" style={{ color: card.iconColor }} />
+                        </div>
+                        <h3 className="text-2xl font-bold text-[#F8FAFC]">{card.title}</h3>
+                        <p className="text-base text-[#94A3B8] leading-relaxed">{card.desc}</p>
+                      </div>
+                      <div
+                        className="flex-1 w-full aspect-[16/10] rounded-3xl border border-[#1E293B] flex items-center justify-center relative overflow-hidden"
+                        style={{ background: card.gradient }}
+                      >
+                        <div className="absolute inset-0 bg-black/20" />
+                        <div className="relative z-10 flex flex-col items-center gap-3">
+                          <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
+                            <card.icon className="w-8 h-8 text-white/80" />
+                          </div>
+                          <p className="text-sm text-white/60">Feature Preview</p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </motion.div>
+              </section>
+
+              {/* How to Use */}
+              <section className="py-20 px-6 md:px-12">
+                <motion.div
+                  className="max-w-[1000px] mx-auto flex flex-col gap-12"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
+                    How to Use the AI Image Generator for Text to Image
+                  </motion.h2>
+                  <motion.div variants={fadeInUp} className="flex flex-col gap-0">
+                    {howToSteps.map((s, i) => (
+                      <div key={i} className="flex gap-6 relative">
+                        {i < howToSteps.length - 1 && (
+                          <div className="absolute left-[19px] top-[48px] w-px h-[calc(100%-24px)] bg-[#1E293B]" />
+                        )}
+                        <div className="w-10 h-10 rounded-full bg-[#6366F1]/15 border border-[#6366F1]/30 flex items-center justify-center text-sm font-bold text-[#818CF8] shrink-0">
+                          {s.step}
+                        </div>
+                        <div className="pb-8 flex-1">
+                          <h4 className="text-base font-semibold text-[#F8FAFC]">{s.title}</h4>
+                          <p className="text-sm text-[#94A3B8] mt-1">{s.desc}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </section>
+
+              {/* Related Tools */}
+              <section className="py-16 px-6 md:px-12 bg-[#06060A]">
+                <motion.div
+                  className="max-w-[1200px] mx-auto flex flex-col gap-8"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.h2 variants={fadeInUp} className="text-2xl font-bold text-[#F8FAFC] text-center">
+                    Discover More AI Image Tools
+                  </motion.h2>
+                  <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {relatedTools.map((tool) => (
+                      <Link
+                        key={tool.name}
+                        href={tool.href}
+                        className="flex flex-col gap-2 p-5 rounded-2xl bg-[#0F0F1A] border border-[#1E293B] hover:border-[#475569] transition-colors"
+                      >
+                        <h4 className="text-sm font-semibold text-[#F8FAFC]">{tool.name}</h4>
+                        <p className="text-xs text-[#64748B]">{tool.desc}</p>
+                        <span className="text-xs text-[#818CF8] mt-1 flex items-center gap-1">
+                          Try Now <ChevronRight className="w-3 h-3" />
+                        </span>
+                      </Link>
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </section>
+
+              {/* FAQ */}
+              <section className="py-20 px-6 md:px-12">
+                <motion.div
+                  className="max-w-[800px] mx-auto flex flex-col gap-8"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
+                    Frequently Asked Questions About AI Image Generator for Text to Image
+                  </motion.h2>
+                  <motion.div variants={fadeInUp} className="flex flex-col gap-3">
+                    {faqs.map((faq, i) => (
+                      <FAQItem
+                        key={i}
+                        q={faq.q}
+                        a={faq.a}
+                        isOpen={openFaq === i}
+                        onToggle={() => setOpenFaq(openFaq === i ? null : i)}
+                      />
+                    ))}
+                  </motion.div>
+                </motion.div>
+              </section>
+
+              {/* CTA */}
+              <section className="py-20 px-6 md:px-12 bg-[#06060A]">
+                <motion.div
+                  className="max-w-[800px] mx-auto text-center flex flex-col items-center gap-6"
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  variants={stagger}
+                >
+                  <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
+                    Start Creating Stunning Images Today
+                  </motion.h2>
+                  <motion.p variants={fadeInUp} className="text-base text-[#94A3B8] max-w-[520px]">
+                    Whether you need product photos, concept art, or social media visuals — our AI makes it effortless.
+                  </motion.p>
+                  <motion.div variants={fadeInUp}>
+                    <Button className="rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
+                      <Link href="/generate">
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Try Text to Image AI Free
+                      </Link>
+                    </Button>
+                  </motion.div>
+                </motion.div>
+              </section>
+            </div>
           </div>
 
           {/* Fixed bottom bar */}
@@ -779,239 +1011,7 @@ export default function TextToImagePage() {
         </aside>
       </div>
 
-      {/* ─── Marketing Content ─── */}
-      <div className="border-t border-[#1E293B]">
-        {/* Supported Models */}
-        <section className="py-12 px-6 md:px-12 bg-[#06060A]">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-2">
-              <h2 className="text-2xl md:text-3xl font-bold text-[#F8FAFC]">
-                All-in-One AI Image Generator
-              </h2>
-              <p className="text-sm text-[#94A3B8] max-w-[520px] mx-auto">
-                Access the world's top image models from a single platform
-              </p>
-            </motion.div>
-            <motion.div variants={fadeInUp} className="flex flex-wrap justify-center gap-3">
-              {supportedModelTags.map((tag) => (
-                <div
-                  key={tag.name}
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors cursor-pointer"
-                >
-                  <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
-                  <span className="text-sm text-[#CBD5E1] font-medium">{tag.name}</span>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Showcase Gallery */}
-        <section className="py-20 px-6 md:px-12">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="text-center flex flex-col gap-3">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                Turn Words Into Stunning Images
-              </h2>
-              <p className="text-base text-[#94A3B8] max-w-[640px] mx-auto">
-                Explore the endless possibilities of AI image generation. From photorealistic scenes to artistic masterpieces.
-              </p>
-            </motion.div>
-            <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {imageExamples.map((img) => (
-                <div
-                  key={img.id}
-                  className={`relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden group cursor-pointer hover:border-[#475569] transition-all ${
-                    img.aspect === "3:4" || img.aspect === "9:16" ? "aspect-[3/4]" : img.aspect === "16:9" ? "aspect-video" : "aspect-square"
-                  }`}
-                >
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#6366F1]/10 to-[#EC4899]/5" />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center group-hover:bg-[rgba(99,102,241,0.3)] transition-colors">
-                      <Image className="w-4 h-4 text-[#818CF8]" />
-                    </div>
-                  </div>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/60 to-transparent">
-                    <p className="text-xs text-white/80 font-medium">{img.title}</p>
-                    <p className="text-[10px] text-white/50">{img.style}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Features */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-16"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeInUp} className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-                The Features of AI Image Generator for Text to Image
-              </h2>
-            </motion.div>
-            {featureCards.map((card, i) => (
-              <motion.div
-                key={i}
-                variants={fadeInUp}
-                className={`flex flex-col ${card.image === "right" ? "lg:flex-row-reverse" : "lg:flex-row"} gap-8 items-center`}
-              >
-                <div className="flex-1 flex flex-col gap-4">
-                  <div className="w-12 h-12 rounded-2xl flex items-center justify-center" style={{ backgroundColor: `${card.iconColor}15` }}>
-                    <card.icon className="w-6 h-6" style={{ color: card.iconColor }} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-[#F8FAFC]">{card.title}</h3>
-                  <p className="text-base text-[#94A3B8] leading-relaxed">{card.desc}</p>
-                </div>
-                <div
-                  className="flex-1 w-full aspect-[16/10] rounded-3xl border border-[#1E293B] flex items-center justify-center relative overflow-hidden"
-                  style={{ background: card.gradient }}
-                >
-                  <div className="absolute inset-0 bg-black/20" />
-                  <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm flex items-center justify-center">
-                      <card.icon className="w-8 h-8 text-white/80" />
-                    </div>
-                    <p className="text-sm text-white/60">Feature Preview</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </section>
-
-        {/* How to Use */}
-        <section className="py-20 px-6 md:px-12">
-          <motion.div
-            className="max-w-[1000px] mx-auto flex flex-col gap-12"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              How to Use the AI Image Generator for Text to Image
-            </motion.h2>
-            <motion.div variants={fadeInUp} className="flex flex-col gap-0">
-              {howToSteps.map((s, i) => (
-                <div key={i} className="flex gap-6 relative">
-                  {i < howToSteps.length - 1 && (
-                    <div className="absolute left-[19px] top-[48px] w-px h-[calc(100%-24px)] bg-[#1E293B]" />
-                  )}
-                  <div className="w-10 h-10 rounded-full bg-[#6366F1]/15 border border-[#6366F1]/30 flex items-center justify-center text-sm font-bold text-[#818CF8] shrink-0">
-                    {s.step}
-                  </div>
-                  <div className="pb-8 flex-1">
-                    <h4 className="text-base font-semibold text-[#F8FAFC]">{s.title}</h4>
-                    <p className="text-sm text-[#94A3B8] mt-1">{s.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* Related Tools */}
-        <section className="py-16 px-6 md:px-12 bg-[#06060A]">
-          <motion.div
-            className="max-w-[1200px] mx-auto flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.h2 variants={fadeInUp} className="text-2xl font-bold text-[#F8FAFC] text-center">
-              Discover More AI Image Tools
-            </motion.h2>
-            <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {relatedTools.map((tool) => (
-                <Link
-                  key={tool.name}
-                  href={tool.href}
-                  className="flex flex-col gap-2 p-5 rounded-2xl bg-[#0F0F1A] border border-[#1E293B] hover:border-[#475569] transition-colors"
-                >
-                  <h4 className="text-sm font-semibold text-[#F8FAFC]">{tool.name}</h4>
-                  <p className="text-xs text-[#64748B]">{tool.desc}</p>
-                  <span className="text-xs text-[#818CF8] mt-1 flex items-center gap-1">
-                    Try Now <ChevronRight className="w-3 h-3" />
-                  </span>
-                </Link>
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* FAQ */}
-        <section className="py-20 px-6 md:px-12">
-          <motion.div
-            className="max-w-[800px] mx-auto flex flex-col gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC] text-center">
-              Frequently Asked Questions About AI Image Generator for Text to Image
-            </motion.h2>
-            <motion.div variants={fadeInUp} className="flex flex-col gap-3">
-              {faqs.map((faq, i) => (
-                <FAQItem
-                  key={i}
-                  q={faq.q}
-                  a={faq.a}
-                  isOpen={openFaq === i}
-                  onToggle={() => setOpenFaq(openFaq === i ? null : i)}
-                />
-              ))}
-            </motion.div>
-          </motion.div>
-        </section>
-
-        {/* CTA */}
-        <section className="py-20 px-6 md:px-12 bg-[#06060A]">
-          <motion.div
-            className="max-w-[800px] mx-auto text-center flex flex-col items-center gap-6"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-50px" }}
-            variants={stagger}
-          >
-            <motion.h2 variants={fadeInUp} className="text-3xl md:text-4xl font-bold text-[#F8FAFC]">
-              Start Creating Stunning Images Today
-            </motion.h2>
-            <motion.p variants={fadeInUp} className="text-base text-[#94A3B8] max-w-[520px]">
-              Whether you need product photos, concept art, or social media visuals — our AI makes it effortless.
-            </motion.p>
-            <motion.div variants={fadeInUp}>
-              <Button className="rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
-                <Link href="/generate">
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  Try Text to Image AI Free
-                </Link>
-              </Button>
-            </motion.div>
-          </motion.div>
-        </section>
-
-        <Footer />
-      </div>
+      <Footer />
 
       {/* Image Preview Modal */}
       {previewImage && (
