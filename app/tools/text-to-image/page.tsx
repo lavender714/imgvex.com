@@ -1011,10 +1011,9 @@ export default function TextToImagePage() {
         </section>
           </div>
           </div>
+          <Footer />
         </main>
       </div>
-
-      <Footer />
 
       {/* Image Preview Modal */}
       {previewImage && (
