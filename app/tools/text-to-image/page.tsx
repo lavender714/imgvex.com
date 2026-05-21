@@ -511,28 +511,22 @@ export default function TextToImagePage() {
         {/* Center: Generation Panel */}
         <main className="flex-1 min-w-0 overflow-y-auto rounded-2xl border border-[#1E293B] bg-[#0A0A12] px-6 py-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
-            {/* Title */}
-            <div>
-              <p className="text-lg font-bold text-[#F8FAFC] mb-1">Text to Image</p>
-              <p className="text-sm text-[#64748B]">Generate stunning images from text prompts</p>
-            </div>
-
             {/* Model Selector */}
             <div>
               <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
-                <SelectTrigger className="h-12 rounded-xl bg-[#13101F] border-[#1E293B] text-sm text-[#F8FAFC] hover:border-[#475569] transition-colors">
+                <SelectTrigger className="h-14 rounded-xl bg-[#13101F] border-[#1E293B] text-[15px] text-[#F8FAFC] hover:border-[#475569] transition-colors">
                   <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-xs font-bold text-white">
+                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-sm font-bold text-white">
                       {currentModel?.logo}
                     </div>
-                    <span className="text-sm text-[#F8FAFC]">{currentModel?.name}</span>
+                    <span className="text-[15px] text-[#F8FAFC]">{currentModel?.name}</span>
                   </div>
                 </SelectTrigger>
                 <SelectContent className="bg-[#13101F] border-[#1E293B]">
                   {models.map((m) => (
-                    <SelectItem key={m.id} value={m.id} className="text-sm text-[#CBD5E1] focus:bg-[#1E293B]">
+                    <SelectItem key={m.id} value={m.id} className="text-[15px] text-[#CBD5E1] focus:bg-[#1E293B]">
                       <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-[10px] font-bold text-white">
+                        <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-[11px] font-bold text-white">
                           {m.logo}
                         </div>
                         {m.name}
