@@ -15,7 +15,6 @@ const sidebarItems = [
 ];
 
 const baseStats = [
-  { label: "Credits Left", value: "48", color: "#14B8A6" },
   { label: "This Month", value: "0", color: "#F8FAFC" },
   { label: "Avg. Time", value: "--", color: "#F8FAFC" },
 ];
@@ -57,6 +56,7 @@ export default function DashboardContent() {
   const totalGenerations = recentGenerations.length;
   const stats = [
     { label: "Total Generations", value: totalGenerations.toString(), color: "#F8FAFC" },
+    { label: "Credits Left", value: credits.toString(), color: "#14B8A6" },
     ...baseStats,
   ];
 
@@ -73,7 +73,7 @@ export default function DashboardContent() {
           <Button className="rounded-full bg-[#6366F1] hover:bg-[#4F52E6] text-white font-semibold text-sm h-9 px-4" asChild>
             <Link href="/generate">+ New Generation</Link>
           </Button>
-          <CreditPill credits={48} />
+          <CreditPill credits={credits} />
           <button
             onClick={signOut}
             className="w-9 h-9 rounded-full bg-[#6366F1] flex items-center justify-center text-sm font-semibold text-white hover:bg-[#4F52E6] transition-colors"

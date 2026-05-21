@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
+import { getModelCreditCost } from "@/lib/credits/model-costs";
 import {
   Select,
   SelectContent,
@@ -283,7 +284,7 @@ export default function TextToImagePage() {
   }, []);
 
   const currentModel = models.find((m) => m.id === selectedModel);
-  const creditCost = 2;
+  const creditCost = getModelCreditCost(selectedModel);
 
   const getAspectClass = (ratio: string) => {
     switch (ratio) {
@@ -511,7 +512,10 @@ export default function TextToImagePage() {
         {/* Center: Generation Panel */}
         <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12]">
           <div className="px-6 pt-6">
-            <div className="max-w-[640px] mx-auto flex flex-col gap-5">
+            {/* Editor + Results */}
+            <div className="flex gap-6">
+              {/* Left: Editor */}
+              <div className="flex-1 max-w-[560px] flex flex-col gap-5">
               {/* Model Selector */}
               <div>
                 <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -708,6 +712,11 @@ export default function TextToImagePage() {
                   </p>
                 )}
               </div>
+            </div>
+
+            {/* Right: Results */}
+            <div className="w-[360px] lg:w-[400px] flex-shrink-0">
+              <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}
               <div className={`w-full ${getAspectClass(aspectRatio)} rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden cursor-pointer group`}
@@ -762,6 +771,7 @@ export default function TextToImagePage() {
                   </>
                 )}
               </div>
+            </div>
             </div>
 
             {/* ─── Marketing Content ─── */}

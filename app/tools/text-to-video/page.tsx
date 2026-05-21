@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
+import { getVideoCreditCost } from "@/lib/credits/model-costs";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -384,7 +385,7 @@ export default function TextToVideoPage() {
   };
 
   const currentModel = models.find((m) => m.id === selectedModel);
-  const creditCost = 10;
+  const creditCost = getVideoCreditCost(selectedModel);
 
   return (
     <div className="min-h-screen bg-[#0B0817]">

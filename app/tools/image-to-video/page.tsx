@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
+import { getVideoCreditCost } from "@/lib/credits/model-costs";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -375,7 +376,7 @@ export default function ImageToVideoPage() {
     }
   };
 
-  const creditCost = 80;
+  const creditCost = getVideoCreditCost(selectedModel);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();

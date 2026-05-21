@@ -5,6 +5,7 @@ import { useState, useRef, useCallback, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import { getModelsByTaskType, getEtaSeconds } from "@/lib/providers/config";
+import { getModelCreditCost } from "@/lib/credits/model-costs";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -331,7 +332,7 @@ export default function ImageToImagePage() {
   }, []);
 
   const currentModel = models.find((m) => m.id === selectedModel);
-  const creditCost = 2;
+  const creditCost = getModelCreditCost(selectedModel);
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault();
