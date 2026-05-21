@@ -454,9 +454,9 @@ export default function TextToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px]">
+      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px] gap-4 p-4">
         {/* Left Sidebar */}
-        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="w-[200px] flex-shrink-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -509,7 +509,7 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
+        <main className="flex-1 overflow-y-auto rounded-2xl border border-[#1E293B] bg-[#0A0A12] px-6 py-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             {/* Title */}
             <div>
@@ -708,7 +708,7 @@ export default function TextToImagePage() {
         </main>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[440px] 2xl:w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+        <aside className="w-[440px] 2xl:w-[480px] flex-shrink-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
           {/* Header */}
           <div className="px-5 py-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
