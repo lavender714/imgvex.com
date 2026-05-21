@@ -456,7 +456,7 @@ export default function HomePage() {
             </div>
 
             {/* Right: numbered steps */}
-            <div className="flex-1 w-full flex flex-col gap-7">
+            <div className="flex-1 w-full flex flex-col gap-7 md:pt-12">
               {easySteps.map((step, i) => (
                 <div key={i} className="flex gap-5">
                   <div className="flex flex-col items-center shrink-0">
