@@ -5,9 +5,8 @@ import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
-import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { ChevronRight, Sparkles } from "lucide-react";
+import { ChevronRight, Boxes, Sparkles, Wand2, Lightbulb } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -20,11 +19,65 @@ const models = [
   { id: "dalle-4", name: "DALL-E 4", type: "image" as const, logo: "D", logoColor: "#F97316", specs: "Image • 1024px" },
 ];
 
-const features = [
-  { icon: "A", iconColor: "#818CF8", title: "Multi-Model Aggregation", description: "Compare outputs side-by-side from different models. Pick the best result every time." },
-  { icon: "B", iconColor: "#14B8A6", title: "Unified Prompting", description: "One prompt works across all models. Our system adapts parameters automatically." },
-  { icon: "C", iconColor: "#F59E0B", title: "Batch Generation", description: "Queue up to 10 generations and let them run in the background while you work." },
-  { icon: "D", iconColor: "#EC4899", title: "Asset Management", description: "Organize, tag, and export your generations. Full version history included." },
+const whyChoose = [
+  {
+    icon: Boxes,
+    iconColor: "#818CF8",
+    title: "Unified Console for Video & Image",
+    description: "From quick promos to cinematic shorts, Synapse gives you a complete generation toolkit. No platform switching, no juggling credentials.",
+  },
+  {
+    icon: Sparkles,
+    iconColor: "#A78BFA",
+    title: "Powered by Leading AI Models",
+    description: "Access Veo 3, Sora 2, Kling, Runway, Midjourney, Flux and 15+ others — seamlessly integrated for maximum creative flexibility.",
+  },
+  {
+    icon: Wand2,
+    iconColor: "#14B8A6",
+    title: "Effortless Text-to-Content Workflows",
+    description: "Turn prompts into professional content. AI-enhanced prompting, smart defaults, one-click model switching, batch queues.",
+  },
+  {
+    icon: Lightbulb,
+    iconColor: "#F59E0B",
+    title: "Built for Modern Creative Workflows",
+    description: "Whether you're creating ads, social shorts, e-commerce visuals or storytelling — Synapse adapts to your goals.",
+  },
+];
+
+const easySteps = [
+  {
+    number: "1",
+    title: "Select the Appropriate Model",
+    description: "Choose a model that best fits your creative needs — from cinematic Veo 3 to viral-ready Kling.",
+  },
+  {
+    number: "2",
+    title: "Enter a Prompt or Use AI Assistance",
+    description: "Write a prompt or upload an image. Use Generate With AI to turn simple keywords into a full prompt.",
+  },
+  {
+    number: "3",
+    title: "Choose the Right Parameter Settings",
+    description: "Adjust aspect ratio, resolution, duration — or use the Auto preset for instant defaults.",
+  },
+  {
+    number: "4",
+    title: "Click Generate and Wait for Your Creations",
+    description: "Hit Generate and let AI do the work. Images take seconds; videos may take a few minutes.",
+  },
+];
+
+const stepDemos = [
+  {
+    src: "https://lh3.googleusercontent.com/IoSfcitEGPD3GGM8rZ3rz8ILUz_b1ejr_cYUT6iY8hpM2YYtVGO94k2_gdQQYwbfS8d1A5Gqw1YgBAB51ji8hgMcBkCcY_aSBtid6stjZdbCl-zreg=w800-h600-n-nu",
+    label: "Veo 3",
+  },
+  {
+    src: "https://cdn.sanity.io/images/2gpum2i6/production/c8a6972790ddfc1f07e6ace855517a9ad03e035d-1162x1774.png?w=800&h=1067&fit=crop&auto=format",
+    label: "Flux Pro",
+  },
 ];
 
 const exploreTabs = [
@@ -82,33 +135,6 @@ const exploreTabs = [
   },
 ] as const;
 
-const madeWithExamples = [
-  {
-    category: "Marketing",
-    prompt: "A sleek smartphone rotating in a minimal studio with soft rim light, product shot, 16:9, ultra detailed",
-    model: "Veo 3",
-    src: "https://lh3.googleusercontent.com/IoSfcitEGPD3GGM8rZ3rz8ILUz_b1ejr_cYUT6iY8hpM2YYtVGO94k2_gdQQYwbfS8d1A5Gqw1YgBAB51ji8hgMcBkCcY_aSBtid6stjZdbCl-zreg=w1200-h675-n-nu",
-  },
-  {
-    category: "Cinematic",
-    prompt: "Vintage convertible cruising along a coastal highway at golden hour, palm trees swaying, smooth tracking shot",
-    model: "Sora 2",
-    src: "https://lh3.googleusercontent.com/stmB5d1VCdgmMUXrluAQEOFjc7KnAh1HEZpEa9roUUaZSs7l959ccPVuXeQfeosk0UnsVN28A2Qtb5ztq4qzCnonUoq4php6fFogQ7zRBYnu1rdNusY=w1200-h675-n-nu",
-  },
-  {
-    category: "Social Media",
-    prompt: "Cute corgi wearing tiny sunglasses on a beach, slow motion, bokeh background, 9:16 vertical",
-    model: "Kling 3.0",
-    src: "https://lh3.googleusercontent.com/C5f9YIk6GF97QgXDqWujm9XjiJORVdN_Q_EGIdpd-WmNYHEka5WQDwjEobpzReQrqaAQntWX4ZYOXD4wxdPrNeufuMbvf47nWO49pu5u5cliFYnu=w1200-h675-n-nu",
-  },
-  {
-    category: "E-commerce",
-    prompt: "Premium leather watch on a marble surface, soft daylight, slow 360-degree rotation, luxury aesthetic",
-    model: "Veo 3",
-    src: "https://lh3.googleusercontent.com/kcTPNUSoyUi4RKL-N3eAWw-5hEZK4MfN9LDVa5k8MEsiZS9qSnhs__qmDQqOuPuYPL4lBARA2mXoK_biTv8u9zkecNP1ndUHBgLf5YNjJI3tx17MIw=w1200-h675-n-nu",
-  },
-];
-
 const exploreTags = [
   "AI Video Generator", "Text to Video AI", "Image to Video", "AI Photo Editor",
   "AI Video Extender", "Mimic Motion", "Earth Zoom", "Polaroid Selfie",
@@ -127,9 +153,7 @@ const stagger = {
 
 export default function HomePage() {
   const [exploreKey, setExploreKey] = useState<typeof exploreTabs[number]["key"]>("img2vid");
-  const [exampleIndex, setExampleIndex] = useState(0);
   const explore = exploreTabs.find((t) => t.key === exploreKey)!;
-  const example = madeWithExamples[exampleIndex];
 
   return (
     <div className="min-h-full bg-[#0B0817]">
@@ -307,95 +331,6 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Made with Synapse */}
-      <section className="py-16 px-6 md:px-12 bg-[#0A0712]/50">
-        <motion.div
-          className="max-w-[1200px] mx-auto flex flex-col gap-10"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={stagger}
-        >
-          <motion.div variants={fadeInUp} className="flex flex-col items-center gap-3 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
-              Made with Synapse
-            </h2>
-            <p className="text-base text-[#94A3B8]">
-              Real prompts from real creators. Use them as a starting point.
-            </p>
-          </motion.div>
-
-          {/* Category tabs */}
-          <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-2">
-            {madeWithExamples.map((ex, idx) => {
-              const isActive = idx === exampleIndex;
-              return (
-                <button
-                  key={ex.category}
-                  onClick={() => setExampleIndex(idx)}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
-                    isActive
-                      ? "bg-[#13101F] text-[#F8FAFC] border border-[#475569]"
-                      : "text-[#64748B] hover:text-[#CBD5E1]"
-                  }`}
-                >
-                  {ex.category}
-                </button>
-              );
-            })}
-          </motion.div>
-
-          {/* Example showcase */}
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[1fr,1.2fr] gap-6 items-stretch">
-            {/* Left: prompt card */}
-            <div className="flex flex-col gap-4 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B]">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-1 rounded-full bg-[#6366F1]/15 text-[#A78BFA] text-xs font-bold tracking-wide">
-                  {example.category.toUpperCase()}
-                </span>
-                <span className="px-2.5 py-1 rounded-full bg-[#1E293B] text-[#CBD5E1] text-xs font-semibold">
-                  {example.model}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <span className="text-xs uppercase tracking-wider text-[#64748B] font-bold">Prompt</span>
-                <p className="text-sm text-[#CBD5E1] leading-relaxed">
-                  {example.prompt}
-                </p>
-              </div>
-              <div className="flex-1" />
-              <Link
-                href={`/tools/text-to-video?prompt=${encodeURIComponent(example.prompt)}`}
-                className="inline-flex items-center justify-center gap-2 w-fit h-11 px-6 rounded-xl bg-[#6366F1] hover:bg-[#7C3AED] text-white text-sm font-semibold transition-colors"
-              >
-                <Sparkles className="w-4 h-4" />
-                Try with this prompt
-              </Link>
-            </div>
-
-            {/* Right: video preview placeholder */}
-            <div className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5 bg-[#13101F]">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={example.src}
-                alt={`${example.category} example by ${example.model}`}
-                referrerPolicy="no-referrer"
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black/30" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/30 shadow-xl">
-                  <div className="w-0 h-0 border-l-[14px] border-l-white border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent ml-1" />
-                </div>
-              </div>
-              <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-[10px] text-white/70 font-medium">
-                via Veo 3
-              </div>
-            </div>
-          </motion.div>
-        </motion.div>
-      </section>
-
       {/* Models */}
       <section id="models" className="py-12 px-6 md:px-12">
         <motion.div
@@ -441,7 +376,7 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Features Section */}
+      {/* Why Choose Synapse */}
       <section id="features" className="py-[100px] px-6 md:px-12">
         <motion.div
           className="max-w-[1200px] mx-auto flex flex-col items-center gap-12"
@@ -450,16 +385,98 @@ export default function HomePage() {
           viewport={{ once: true, margin: "-100px" }}
           variants={stagger}
         >
-          <motion.div variants={fadeInUp} className="text-center max-w-[700px] flex flex-col gap-3">
-            <h2 className="text-4xl font-bold text-[#F8FAFC]">Built for Serious Creators</h2>
+          <motion.div variants={fadeInUp} className="text-center max-w-[820px] flex flex-col gap-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
+              Why Choose Synapse
+            </h2>
             <p className="text-base text-[#94A3B8] leading-relaxed">
-              Everything you need to streamline your AI content workflow.
+              Synapse integrates leading generative models like Veo 3, Sora 2, Kling, Runway, Midjourney, and Flux to empower creators with a unified platform for both video and image. Whether you&apos;re crafting cinematic shorts or product visuals, our advanced workflow helps bring creative ideas to life — faster and better.
             </p>
           </motion.div>
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 w-full">
-            {features.map((feature, i) => (
-              <FeatureCard key={i} {...feature} />
-            ))}
+
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+            {whyChoose.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={i}
+                  className="flex flex-col gap-4 p-7 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] transition-colors"
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center"
+                    style={{ backgroundColor: `${item.iconColor}1A` }}
+                  >
+                    <Icon className="w-6 h-6" style={{ color: item.iconColor }} />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#F8FAFC] tracking-[-0.01em]">{item.title}</h3>
+                  <p className="text-[15px] text-[#94A3B8] leading-relaxed">{item.description}</p>
+                </div>
+              );
+            })}
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* Create with Synapse in Easy Steps */}
+      <section className="py-[100px] px-6 md:px-12 bg-[#0A0712]/60">
+        <motion.div
+          className="max-w-[1200px] mx-auto flex flex-col items-center gap-14"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={stagger}
+        >
+          <motion.div variants={fadeInUp} className="text-center max-w-[820px] flex flex-col gap-4">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
+              Create with Synapse in Easy Steps
+            </h2>
+            <p className="text-base text-[#94A3B8]">
+              No editing skills needed — just pick, type, and generate using AI video and image tools.
+            </p>
+          </motion.div>
+
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[1fr,1.1fr] gap-12 items-center w-full">
+            {/* Left: demo previews stacked */}
+            <div className="flex flex-col gap-5">
+              {stepDemos.map((d, i) => (
+                <div key={i} className="relative aspect-[4/3] rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5 bg-[#13101F]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={d.src}
+                    alt={`${d.label} demo`}
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-[10px] text-white/70 font-medium">
+                    via {d.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right: numbered steps */}
+            <div className="flex flex-col gap-7">
+              {easySteps.map((step, i) => (
+                <div key={i} className="flex gap-5">
+                  <div className="flex flex-col items-center shrink-0">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-base font-bold shadow-lg shadow-[#6366F1]/30 ring-1 ring-inset ring-white/20"
+                      style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
+                    >
+                      {step.number}
+                    </div>
+                    {i < easySteps.length - 1 && (
+                      <div className="w-px flex-1 bg-gradient-to-b from-[#6366F1]/40 to-transparent mt-2 min-h-[24px]" />
+                    )}
+                  </div>
+                  <div className="flex flex-col gap-1.5 pb-4">
+                    <h3 className="text-lg font-bold text-[#F8FAFC]">{step.title}</h3>
+                    <p className="text-[15px] text-[#94A3B8] leading-relaxed">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
       </section>
