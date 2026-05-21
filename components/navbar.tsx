@@ -213,7 +213,8 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
 
   if (variant === "app") {
     return (
-      <header className="h-[60px] border-b border-[#1E293B] bg-[#06060A] flex items-center justify-between px-6 shrink-0">
+      <>
+      <header className="fixed top-0 left-0 right-0 z-50 h-[60px] border-b border-[#1E293B] bg-[#06060A]/85 backdrop-blur-md flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-6">
           <Link href="/" className="text-lg font-bold text-[#F8FAFC]">imgvex.AI</Link>
           <div className="w-px h-6 bg-[#1E293B]" />
@@ -246,6 +247,8 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
           )}
         </div>
       </header>
+      <div className="h-[60px]" />
+      </>
     );
   }
 
