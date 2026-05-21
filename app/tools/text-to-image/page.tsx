@@ -454,9 +454,9 @@ export default function TextToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px] gap-4 py-4 pr-4">
-        {/* Left Sidebar */}
-        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+      <div className="relative flex min-h-[640px] gap-4 py-4 pr-4">
+        {/* Left Sidebar — fixed */}
+        <aside className="fixed left-0 top-[100px] w-[200px] h-[calc(100vh-100px)] rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col z-40">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -509,7 +509,7 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
+        <main className="flex-1 min-w-0 lg:ml-[216px] rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
           {/* Scrollable settings */}
           <div className="flex-1 overflow-y-auto px-6 pt-6">
             <div className="max-w-[640px] mx-auto flex flex-col gap-5">
