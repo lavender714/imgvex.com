@@ -18,8 +18,6 @@ import {
   Clock,
   Users,
   CreditCard,
-  Wallet,
-  Banknote,
 } from "lucide-react";
 
 const fadeInUp = {
@@ -386,34 +384,6 @@ export default function PricingPage() {
         </motion.div>
       </section>
 
-      {/* Payment Methods */}
-      <section className="py-12 px-6 md:px-12 border-t border-[#1E293B]">
-        <div className="max-w-[1200px] mx-auto flex flex-col items-center gap-4">
-          <p className="text-xs text-[#64748B] uppercase tracking-wider font-medium">Accepted Payment Methods</p>
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13101F] border border-[#1E293B]">
-              <CreditCard className="w-4 h-4 text-[#64748B]" />
-              <span className="text-xs text-[#94A3B8]">Visa</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13101F] border border-[#1E293B]">
-              <CreditCard className="w-4 h-4 text-[#64748B]" />
-              <span className="text-xs text-[#94A3B8]">Mastercard</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13101F] border border-[#1E293B]">
-              <CreditCard className="w-4 h-4 text-[#64748B]" />
-              <span className="text-xs text-[#94A3B8]">Amex</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13101F] border border-[#1E293B]">
-              <Wallet className="w-4 h-4 text-[#64748B]" />
-              <span className="text-xs text-[#94A3B8]">PayPal</span>
-            </div>
-            <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-[#13101F] border border-[#1E293B]">
-              <Banknote className="w-4 h-4 text-[#64748B]" />
-              <span className="text-xs text-[#94A3B8]">Alipay</span>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* CTA */}
       <section className="py-20 px-6 md:px-12">
