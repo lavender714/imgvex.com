@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
+import { CreemCheckout } from "@creem_io/nextjs";
 
 interface PricingCardProps {
   tier: "lite" | "pro" | "ultra";
@@ -14,6 +15,8 @@ interface PricingCardProps {
   discountLabel?: string;
   isCurrent?: boolean;
   onSelect?: () => void;
+  productId?: string;
+  referenceId?: string;
 }
 
 const tierStyles = {
@@ -50,8 +53,34 @@ export function PricingCard({
   discountLabel,
   isCurrent,
   onSelect,
+  productId,
+  referenceId,
 }: PricingCardProps) {
   const styles = tierStyles[tier];
+  const buttonLabel = isCurrent
+    ? "Current Plan"
+    : tier === "pro"
+    ? "Upgrade to Pro"
+    : tier === "ultra"
+    ? "Go Ultra"
+    : "Get Started";
+  const buttonClass = `w-full h-12 rounded-[14px] font-semibold text-[15px] ${styles.buttonBg} ${styles.buttonBorder} ${styles.buttonText} ${styles.buttonHover}`;
+
+  const cta =
+    productId && !isCurrent ? (
+      <CreemCheckout
+        productId={productId}
+        referenceId={referenceId}
+        checkoutPath="/api/checkout"
+        successUrl="/dashboard?checkout=success"
+      >
+        <Button className={buttonClass}>{buttonLabel}</Button>
+      </CreemCheckout>
+    ) : (
+      <Button className={buttonClass} onClick={onSelect}>
+        {buttonLabel}
+      </Button>
+    );
 
   return (
     <div
@@ -94,12 +123,7 @@ export function PricingCard({
           </li>
         ))}
       </ul>
-      <Button
-        className={`w-full h-12 rounded-[14px] font-semibold text-[15px] ${styles.buttonBg} ${styles.buttonBorder} ${styles.buttonText} ${styles.buttonHover}`}
-        onClick={onSelect}
-      >
-        {isCurrent ? "Current Plan" : tier === "pro" ? "Upgrade to Pro" : tier === "ultra" ? "Go Ultra" : "Get Started"}
-      </Button>
+      {cta}
     </div>
   );
 }

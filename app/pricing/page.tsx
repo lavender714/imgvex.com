@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PricingCard } from "@/components/pricing-card";
+import { useAuth } from "@/components/auth-provider";
 import { motion } from "framer-motion";
 import {
   ChevronDown,
@@ -37,6 +38,7 @@ const pricingTiersMonthly = [
     price: 15,
     originalPrice: 15,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY,
     features: [
       "300 credits / month",
       "720p output",
@@ -52,6 +54,7 @@ const pricingTiersMonthly = [
     price: 29,
     originalPrice: 29,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY,
     features: [
       "800 credits / month",
       "1080p output",
@@ -68,6 +71,7 @@ const pricingTiersMonthly = [
     price: 139,
     originalPrice: 139,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY,
     features: [
       "5,000 credits / month",
       "4K output",
@@ -87,6 +91,7 @@ const pricingTiersYearly = [
     price: 10,
     originalPrice: 15,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY,
     features: [
       "300 credits / month",
       "720p output",
@@ -102,6 +107,7 @@ const pricingTiersYearly = [
     price: 14.5,
     originalPrice: 29,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY,
     features: [
       "800 credits / month",
       "1080p output",
@@ -119,6 +125,7 @@ const pricingTiersYearly = [
     price: 109,
     originalPrice: 139,
     period: "/month",
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY,
     features: [
       "5,000 credits / month",
       "4K output",
@@ -197,6 +204,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(true);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { user } = useAuth();
 
   const tiers = isYearly ? pricingTiersYearly : pricingTiersMonthly;
 
@@ -272,7 +280,7 @@ export default function PricingPage() {
         >
           <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {tiers.map((tier) => (
-              <PricingCard key={tier.tier} {...tier} />
+              <PricingCard key={tier.tier} {...tier} referenceId={user?.id} />
             ))}
           </motion.div>
         </motion.div>

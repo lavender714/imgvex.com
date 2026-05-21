@@ -12,6 +12,7 @@
     "@aws-sdk/client-s3": "^3.1046.0",
     "@aws-sdk/s3-request-presigner": "^3.1046.0",
     "@base-ui/react": "^1.4.1",
+    "@creem_io/nextjs": "^0.5.0",
     "@radix-ui/react-slot": "^1.2.4",
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.105.4",
