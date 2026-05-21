@@ -435,9 +435,9 @@ export default function HomePage() {
             </p>
           </motion.div>
 
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[minmax(0,380px),1fr] gap-10 md:gap-16 items-center w-full">
+          <motion.div variants={fadeInUp} className="flex flex-col md:flex-row gap-10 md:gap-16 items-center md:items-start w-full">
             {/* Left: 2 compact demo previews stacked */}
-            <div className="flex flex-col gap-5 w-full max-w-[380px] mx-auto md:mx-0">
+            <div className="flex flex-col gap-5 w-full max-w-[380px] md:shrink-0">
               {stepDemos.map((d, i) => (
                 <div key={i} className="relative aspect-[4/3] rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5 bg-[#13101F]">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -456,7 +456,7 @@ export default function HomePage() {
             </div>
 
             {/* Right: numbered steps */}
-            <div className="flex flex-col gap-7">
+            <div className="flex-1 w-full flex flex-col gap-7">
               {easySteps.map((step, i) => (
                 <div key={i} className="flex gap-5">
                   <div className="flex flex-col items-center shrink-0">
