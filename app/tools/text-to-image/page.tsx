@@ -518,7 +518,8 @@ export default function TextToImagePage() {
             {/* Editor + Results */}
             <div className="flex gap-6">
               {/* Left: Editor */}
-              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col gap-5 max-h-[calc(100vh-76px)] overflow-y-auto mt-[-56px]">
+              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] mt-[-56px]">
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
               {/* Model Selector */}
               <div>
                 <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -661,10 +662,11 @@ export default function TextToImagePage() {
               {genError && (
                 <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
               )}
+            </div>
 
-              {/* Credits + Generate Button */}
-              <div className="flex flex-col gap-3"
-              >
+            {/* Credits + Generate Button */}
+            <div className="px-6 py-4 border-t border-[#1E293B] flex flex-col gap-3"
+            >
                 <div className="flex items-center gap-2 text-sm text-[#64748B]">
                   <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M12 2L2 7l10 5 10-5-10-5z" />
