@@ -6,7 +6,7 @@ import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { Sparkles, Image as ImageIcon, ChevronRight, Video } from "lucide-react";
+import { Sparkles, ChevronRight } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -112,32 +112,21 @@ export default function HomePage() {
             </Link>
           </motion.div>
 
-          {/* 2 CTA Cards */}
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full max-w-[720px]">
-            {/* Create Video */}
+          {/* 2 CTA Buttons */}
+          <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-5 mt-2">
             <Link
               href="/generate"
-              className="flex flex-col gap-3 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:-translate-y-1 transition-all duration-300 text-left h-[180px]"
+              className="inline-flex items-center justify-center min-w-[200px] h-14 px-10 rounded-2xl text-white text-lg font-bold tracking-wide shadow-lg shadow-[#6366F1]/40 hover:shadow-xl hover:shadow-[#7C3AED]/50 hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-inset ring-white/30"
+              style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center">
-                <Video className="w-5 h-5 text-[#818CF8]" />
-              </div>
-              <h3 className="text-base font-semibold text-[#F8FAFC]">Create Video</h3>
-              <p className="text-sm text-[#64748B] leading-relaxed flex-1">Text or image to video with 20+ models</p>
-              <span className="text-lg text-[#64748B]">→</span>
+              Create Video
             </Link>
-
-            {/* Create Image */}
             <Link
               href="/generate"
-              className="flex flex-col gap-3 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:-translate-y-1 transition-all duration-300 text-left h-[180px]"
+              className="inline-flex items-center justify-center min-w-[200px] h-14 px-10 rounded-2xl text-white text-lg font-bold tracking-wide shadow-lg shadow-[#6366F1]/40 hover:shadow-xl hover:shadow-[#7C3AED]/50 hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-inset ring-white/30"
+              style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
             >
-              <div className="w-10 h-10 rounded-xl bg-[#1E293B] flex items-center justify-center">
-                <ImageIcon className="w-5 h-5 text-[#14B8A6]" />
-              </div>
-              <h3 className="text-base font-semibold text-[#F8FAFC]">Create Image</h3>
-              <p className="text-sm text-[#64748B] leading-relaxed flex-1">Flux · MJ · DALL-E 4 and more</p>
-              <span className="text-lg text-[#64748B]">→</span>
+              Create Image
             </Link>
           </motion.div>
         </motion.div>
