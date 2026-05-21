@@ -454,9 +454,9 @@ export default function TextToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px] gap-4 p-4">
+      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px] gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="w-[200px] flex-shrink-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -509,7 +509,7 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 overflow-y-auto rounded-2xl border border-[#1E293B] bg-[#0A0A12] px-6 py-6">
+        <main className="flex-1 min-w-0 overflow-y-auto rounded-2xl border border-[#1E293B] bg-[#0A0A12] px-6 py-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             {/* Title */}
             <div>
@@ -567,27 +567,27 @@ export default function TextToImagePage() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => navigator.clipboard.writeText(prompt)}
-                      className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)] transition-colors"
+                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
                       title="Copy"
                     >
                       <Copy className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setPrompt("")}
-                      className="p-1.5 rounded-md text-[#475569] hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-red-400 hover:bg-red-500/5"}`}
                       title="Clear"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => navigator.clipboard.readText().then(t => setPrompt(t)).catch(() => {})}
-                      className="p-1.5 rounded-md text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)] transition-colors"
+                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
                       title="Paste"
                     >
                       <Files className="w-4 h-4" />
                     </button>
                     <button
-                      className="p-1.5 rounded-md text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)] transition-colors"
+                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)]"}`}
                       title="Optimize"
                     >
                       <CheckCircle2 className="w-4 h-4" />
@@ -708,13 +708,10 @@ export default function TextToImagePage() {
         </main>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[440px] 2xl:w-[480px] flex-shrink-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+        <aside className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
           {/* Header */}
-          <div className="px-5 py-3 flex items-center justify-between">
+          <div className="px-5 py-3">
             <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
-            <span className="px-2.5 py-1 rounded-full bg-[rgba(99,102,241,0.12)] border border-[#6366F1]/30 text-[11px] text-[#818CF8]">
-              {currentModel?.name}: Fast Generation
-            </span>
           </div>
           {/* Canvas */}
           <div className="flex-1 flex items-center justify-center px-5 pb-5">
