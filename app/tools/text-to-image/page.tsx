@@ -454,9 +454,9 @@ export default function TextToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="sticky top-[100px] flex h-[calc(100vh-100px)] gap-4 py-4 pr-4 z-40">
+      <div className="flex gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="sticky top-[100px] self-start h-[calc(100vh-100px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -509,9 +509,8 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
-          {/* Scrollable settings */}
-          <div className="flex-1 overflow-y-auto px-6 pt-6">
+        <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12]">
+          <div className="px-6 pt-6">
             <div className="max-w-[640px] mx-auto flex flex-col gap-5">
               {/* Model Selector */}
               <div>
@@ -655,133 +654,118 @@ export default function TextToImagePage() {
               {genError && (
                 <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
               )}
-            </div>
 
-          </div>
-
-          {/* Fixed bottom bar */}
-          <div className="px-6 py-4 border-t border-[#1E293B] bg-[#0A0A12]">
-            <div className="max-w-[640px] mx-auto flex flex-col gap-3"
-            >
-              <div className="flex items-center gap-2 text-sm text-[#64748B]">
-                <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-                <span>Required credits:</span>
-                <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+              {/* Credits + Generate Button */}
+              <div className="flex flex-col gap-3"
+              >
+                <div className="flex items-center gap-2 text-sm text-[#64748B]">
+                  <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                    <path d="M2 17l10 5 10-5" />
+                    <path d="M2 12l10 5 10-5" />
+                  </svg>
+                  <span>Required credits:</span>
+                  <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
+                  {isGenerating && (
+                    <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
+                  )}
+                </div>
                 {isGenerating && (
-                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
+                  <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                )}
+                <button
+                  onClick={handleGenerate}
+                  disabled={isGenerating || authLoading}
+                  className={`w-full h-[52px] rounded-2xl font-semibold text-[15px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
+                    prompt.trim() && !isGenerating
+                      ? "bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]"
+                      : "bg-[#1E293B] text-[#475569]"
+                  }`}
+                >
+                  <Sparkles className="w-5 h-5" />
+                  <span>
+                    {authLoading
+                      ? "Checking..."
+                      : isGenerating
+                      ? taskStatus || "Generating..."
+                      : user
+                      ? "Generate"
+                      : "Sign in to Generate"}
+                  </span>
+                </button>
+                {!user && !authLoading && (
+                  <p className="text-xs text-[#64748B] text-center">
+                    You need to{" "}
+                    <Link href="/auth" className="text-[#818CF8] hover:underline">
+                      sign in
+                    </Link>{" "}
+                    before generating images
+                  </p>
                 )}
               </div>
-              {isGenerating && (
-                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              )}
-              <button
-                onClick={handleGenerate}
-                disabled={isGenerating || authLoading}
-                className={`w-full h-[52px] rounded-2xl font-semibold text-[15px] transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
-                  prompt.trim() && !isGenerating
-                    ? "bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white shadow-[0_0_20px_rgba(99,102,241,0.3)]"
-                    : "bg-[#1E293B] text-[#475569]"
-                }`}
+
+              {/* Result Showcase */}
+              <div className={`w-full ${getAspectClass(aspectRatio)} rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden cursor-pointer group`}
+                onClick={() => generatedImages.length > 0 && setPreviewImage(generatedImages[0])}
               >
-                <Sparkles className="w-5 h-5" />
-                <span>
-                  {authLoading
-                    ? "Checking..."
-                    : isGenerating
-                    ? taskStatus || "Generating..."
-                    : user
-                    ? "Generate"
-                    : "Sign in to Generate"}
-                </span>
-              </button>
-              {!user && !authLoading && (
-                <p className="text-xs text-[#64748B] text-center">
-                  You need to{" "}
-                  <Link href="/auth" className="text-[#818CF8] hover:underline">
-                    sign in
-                  </Link>{" "}
-                  before generating images
-                </p>
-              )}
-            </div>
-          </div>
-        </main>
-
-        {/* Right: Preview Panel */}
-        <aside className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
-          {/* Header */}
-          <div className="px-5 py-3">
-            <h3 className="text-sm font-semibold text-[#F8FAFC]">Generated Images</h3>
-          </div>
-          {/* Canvas */}
-          <div className="flex-1 flex items-center justify-center px-5 pb-5">
-            <div className={`w-full ${getAspectClass(aspectRatio)} max-h-full rounded-2xl bg-[#13101F] border border-[#1E293B] flex flex-col items-center justify-center gap-4 relative overflow-hidden cursor-pointer group`}
-              onClick={() => generatedImages.length > 0 && setPreviewImage(generatedImages[0])}
-            >
-              {isGenerating ? (
-                <div className="relative z-10 flex flex-col items-center gap-3">
-                  <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center animate-pulse">
-                    <Sparkles className="w-6 h-6 text-[#818CF8] animate-spin" />
-                  </div>
-                  <p className="text-sm text-[#818CF8]">{taskStatus || "Generating..."}</p>
-                </div>
-              ) : generatedImages.length > 0 ? (
-                <div className="relative z-10 w-full h-full p-3">
-                  <img
-                    src={generatedImages[0]}
-                    alt="Generated"
-                    className="w-full h-full object-contain rounded-xl"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                  {/* Floating actions */}
-                  <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a
-                      href={generatedImages[0]}
-                      download
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Download className="w-3.5 h-3.5" />
-                      Download
-                    </a>
-                    <button
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
-                      onClick={(e) => { e.stopPropagation(); }}
-                    >
-                      <Share2 className="w-3.5 h-3.5" />
-                      Share
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
+                {isGenerating ? (
                   <div className="relative z-10 flex flex-col items-center gap-3">
-                    <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
-                      <Image className="w-6 h-6 text-[#818CF8]" />
+                    <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center animate-pulse">
+                      <Sparkles className="w-6 h-6 text-[#818CF8] animate-spin" />
                     </div>
-                    <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
+                    <p className="text-sm text-[#818CF8]">{taskStatus || "Generating..."}</p>
                   </div>
-                </>
-              )}
+                ) : generatedImages.length > 0 ? (
+                  <div className="relative z-10 w-full h-full p-3">
+                    <img
+                      src={generatedImages[0]}
+                      alt="Generated"
+                      className="w-full h-full object-contain rounded-xl"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                    {/* Floating actions */}
+                    <div className="absolute bottom-4 right-4 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <a
+                        href={generatedImages[0]}
+                        download
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                        Download
+                      </a>
+                      <button
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/60 backdrop-blur-sm text-xs text-white hover:bg-black/80 transition-colors"
+                        onClick={(e) => { e.stopPropagation(); }}
+                      >
+                        <Share2 className="w-3.5 h-3.5" />
+                        Share
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <>
+                    <div className="absolute inset-0 opacity-30" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(20,184,166,0.2) 100%)" }} />
+                    <div className="relative z-10 flex flex-col items-center gap-3">
+                      <div className="w-14 h-14 rounded-full bg-[rgba(99,102,241,0.2)] border border-[#6366F1]/30 flex items-center justify-center">
+                        <Image className="w-6 h-6 text-[#818CF8]" />
+                      </div>
+                      <p className="text-xs text-[#64748B]">Your generated images will appear here</p>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        </aside>
-      </div>
 
-      {/* ─── Marketing Content ─── */}
-      <div className="border-t border-[#1E293B]">
+            {/* ─── Marketing Content ─── */}
+            <div className="border-t border-[#1E293B] mt-8 -mx-6 px-6 pt-8 pb-6">
         {/* Supported Models */}
         <section className="py-12 px-6 md:px-12 bg-[#06060A]">
           <motion.div
@@ -1010,6 +994,9 @@ export default function TextToImagePage() {
             </motion.div>
           </motion.div>
         </section>
+          </div>
+          </div>
+        </main>
       </div>
 
       <Footer />
