@@ -509,152 +509,158 @@ export default function TextToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 min-w-0 overflow-y-auto rounded-2xl border border-[#1E293B] bg-[#0A0A12] px-6 py-6">
-          <div className="max-w-[640px] mx-auto flex flex-col gap-5">
-            {/* Model Selector */}
-            <div>
-              <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
-                <SelectTrigger className="h-14 rounded-xl bg-[#13101F] border-[#1E293B] text-[15px] text-[#F8FAFC] hover:border-[#475569] transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-sm font-bold text-white">
-                      {currentModel?.logo}
-                    </div>
-                    <span className="text-[15px] text-[#F8FAFC]">{currentModel?.name}</span>
-                  </div>
-                </SelectTrigger>
-                <SelectContent className="bg-[#13101F] border-[#1E293B]">
-                  {models.map((m) => (
-                    <SelectItem key={m.id} value={m.id} className="text-[15px] text-[#CBD5E1] focus:bg-[#1E293B]">
-                      <div className="flex items-center gap-3">
-                        <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-[11px] font-bold text-white">
-                          {m.logo}
-                        </div>
-                        {m.name}
+        <main className="flex-1 min-w-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
+          {/* Scrollable settings */}
+          <div className="flex-1 overflow-y-auto px-6 pt-6">
+            <div className="max-w-[640px] mx-auto flex flex-col gap-5">
+              {/* Model Selector */}
+              <div>
+                <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
+                  <SelectTrigger className="h-14 rounded-xl bg-[#13101F] border-[#1E293B] text-[15px] text-[#F8FAFC] hover:border-[#475569] transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-sm font-bold text-white">
+                        {currentModel?.logo}
                       </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Prompt */}
-            <div>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-sm font-semibold text-[#F8FAFC]">Prompt</p>
-                <button className="flex items-center gap-1.5 text-sm text-[#818CF8] hover:text-[#6366F1] transition-colors">
-                  <Wand2 className="w-3.5 h-3.5" />
-                  Translate
-                </button>
+                      <span className="text-[15px] text-[#F8FAFC]">{currentModel?.name}</span>
+                    </div>
+                  </SelectTrigger>
+                  <SelectContent className="bg-[#13101F] border-[#1E293B]">
+                    {models.map((m) => (
+                      <SelectItem key={m.id} value={m.id} className="text-[15px] text-[#CBD5E1] focus:bg-[#1E293B]">
+                        <div className="flex items-center gap-3">
+                          <div className="w-7 h-7 rounded-md bg-gradient-to-br from-[#6366F1] to-[#8B5CF6] flex items-center justify-center text-[11px] font-bold text-white">
+                            {m.logo}
+                          </div>
+                          {m.name}
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
-              <div className="relative rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden focus-within:border-[#6366F1] focus-within:shadow-[0_0_0_3px_rgba(99,102,241,0.15)] transition-all">
-                <textarea
-                  value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
-                  placeholder="Please enter the prompt for your creation"
-                  className="w-full min-h-[140px] p-4 pb-16 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
-                />
-                <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+
+              {/* Prompt */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-sm font-semibold text-[#F8FAFC]">Prompt</p>
                   <button className="flex items-center gap-1.5 text-sm text-[#818CF8] hover:text-[#6366F1] transition-colors">
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Generate With AI
+                    <Wand2 className="w-3.5 h-3.5" />
+                    Translate
                   </button>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => navigator.clipboard.writeText(prompt)}
-                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
-                      title="Copy"
+                </div>
+                <div className="relative rounded-2xl border border-[#1E293B] bg-[#13101F] overflow-hidden focus-within:border-[#6366F1] focus-within:shadow-[0_0_0_3px_rgba(99,102,241,0.15)] transition-all">
+                  <textarea
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Please enter the prompt for your creation"
+                    className="w-full min-h-[140px] p-4 pb-16 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
+                  />
+                  <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
+                    <button className={`flex items-center gap-1.5 text-sm transition-colors ${prompt.trim() ? "text-[#6366F1] hover:text-[#4F52E6]" : "text-[#475569] hover:text-[#94A3B8]"}`}
                     >
-                      <Copy className="w-4 h-4" />
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Generate With AI
                     </button>
-                    <button
-                      onClick={() => setPrompt("")}
-                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-red-400 hover:bg-red-500/5"}`}
-                      title="Clear"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => navigator.clipboard.readText().then(t => setPrompt(t)).catch(() => {})}
-                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
-                      title="Paste"
-                    >
-                      <Files className="w-4 h-4" />
-                    </button>
-                    <button
-                      className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)]"}`}
-                      title="Optimize"
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-1">
+                      <button
+                        onClick={() => navigator.clipboard.writeText(prompt)}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
+                        title="Copy"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setPrompt("")}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-red-400 hover:bg-red-500/5"}`}
+                        title="Clear"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => navigator.clipboard.readText().then(t => setPrompt(t)).catch(() => {})}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
+                        title="Paste"
+                      >
+                        <Files className="w-4 h-4" />
+                      </button>
+                      <button
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)]"}`}
+                        title="Optimize"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
+                <p className="text-xs text-[#64748B] mt-2">
+                  If you&apos;re not satisfied, you can generate again or enter prompt for your own.
+                </p>
               </div>
-              <p className="text-xs text-[#64748B] mt-2">
-                If you&apos;re not satisfied, you can generate again or enter prompt for your own.
-              </p>
-            </div>
 
-            {/* Image Dimensions */}
-            <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-1">Image Dimensions</p>
-              <p className="text-xs text-[#64748B] mb-3">Select the aspect ratio for your image</p>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
-                {[
-                  { ratio: "1:1", w: 20, h: 20 },
-                  { ratio: "16:9", w: 28, h: 16 },
-                  { ratio: "9:16", w: 16, h: 28 },
-                  { ratio: "4:3", w: 24, h: 18 },
-                  { ratio: "3:4", w: 18, h: 24 },
-                  { ratio: "21:9", w: 32, h: 12 },
-                ].map(({ ratio, w, h }) => (
-                  <button
-                    key={ratio}
-                    onClick={() => setAspectRatio(ratio)}
-                    className={`flex flex-col items-center gap-2 py-3 rounded-xl border-2 transition-all ${
-                      aspectRatio === ratio
-                        ? "border-[#8B5CF6] bg-[rgba(139,92,246,0.1)]"
-                        : "border-[#1E293B] bg-[#13101F] hover:border-[#475569]"
-                    }`}
-                  >
-                    <div
-                      className={`border-2 rounded-sm ${aspectRatio === ratio ? "border-[#F8FAFC]" : "border-[#64748B]"}`}
-                      style={{ width: `${w}px`, height: `${h}px` }}
-                    />
-                    <span className={`text-xs font-medium ${aspectRatio === ratio ? "text-[#F8FAFC]" : "text-[#64748B]"}`}>
-                      {ratio}
-                    </span>
-                  </button>
-                ))}
+              {/* Image Dimensions */}
+              <div>
+                <p className="text-sm font-semibold text-[#F8FAFC] mb-1">Image Dimensions</p>
+                <p className="text-xs text-[#64748B] mb-3">Select the aspect ratio for your image</p>
+                <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                  {[
+                    { ratio: "1:1", w: 20, h: 20 },
+                    { ratio: "16:9", w: 28, h: 16 },
+                    { ratio: "9:16", w: 16, h: 28 },
+                    { ratio: "4:3", w: 24, h: 18 },
+                    { ratio: "3:4", w: 18, h: 24 },
+                    { ratio: "21:9", w: 32, h: 12 },
+                  ].map(({ ratio, w, h }) => (
+                    <button
+                      key={ratio}
+                      onClick={() => setAspectRatio(ratio)}
+                      className={`flex flex-col items-center gap-2 py-3 rounded-xl border-2 transition-all ${
+                        aspectRatio === ratio
+                          ? "border-[#8B5CF6] bg-[rgba(139,92,246,0.1)]"
+                          : "border-[#1E293B] bg-[#13101F] hover:border-[#475569]"
+                      }`}
+                    >
+                      <div
+                        className={`border-2 rounded-sm ${aspectRatio === ratio ? "border-[#F8FAFC]" : "border-[#64748B]"}`}
+                        style={{ width: `${w}px`, height: `${h}px` }}
+                      />
+                      <span className={`text-xs font-medium ${aspectRatio === ratio ? "text-[#F8FAFC]" : "text-[#64748B]"}`}>
+                        {ratio}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
 
-            {/* Resolution */}
-            <div>
-              <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Resolution</p>
-              <div className="grid grid-cols-3 gap-2">
-                {["1K", "2K", "4K"].map((res) => (
-                  <button
-                    key={res}
-                    onClick={() => setResolution(res)}
-                    className={`h-11 rounded-xl text-sm font-medium transition-all border ${
-                      resolution === res
-                        ? "bg-[rgba(139,92,246,0.15)] border-[#8B5CF6]/40 text-[#F8FAFC]"
-                        : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
-                    }`}
-                  >
-                    {res}
-                  </button>
-                ))}
+              {/* Resolution */}
+              <div>
+                <p className="text-sm font-semibold text-[#F8FAFC] mb-3">Resolution</p>
+                <div className="grid grid-cols-3 gap-2">
+                  {["1K", "2K", "4K"].map((res) => (
+                    <button
+                      key={res}
+                      onClick={() => setResolution(res)}
+                      className={`h-11 rounded-xl text-sm font-medium transition-all border ${
+                        resolution === res
+                          ? "bg-[rgba(139,92,246,0.15)] border-[#8B5CF6]/40 text-[#F8FAFC]"
+                          : "bg-[#13101F] border-[#1E293B] text-[#64748B] hover:border-[#475569] hover:text-[#CBD5E1]"
+                      }`}
+                    >
+                      {res}
+                    </button>
+                  ))}
+                </div>
               </div>
+
+              {/* Error */}
+              {genError && (
+                <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
+              )}
             </div>
+          </div>
 
-            {/* Error */}
-            {genError && (
-              <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
-            )}
-
-            {/* Credit Cost & Generate */}
-            <div className="flex flex-col gap-3 pt-2">
+          {/* Fixed bottom bar: Credits + Generate */}
+          <div className="px-6 py-4 border-t border-[#1E293B] bg-[#0A0A12]">
+            <div className="max-w-[640px] mx-auto flex flex-col gap-3">
               <div className="flex items-center gap-2 text-sm text-[#64748B]">
                 <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M12 2L2 7l10 5 10-5-10-5z" />
