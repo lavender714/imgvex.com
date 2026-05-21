@@ -36,9 +36,9 @@ const exploreTabs = [
     models: ["Veo 3", "Kling 3.0", "Runway Gen-4", "Seedance 2.0"],
     href: "/tools/image-to-video",
     samples: [
-      { gradient: "linear-gradient(135deg, #6366F1 0%, #A855F7 100%)", label: "Portrait motion" },
-      { gradient: "linear-gradient(135deg, #14B8A6 0%, #6366F1 100%)", label: "Drone shot" },
-      { gradient: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)", label: "Action scene" },
+      { src: "https://lh3.googleusercontent.com/BXf7nFeF8HLOvRUH3C0Gm7vCGyIRUhaZ8oMkb_oFKW5RxrDWnsFx8wD-1kDG8z4vuwMgqDOmMn1YU9CxAewIKclglhcuUc_8RUfcfy7YaNTB03Sc3w=w800-h600-n-nu", label: "Portrait motion" },
+      { src: "https://lh3.googleusercontent.com/r8GdFVkzQUZJUavR472wZA4NsdM5CarlMf4xFW1tafuLyRPbbhDxU1MeIanCWYjgfrgoqNTHBa94wo0kyCVQHuxvvcwfcRIAwW0o1xJgFocg5Ple=w800-h600-n-nu", label: "Drone shot" },
+      { src: "https://lh3.googleusercontent.com/mIY1prcEmuW-VvXFj1VkQMVjz8YgeAFIeTstI5pgsWxxNFy0iSGhPV8z2jw5oE-r6czEKoTc7T2F1SiIb5mOo4L-hZjaOpv0I9pSF-fKl3RBye1a=w800-h600-n-nu", label: "Action scene" },
     ],
   },
   {
@@ -49,9 +49,9 @@ const exploreTabs = [
     models: ["Sora 2", "Veo 3", "Kling 3.0", "Hailuo 2.3"],
     href: "/tools/text-to-video",
     samples: [
-      { gradient: "linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)", label: "Story scene" },
-      { gradient: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)", label: "Character" },
-      { gradient: "linear-gradient(135deg, #06B6D4 0%, #6366F1 100%)", label: "Cinematic" },
+      { src: "https://lh3.googleusercontent.com/ZiwH_wa1LfkkOwklJ874qQBiNdhxukLDOasXDAOIvj_myLyX8RgewbtrCiB-GYYeGHwV54tZ8M8CY3bBmqZ3qikQliW7hpIfotfdgiQXSUOgR79s8VE=w800-h600-n-nu", label: "Story scene" },
+      { src: "https://lh3.googleusercontent.com/7Ha4silSl6FaygQ5eOxK0DnVHSgdeRp-pyH0A9u8SnxjG32FPyuYzW9NIVAkq0v2QBm7nafnZUvxvKYJvD30niCBEWdtxdu92mDZYjukkcNRumaZ7A=w800-h600-n-nu", label: "Character" },
+      { src: "https://lh3.googleusercontent.com/givG_8BNQzZcq5W98Nojwwk2QHIokeZnhFXXN7VaF5LJMhiVn7QZUJWCMc052h36I6RsRkosi-hKnR-QAOXSxmLLtJsbxzv5cb4l9XkfjcatO1MfwA=w800-h600-n-nu", label: "Cinematic" },
     ],
   },
   {
@@ -62,9 +62,9 @@ const exploreTabs = [
     models: ["Nano Banana 2", "Flux Pro", "Seedream 4.5", "GPT Image 2"],
     href: "/tools/image-to-image",
     samples: [
-      { gradient: "linear-gradient(135deg, #F97316 0%, #EC4899 100%)", label: "Style transfer" },
-      { gradient: "linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)", label: "Restyle" },
-      { gradient: "linear-gradient(135deg, #A855F7 0%, #6366F1 100%)", label: "Variations" },
+      { src: "https://lh3.googleusercontent.com/r7N2n0PAnoTXEEKQQTsXyKOrQD0Ii_3EC33JHpcw16NPlqu3jes7QVu1GFm9mz4KBCLCC9fdpBcpPzBooK6R_TWdBJmbrqTy0f5mo59j-Tl2ayHTWsQ=w800-h600-n-nu", label: "Outpainting" },
+      { src: "https://lh3.googleusercontent.com/ZKEikt9YR-ZnojBscdjdW0SzWN40c_g_y_omFFytmPFNayOiMHizBbwV3kWDuo1-2rQbN7_hGcq0uNpcwJtIpBUVfV3CL6qKeEn01A9H4GEmVtZ7=w800-h600-n-nu", label: "Add object" },
+      { src: "https://lh3.googleusercontent.com/cay9WFD-AQyIamJuhRxJcrVBoo7zoNjzmLjYR2xZLFOOVAnLeoiC24YvB9UmQKm9qXfTAtxBVS25XfynlvVJvTzOvjkz_9LrWE-Auyf-ZwtXTP-PDA=w800-h600-n-nu", label: "Remove object" },
     ],
   },
   {
@@ -75,9 +75,9 @@ const exploreTabs = [
     models: ["Midjourney v7", "Flux Pro", "DALL-E 4", "Imagen"],
     href: "/tools/text-to-image",
     samples: [
-      { gradient: "linear-gradient(135deg, #6366F1 0%, #14B8A6 100%)", label: "Illustration" },
-      { gradient: "linear-gradient(135deg, #EC4899 0%, #F59E0B 100%)", label: "Photoreal" },
-      { gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)", label: "Concept art" },
+      { src: "https://lh3.googleusercontent.com/drrHfIaeqeQm4kXlnH7VdB-NCjnUEz5rEufAZrUZHNOGmJE1tLsfHHG2J1lEI3yhCNEJI46rF4H5uxSyV8HQx6loLUppd8sjn8ZHeLz1rpXsJoBCfQ=w800-h600-n-nu", label: "Style transfer" },
+      { src: "https://lh3.googleusercontent.com/y8iwNOFG7VdNI_X_nGNrLjnLFJGkKJoqQFMw6to6C5l-qmfj9V5of64jwyFF8wRsVliq1jD5GhIkvNmD0KFK2AiX_WJGeC6ehVu3O_rac9hvK6PEBoM=w800-h600-n-nu", label: "Photoreal" },
+      { src: "https://lh3.googleusercontent.com/p_qu1p6DigEfZWOmRCXSnBJ5jIoPrDcz782l4UQetzrGyVwbpKUmdtJDIPVU83IEwtOlZ8ITL8NAnmLJvhBdkpKeFZd3TATQzWXmCbLDBy4T3rlelw=w800-h600-n-nu", label: "Concept art" },
     ],
   },
 ] as const;
@@ -87,25 +87,25 @@ const madeWithExamples = [
     category: "Marketing",
     prompt: "A sleek smartphone rotating in a minimal studio with soft rim light, product shot, 16:9, ultra detailed",
     model: "Veo 3",
-    gradient: "linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%)",
+    src: "https://lh3.googleusercontent.com/IoSfcitEGPD3GGM8rZ3rz8ILUz_b1ejr_cYUT6iY8hpM2YYtVGO94k2_gdQQYwbfS8d1A5Gqw1YgBAB51ji8hgMcBkCcY_aSBtid6stjZdbCl-zreg=w1200-h675-n-nu",
   },
   {
     category: "Cinematic",
     prompt: "Vintage convertible cruising along a coastal highway at golden hour, palm trees swaying, smooth tracking shot",
     model: "Sora 2",
-    gradient: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
+    src: "https://lh3.googleusercontent.com/stmB5d1VCdgmMUXrluAQEOFjc7KnAh1HEZpEa9roUUaZSs7l959ccPVuXeQfeosk0UnsVN28A2Qtb5ztq4qzCnonUoq4php6fFogQ7zRBYnu1rdNusY=w1200-h675-n-nu",
   },
   {
     category: "Social Media",
     prompt: "Cute corgi wearing tiny sunglasses on a beach, slow motion, bokeh background, 9:16 vertical",
     model: "Kling 3.0",
-    gradient: "linear-gradient(135deg, #14B8A6 0%, #6366F1 50%, #A855F7 100%)",
+    src: "https://lh3.googleusercontent.com/C5f9YIk6GF97QgXDqWujm9XjiJORVdN_Q_EGIdpd-WmNYHEka5WQDwjEobpzReQrqaAQntWX4ZYOXD4wxdPrNeufuMbvf47nWO49pu5u5cliFYnu=w1200-h675-n-nu",
   },
   {
     category: "E-commerce",
     prompt: "Premium leather watch on a marble surface, soft daylight, slow 360-degree rotation, luxury aesthetic",
     model: "Veo 3",
-    gradient: "linear-gradient(135deg, #06B6D4 0%, #14B8A6 50%, #6366F1 100%)",
+    src: "https://lh3.googleusercontent.com/kcTPNUSoyUi4RKL-N3eAWw-5hEZK4MfN9LDVa5k8MEsiZS9qSnhs__qmDQqOuPuYPL4lBARA2mXoK_biTv8u9zkecNP1ndUHBgLf5YNjJI3tx17MIw=w1200-h675-n-nu",
   },
 ];
 
@@ -273,18 +273,33 @@ export default function HomePage() {
                 <Link
                   key={i}
                   href={explore.href}
-                  className="relative aspect-[3/4] rounded-2xl overflow-hidden group cursor-pointer ring-1 ring-inset ring-white/5 hover:ring-white/20 hover:-translate-y-1 transition-all duration-300"
-                  style={{ background: s.gradient }}
+                  className="relative aspect-[3/4] rounded-2xl overflow-hidden group cursor-pointer ring-1 ring-inset ring-white/5 hover:ring-white/20 hover:-translate-y-1 transition-all duration-300 bg-[#13101F]"
                 >
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={s.src}
+                    alt={s.label}
+                    referrerPolicy="no-referrer"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/0 to-black/0" />
                   <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
-                    <span className="text-[11px] font-semibold text-white/90 uppercase tracking-wider">{s.label}</span>
-                    <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white transition-colors" />
+                    <span className="text-[11px] font-semibold text-white uppercase tracking-wider drop-shadow-md">{s.label}</span>
+                    <ChevronRight className="w-4 h-4 text-white/80 group-hover:text-white transition-colors drop-shadow-md" />
                   </div>
                 </Link>
               ))}
             </div>
           </motion.div>
+
+          {/* Attribution */}
+          <motion.p variants={fadeInUp} className="text-[11px] text-[#475569] text-center">
+            Example previews via{" "}
+            <a href="https://deepmind.google/models/veo/" target="_blank" rel="noopener noreferrer" className="underline hover:text-[#94A3B8]">
+              Google Veo
+            </a>
+            {" "}official showcase. Synapse provides unified access to 20+ models.
+          </motion.p>
         </motion.div>
       </section>
 
@@ -355,15 +370,22 @@ export default function HomePage() {
             </div>
 
             {/* Right: video preview placeholder */}
-            <div
-              className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5"
-              style={{ background: example.gradient }}
-            >
-              <div className="absolute inset-0 bg-black/20" />
+            <div className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5 bg-[#13101F]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={example.src}
+                alt={`${example.category} example by ${example.model}`}
+                referrerPolicy="no-referrer"
+                className="absolute inset-0 w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-black/30" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/20">
+                <div className="w-16 h-16 rounded-full bg-white/15 backdrop-blur-md flex items-center justify-center ring-1 ring-white/30 shadow-xl">
                   <div className="w-0 h-0 border-l-[14px] border-l-white border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent ml-1" />
                 </div>
+              </div>
+              <div className="absolute bottom-3 right-3 px-2 py-1 rounded-md bg-black/50 backdrop-blur-sm text-[10px] text-white/70 font-medium">
+                via Veo 3
               </div>
             </div>
           </motion.div>
