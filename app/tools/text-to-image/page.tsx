@@ -556,7 +556,7 @@ export default function TextToImagePage() {
                     className="w-full min-h-[140px] p-4 pb-16 bg-transparent text-sm text-[#CBD5E1] placeholder:text-[#475569] resize-none outline-none"
                   />
                   <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between">
-                    <button className={`flex items-center gap-1.5 text-sm transition-colors ${prompt.trim() ? "text-[#6366F1] hover:text-[#4F52E6]" : "text-[#475569] hover:text-[#94A3B8]"}`}
+                    <button className={`flex items-center gap-1.5 text-sm transition-colors ${prompt.trim() ? "text-[#6366F1] hover:text-[#4F52E6]" : "text-[#334155] hover:text-[#475569]"}`}
                     >
                       <Sparkles className="w-3.5 h-3.5" />
                       Generate With AI
@@ -564,27 +564,27 @@ export default function TextToImagePage() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => navigator.clipboard.writeText(prompt)}
-                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#334155] hover:text-[#475569]"}`}
                         title="Copy"
                       >
                         <Copy className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => setPrompt("")}
-                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-red-400 hover:bg-red-500/5"}`}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#334155] hover:text-[#475569]"}`}
                         title="Clear"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => navigator.clipboard.readText().then(t => setPrompt(t)).catch(() => {})}
-                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#94A3B8] hover:bg-[rgba(148,163,184,0.08)]"}`}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#334155] hover:text-[#475569]"}`}
                         title="Paste"
                       >
                         <Files className="w-4 h-4" />
                       </button>
                       <button
-                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#475569] hover:text-[#14B8A6] hover:bg-[rgba(20,184,166,0.08)]"}`}
+                        className={`p-1.5 rounded-md transition-colors ${prompt.trim() ? "text-[#6366F1] hover:bg-[rgba(99,102,241,0.12)]" : "text-[#334155] hover:text-[#475569]"}`}
                         title="Optimize"
                       >
                         <CheckCircle2 className="w-4 h-4" />
