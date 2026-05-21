@@ -107,7 +107,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
+      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
+      { icon: Link2, label: "API", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -456,7 +460,7 @@ export default function TextToImagePage() {
       {/* ─── Workbench ─── */}
       <div className="flex gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-16px]">
+        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-56px]">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
