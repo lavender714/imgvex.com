@@ -10,13 +10,15 @@ interface AuthContextValue {
   user: AuthUser | null;
   credits: number;
   isLoading: boolean;
+  refreshCredits: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue>({
   user: null,
-  credits: 48,
+  credits: 0,
   isLoading: true,
+  refreshCredits: async () => {},
   signOut: async () => {},
 });
 
@@ -33,7 +35,23 @@ export function AuthProvider({
 }) {
   const [user, setUser] = useState<AuthUser | null>(initialUser);
   const [isLoading, setIsLoading] = useState(!initialUser);
-  const credits = 48; // TODO: fetch real credits from API
+  const [credits, setCredits] = useState<number>(0);
+
+  const fetchCredits = useCallback(async (userId: string) => {
+    const supabase = createClient();
+    const { data, error } = await supabase
+      .from("profiles")
+      .select("credits_balance")
+      .eq("id", userId)
+      .maybeSingle();
+    if (!error && data) {
+      setCredits(data.credits_balance ?? 0);
+    }
+  }, []);
+
+  const refreshCredits = useCallback(async () => {
+    if (user?.id) await fetchCredits(user.id);
+  }, [user?.id, fetchCredits]);
 
   useEffect(() => {
     const supabase = createClient();
@@ -56,6 +74,7 @@ export function AuthProvider({
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === "SIGNED_OUT" || !session) {
         setUser(null);
+        setCredits(0);
       } else if (event === "SIGNED_IN" || event === "TOKEN_REFRESHED") {
         setUser({
           id: session.user.id,
@@ -70,14 +89,24 @@ export function AuthProvider({
     };
   }, [initialUser]);
 
+  // Fetch credits when user is known
+  useEffect(() => {
+    if (user?.id) {
+      fetchCredits(user.id);
+    } else {
+      setCredits(0);
+    }
+  }, [user?.id, fetchCredits]);
+
   const signOut = useCallback(async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
     setUser(null);
+    setCredits(0);
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, credits, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, credits, isLoading, refreshCredits, signOut }}>
       {children}
     </AuthContext.Provider>
   );
