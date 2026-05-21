@@ -101,11 +101,7 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
-      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
-      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
-      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Link2, label: "API", href: "#", active: false, badge: null },
     ],
   },
 ];
@@ -190,9 +186,9 @@ const howToSteps = [
 
 const relatedTools = [
   { name: "Image to Video", desc: "Animate any photo", href: "/tools/image-to-video" },
-  { name: "Photo to Video", desc: "Bring stills to life", href: "#" },
+  { name: "Video to Video", desc: "Restyle existing clips", href: "/tools/video-to-video" },
   { name: "AI Video Generator", desc: "Full AI creation suite", href: "/generate" },
-  { name: "Reference to Video", desc: "Style-based generation", href: "#" },
+  { name: "Text to Image", desc: "Create still images", href: "/tools/text-to-image" },
 ];
 
 const faqs = [
@@ -771,7 +767,7 @@ export default function TextToVideoPage() {
               ))}
             </motion.div>
             <motion.div variants={fadeInUp} className="text-center">
-              <Link href="#" className="text-sm text-[#EC4899] hover:underline inline-flex items-center gap-1">
+              <Link href="/generate" className="text-sm text-[#EC4899] hover:underline inline-flex items-center gap-1">
                 More Models <ChevronRight className="w-3.5 h-3.5" />
               </Link>
             </motion.div>

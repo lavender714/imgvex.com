@@ -6,6 +6,7 @@ import {
   tryDeductCredits,
   logGeneration,
 } from "@/lib/credits/server";
+import { screenPrompt } from "@/lib/billing/creem-moderation";
 
 export async function POST(request: Request) {
   console.log("[generate-api] Request received");
@@ -35,6 +36,22 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: `Invalid taskType. Must be one of: ${validTaskTypes.join(", ")}` },
         { status: 400 }
+      );
+    }
+
+    // --- Content moderation (must run before credit deduction) ---
+    const moderation = await screenPrompt(prompt.trim(), `${user.id}:${Date.now()}`);
+    if (moderation.blocked) {
+      console.warn(
+        `[generate-api] Prompt blocked by moderation for user ${user.id}: decision=${moderation.decision} reason=${moderation.reason ?? "n/a"}`,
+      );
+      return NextResponse.json(
+        {
+          error: "Your prompt was blocked by our content policy. Please revise it and try again.",
+          code: "CONTENT_POLICY_VIOLATION",
+          decision: moderation.decision,
+        },
+        { status: 403 },
       );
     }
 

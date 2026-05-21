@@ -56,10 +56,21 @@ const sections = [
     id: "content-restrictions",
     title: "Content Restrictions",
     content: [
-      "You may not use the Service to generate, upload, or distribute any content that:",
+      "You may not use the Service to generate, upload, request, or distribute any content that:",
       "Is illegal, harmful, threatening, abusive, harassing, defamatory, vulgar, obscene, or otherwise objectionable; promotes violence, discrimination, or illegal activities; infringes upon any patent, trademark, trade secret, copyright, or other proprietary rights; contains software viruses or any other malicious code; impersonates any person or entity; constitutes unsolicited or unauthorized advertising or spam; or violates any applicable local, state, national, or international law.",
-      "Additionally, you may not use the Service to generate content that: depicts minors in a sexual or violent manner; promotes self-harm or suicide; contains deepfakes of real individuals without their explicit consent; or is intended to deceive or mislead others (e.g., fake news, scams).",
-      "We reserve the right to suspend or terminate accounts that violate these content restrictions and to report illegal content to the appropriate authorities.",
+      "The Service is strictly prohibited from being used to generate, request, or distribute: (a) NSFW, sexually explicit, sexually suggestive, pornographic, or adult content of any kind, including artistic or stylized depictions; (b) any sexual or sexualized depiction of minors, whether realistic or stylized; (c) face-swap, deepfake, face-manipulation, or any output that depicts an identifiable real person — these are banned outright regardless of consent; (d) content promoting self-harm, suicide, or violence against any person or group; (e) content intended to harass, defame, dox, or impersonate any individual; (f) misinformation, disinformation, fake news, scams, or fraudulent material; (g) content that facilitates illegal activity (weapons, drugs, hacking, child exploitation, terrorism, etc.).",
+      "All user-submitted prompts are screened by an automated moderation system before being passed to any generative model. Prompts that violate these restrictions are blocked at submission time and are not eligible for refund. Repeated violations will result in account suspension or termination. We reserve the right to report illegal content to the appropriate authorities and to cooperate with law enforcement.",
+    ],
+  },
+  {
+    id: "acceptable-use-policy",
+    title: "Acceptable Use Policy",
+    content: [
+      "This Acceptable Use Policy applies to every user of imgvex.AI and supplements the Content Restrictions above. By using the Service you agree that you will not, under any circumstances, attempt to generate or produce the following categories of output:",
+      "(1) NSFW, sexually explicit, sexually suggestive, or adult content — including but not limited to nudity, pornography, fetish content, sexualized minors, or any sexualized stylized depictions. There is no exception for artistic, anime, or non-photorealistic styles. (2) Realistic or stylized depictions of real, identifiable individuals (celebrities, politicians, private people) without an obvious and bona-fide editorial, parody, or commentary purpose, and only where doing so does not damage that person's reputation. Face-swap, deepfake, and face-manipulation outputs are prohibited outright. (3) Content depicting minors in any unsafe, sexualized, violent, or distressing context. (4) Content that incites violence, terrorism, self-harm, suicide, or discriminates against protected groups. (5) Content that infringes copyright, trademark, or other intellectual-property rights of third parties. (6) Content used to defraud, deceive, impersonate, or harass.",
+      "We further prohibit marketing or advertising of the Service in ways that suggest it can produce \"uncensored\", \"unfiltered\", \"18+\", \"NSFW\", or \"adult\" output. The Service is not designed for and will not be configured to produce such material. Public-facing galleries, showcases, and example outputs are curated to exclude suggestive, borderline, or sexually provocative material.",
+      "Enforcement: Prompts and outputs that violate this Policy will be blocked, removed, or filtered automatically. The moderation system logs every prompt screening decision for audit. Users found to repeatedly attempt to bypass the moderation system (including prompt-injection, obfuscation, or system-prompt extraction) will have their accounts terminated and their content reported where required by law.",
+      "Reporting: If you encounter content that you believe violates this Policy, please email support@imgvex.com with a description and any relevant links. We respond to reports within 72 hours and remove confirmed violations.",
     ],
   },
   {
