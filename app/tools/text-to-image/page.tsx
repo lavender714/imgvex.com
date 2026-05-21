@@ -518,7 +518,7 @@ export default function TextToImagePage() {
             {/* Editor + Results */}
             <div className="flex gap-6">
               {/* Left: Editor */}
-              <div className="flex-1 max-w-[560px] flex flex-col gap-5">
+              <div className="flex-1 flex flex-col gap-5">
               {/* Model Selector */}
               <div>
                 <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -718,7 +718,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* Right: Results */}
-            <div className="w-[360px] lg:w-[400px] flex-shrink-0 border-2 border-red-500 min-h-[200px]">
+            <div className="flex-1 flex flex-col">
               <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}
