@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { ModelCard } from "@/components/model-card";
 import { FeatureCard } from "@/components/feature-card";
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Sparkles } from "lucide-react";
 
 const models = [
   { id: "kling-2", name: "Kling 2.0", type: "video" as const, logo: "K", logoColor: "#818CF8", specs: "Video • 1080p • 10s" },
@@ -26,20 +27,86 @@ const features = [
   { icon: "D", iconColor: "#EC4899", title: "Asset Management", description: "Organize, tag, and export your generations. Full version history included." },
 ];
 
-const popularFeatures = [
-  { title: "Video Tools", desc: "Professional editing suite", gradient: "linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)" },
-  { title: "Video Effects", desc: "Cinematic transitions", gradient: "linear-gradient(135deg, #EC4899 0%, #BE185D 100%)" },
-  { title: "AI Transition", desc: "Seamless scene changes", gradient: "linear-gradient(135deg, #14B8A6 0%, #0F766E 100%)" },
-  { title: "Mimic Motion", desc: "Clone any movement style", gradient: "linear-gradient(135deg, #F59E0B 0%, #B45309 100%)" },
-];
+const exploreTabs = [
+  {
+    key: "img2vid",
+    label: "Image to Video",
+    title: "Bring photos to life",
+    description: "Turn any image into a dynamic 5–15s video. Add motion, camera moves, and ambience — no editing skills needed.",
+    models: ["Veo 3", "Kling 3.0", "Runway Gen-4", "Seedance 2.0"],
+    href: "/tools/image-to-video",
+    samples: [
+      { gradient: "linear-gradient(135deg, #6366F1 0%, #A855F7 100%)", label: "Portrait motion" },
+      { gradient: "linear-gradient(135deg, #14B8A6 0%, #6366F1 100%)", label: "Drone shot" },
+      { gradient: "linear-gradient(135deg, #F59E0B 0%, #EC4899 100%)", label: "Action scene" },
+    ],
+  },
+  {
+    key: "txt2vid",
+    label: "Text to Video",
+    title: "Words become moving images",
+    description: "Describe what you want and watch ideas turn into captivating videos. Perfect for storytelling and ads.",
+    models: ["Sora 2", "Veo 3", "Kling 3.0", "Hailuo 2.3"],
+    href: "/tools/text-to-video",
+    samples: [
+      { gradient: "linear-gradient(135deg, #8B5CF6 0%, #6366F1 100%)", label: "Story scene" },
+      { gradient: "linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%)", label: "Character" },
+      { gradient: "linear-gradient(135deg, #06B6D4 0%, #6366F1 100%)", label: "Cinematic" },
+    ],
+  },
+  {
+    key: "img2img",
+    label: "Image to Image",
+    title: "Remix any image",
+    description: "Transform style, change subject, generate variations. Powered by the latest editing models.",
+    models: ["Nano Banana 2", "Flux Pro", "Seedream 4.5", "GPT Image 2"],
+    href: "/tools/image-to-image",
+    samples: [
+      { gradient: "linear-gradient(135deg, #F97316 0%, #EC4899 100%)", label: "Style transfer" },
+      { gradient: "linear-gradient(135deg, #14B8A6 0%, #06B6D4 100%)", label: "Restyle" },
+      { gradient: "linear-gradient(135deg, #A855F7 0%, #6366F1 100%)", label: "Variations" },
+    ],
+  },
+  {
+    key: "txt2img",
+    label: "Text to Image",
+    title: "Create visuals from words",
+    description: "From quick illustrations to photoreal product shots. Pick the model that matches your style.",
+    models: ["Midjourney v7", "Flux Pro", "DALL-E 4", "Imagen"],
+    href: "/tools/text-to-image",
+    samples: [
+      { gradient: "linear-gradient(135deg, #6366F1 0%, #14B8A6 100%)", label: "Illustration" },
+      { gradient: "linear-gradient(135deg, #EC4899 0%, #F59E0B 100%)", label: "Photoreal" },
+      { gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)", label: "Concept art" },
+    ],
+  },
+] as const;
 
-const aiTools = [
-  { name: "AI Video Editor", desc: "Edit like a pro with AI", tag: null, color: "#6366F1", href: "#" },
-  { name: "Video To Video", desc: "Transform any footage", tag: "Hot", color: "#EC4899", href: "#" },
-  { name: "Video Upscaler", desc: "4K quality enhancement", tag: null, color: "#14B8A6", href: "#" },
-  { name: "Lip Sync AI", desc: "Perfect audio matching", tag: "New", color: "#F59E0B", href: "#" },
-  { name: "AI Video Extender", desc: "Expand your scenes", tag: null, color: "#8B5CF6", href: "#" },
-  { name: "Background Remover", desc: "Clean cutouts instantly", tag: null, color: "#06B6D4", href: "#" },
+const madeWithExamples = [
+  {
+    category: "Marketing",
+    prompt: "A sleek smartphone rotating in a minimal studio with soft rim light, product shot, 16:9, ultra detailed",
+    model: "Veo 3",
+    gradient: "linear-gradient(135deg, #6366F1 0%, #A855F7 50%, #EC4899 100%)",
+  },
+  {
+    category: "Cinematic",
+    prompt: "Vintage convertible cruising along a coastal highway at golden hour, palm trees swaying, smooth tracking shot",
+    model: "Sora 2",
+    gradient: "linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)",
+  },
+  {
+    category: "Social Media",
+    prompt: "Cute corgi wearing tiny sunglasses on a beach, slow motion, bokeh background, 9:16 vertical",
+    model: "Kling 3.0",
+    gradient: "linear-gradient(135deg, #14B8A6 0%, #6366F1 50%, #A855F7 100%)",
+  },
+  {
+    category: "E-commerce",
+    prompt: "Premium leather watch on a marble surface, soft daylight, slow 360-degree rotation, luxury aesthetic",
+    model: "Veo 3",
+    gradient: "linear-gradient(135deg, #06B6D4 0%, #14B8A6 50%, #6366F1 100%)",
+  },
 ];
 
 const exploreTags = [
@@ -59,6 +126,11 @@ const stagger = {
 };
 
 export default function HomePage() {
+  const [exploreKey, setExploreKey] = useState<typeof exploreTabs[number]["key"]>("img2vid");
+  const [exampleIndex, setExampleIndex] = useState(0);
+  const explore = exploreTabs.find((t) => t.key === exploreKey)!;
+  const example = madeWithExamples[exampleIndex];
+
   return (
     <div className="min-h-full bg-[#0B0817]">
       <Navbar variant="landing" />
@@ -128,86 +200,172 @@ export default function HomePage() {
         </motion.div>
       </section>
 
-      {/* Popular Features */}
-      <section className="py-12 px-6 md:px-12">
+      {/* Explore What You Can Create */}
+      <section className="py-16 px-6 md:px-12">
         <motion.div
-          className="max-w-[1200px] mx-auto"
+          className="max-w-[1200px] mx-auto flex flex-col gap-10"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={stagger}
         >
-          <motion.h2 variants={fadeInUp} className="text-xl font-bold text-[#F8FAFC] mb-6">
-            Popular features
-          </motion.h2>
-          <motion.div variants={fadeInUp} className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {popularFeatures.map((f) => (
-              <div
-                key={f.title}
-                className="relative rounded-2xl overflow-hidden h-[160px] cursor-pointer group hover:-translate-y-1 transition-transform duration-300"
-                style={{ background: f.gradient }}
-              >
-                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-base font-bold text-white">{f.title}</h3>
-                  <p className="text-xs text-white/70">{f.desc}</p>
-                </div>
-                <div className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ChevronRight className="w-4 h-4 text-white" />
-                </div>
+          <motion.div variants={fadeInUp} className="flex flex-col items-center gap-3 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
+              Explore What You Can Create
+            </h2>
+            <p className="text-base text-[#94A3B8]">
+              Pick a mode. Pick a model. See it come to life.
+            </p>
+          </motion.div>
+
+          {/* Tabs */}
+          <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-2">
+            {exploreTabs.map((tab) => {
+              const isActive = tab.key === exploreKey;
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setExploreKey(tab.key)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                    isActive
+                      ? "text-white shadow-lg shadow-[#6366F1]/30 ring-1 ring-inset ring-white/20"
+                      : "text-[#94A3B8] bg-[#13101F] border border-[#1E293B] hover:border-[#475569] hover:text-[#F8FAFC]"
+                  }`}
+                  style={isActive ? { background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" } : undefined}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
+          </motion.div>
+
+          {/* Content: left text + right thumbnails */}
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 lg:grid-cols-[1fr,1.4fr] gap-8 lg:gap-12 items-center">
+            {/* Left */}
+            <div className="flex flex-col gap-6">
+              <div>
+                <h3 className="text-2xl md:text-3xl font-bold text-[#F8FAFC] tracking-[-0.02em] mb-3">
+                  {explore.title}
+                </h3>
+                <p className="text-base text-[#94A3B8] leading-relaxed">
+                  {explore.description}
+                </p>
               </div>
-            ))}
+              <div className="flex flex-wrap gap-2">
+                {explore.models.map((m) => (
+                  <span key={m} className="px-3 py-1 rounded-full bg-[#13101F] border border-[#1E293B] text-xs font-medium text-[#CBD5E1]">
+                    {m}
+                  </span>
+                ))}
+              </div>
+              <Link
+                href={explore.href}
+                className="inline-flex items-center justify-center w-fit h-12 px-8 rounded-2xl text-white text-base font-bold tracking-wide shadow-lg shadow-[#6366F1]/30 hover:shadow-xl hover:shadow-[#7C3AED]/40 hover:-translate-y-0.5 transition-all duration-300 ring-1 ring-inset ring-white/20"
+                style={{ background: "linear-gradient(135deg, #6366F1 0%, #7C3AED 50%, #A855F7 100%)" }}
+              >
+                Try {explore.label}
+              </Link>
+            </div>
+
+            {/* Right thumbnails */}
+            <div className="grid grid-cols-3 gap-4">
+              {explore.samples.map((s, i) => (
+                <Link
+                  key={i}
+                  href={explore.href}
+                  className="relative aspect-[3/4] rounded-2xl overflow-hidden group cursor-pointer ring-1 ring-inset ring-white/5 hover:ring-white/20 hover:-translate-y-1 transition-all duration-300"
+                  style={{ background: s.gradient }}
+                >
+                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                    <span className="text-[11px] font-semibold text-white/90 uppercase tracking-wider">{s.label}</span>
+                    <ChevronRight className="w-4 h-4 text-white/70 group-hover:text-white transition-colors" />
+                  </div>
+                </Link>
+              ))}
+            </div>
           </motion.div>
         </motion.div>
       </section>
 
-      {/* AI Tools */}
-      <section className="py-12 px-6 md:px-12">
+      {/* Made with Synapse */}
+      <section className="py-16 px-6 md:px-12 bg-[#0A0712]/50">
         <motion.div
-          className="max-w-[1200px] mx-auto flex flex-col gap-6"
+          className="max-w-[1200px] mx-auto flex flex-col gap-10"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={stagger}
         >
-          <motion.div variants={fadeInUp} className="flex items-center justify-between">
-            <h2 className="text-xl font-bold text-[#F8FAFC]">AI Tools</h2>
-            <Link href="#" className="text-sm text-[#64748B] hover:text-[#818CF8] transition-colors">View more &gt;</Link>
+          <motion.div variants={fadeInUp} className="flex flex-col items-center gap-3 text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#F8FAFC] tracking-[-0.02em]">
+              Made with Synapse
+            </h2>
+            <p className="text-base text-[#94A3B8]">
+              Real prompts from real creators. Use them as a starting point.
+            </p>
           </motion.div>
-          <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {aiTools.map((tool) => (
-              <Link
-                key={tool.name}
-                href={tool.href}
-                className="relative rounded-2xl bg-[#13101F] border border-[#1E293B] overflow-hidden cursor-pointer hover:border-[#475569] hover:-translate-y-0.5 transition-all duration-300 group block"
-              >
-                {/* Image placeholder */}
-                <div
-                  className="h-[160px] w-full"
-                  style={{ background: `linear-gradient(135deg, ${tool.color}20 0%, ${tool.color}08 100%)` }}
+
+          {/* Category tabs */}
+          <motion.div variants={fadeInUp} className="flex flex-wrap items-center justify-center gap-2">
+            {madeWithExamples.map((ex, idx) => {
+              const isActive = idx === exampleIndex;
+              return (
+                <button
+                  key={ex.category}
+                  onClick={() => setExampleIndex(idx)}
+                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-all ${
+                    isActive
+                      ? "bg-[#13101F] text-[#F8FAFC] border border-[#475569]"
+                      : "text-[#64748B] hover:text-[#CBD5E1]"
+                  }`}
                 >
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div
-                      className="w-16 h-16 rounded-2xl flex items-center justify-center text-2xl font-bold"
-                      style={{ backgroundColor: `${tool.color}20`, color: tool.color }}
-                    >
-                      {tool.name.charAt(0)}
-                    </div>
-                  </div>
-                </div>
-                <div className="p-4 flex items-center justify-between">
-                  <div>
-                    <h3 className="text-sm font-semibold text-[#F8FAFC]">{tool.name}</h3>
-                    <p className="text-xs text-[#64748B] mt-0.5">{tool.desc}</p>
-                  </div>
-                  {tool.tag && (
-                    <span className="px-2 py-0.5 rounded-full bg-[#EC4899]/15 text-[#EC4899] text-[10px] font-bold">
-                      {tool.tag}
-                    </span>
-                  )}
-                </div>
+                  {ex.category}
+                </button>
+              );
+            })}
+          </motion.div>
+
+          {/* Example showcase */}
+          <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-[1fr,1.2fr] gap-6 items-stretch">
+            {/* Left: prompt card */}
+            <div className="flex flex-col gap-4 p-6 rounded-2xl bg-[#13101F] border border-[#1E293B]">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-full bg-[#6366F1]/15 text-[#A78BFA] text-xs font-bold tracking-wide">
+                  {example.category.toUpperCase()}
+                </span>
+                <span className="px-2.5 py-1 rounded-full bg-[#1E293B] text-[#CBD5E1] text-xs font-semibold">
+                  {example.model}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <span className="text-xs uppercase tracking-wider text-[#64748B] font-bold">Prompt</span>
+                <p className="text-sm text-[#CBD5E1] leading-relaxed">
+                  {example.prompt}
+                </p>
+              </div>
+              <div className="flex-1" />
+              <Link
+                href={`/tools/text-to-video?prompt=${encodeURIComponent(example.prompt)}`}
+                className="inline-flex items-center justify-center gap-2 w-fit h-11 px-6 rounded-xl bg-[#6366F1] hover:bg-[#7C3AED] text-white text-sm font-semibold transition-colors"
+              >
+                <Sparkles className="w-4 h-4" />
+                Try with this prompt
               </Link>
-            ))}
+            </div>
+
+            {/* Right: video preview placeholder */}
+            <div
+              className="relative aspect-video md:aspect-auto rounded-2xl overflow-hidden ring-1 ring-inset ring-white/5"
+              style={{ background: example.gradient }}
+            >
+              <div className="absolute inset-0 bg-black/20" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center ring-1 ring-white/20">
+                  <div className="w-0 h-0 border-l-[14px] border-l-white border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent ml-1" />
+                </div>
+              </div>
+            </div>
           </motion.div>
         </motion.div>
       </section>
