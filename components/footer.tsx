@@ -41,7 +41,7 @@ const footerLinks: Record<string, { label: string; href: string }[]> = {
 
 export function Footer() {
   return (
-    <footer className="py-16 px-6 md:px-12 bg-[#040408]">
+    <footer className="py-16 px-6 md:px-12 border-t border-[#1E293B]/50">
       <div className="max-w-[1200px] mx-auto">
         <div className="flex flex-col md:flex-row justify-between gap-12">
           <div className="max-w-[280px]">
