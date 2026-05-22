@@ -111,11 +111,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
-      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
-      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
-      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
+      { icon: Briefcase, label: "Use cases", href: "/solutions/ai-image-generator", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "/generate", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "mailto:support@imgvex.com?subject=Affiliate%20Program%20Inquiry", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Link2, label: "API", href: "#", active: false, badge: null },
+      { icon: Link2, label: "API", href: "mailto:support@imgvex.com?subject=API%20Access%20Request", active: false, badge: null },
     ],
   },
 ];
@@ -210,9 +210,9 @@ const howToSteps = [
 
 const relatedTools = [
   { name: "Text to Image", desc: "Create from scratch", href: "/tools/text-to-image" },
-  { name: "AI Photo Editor", desc: "Smart editing tools", href: "#" },
-  { name: "Background Remover", desc: "Clean cutouts", href: "#" },
-  { name: "AI Avatar", desc: "Digital personas", href: "#" },
+  { name: "AI Photo Editor", desc: "Smart editing tools", href: "/tools/image-to-image" },
+  { name: "Background Remover", desc: "Clean cutouts", href: "/tools/image-to-image" },
+  { name: "AI Avatar", desc: "Digital personas", href: "/tools/text-to-image" },
 ];
 
 const faqs = [

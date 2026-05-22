@@ -100,11 +100,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
-      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
-      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
-      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
+      { icon: Briefcase, label: "Use cases", href: "/solutions/ai-video-generator", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "/generate", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "mailto:support@imgvex.com?subject=Affiliate%20Program%20Inquiry", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Link2, label: "API", href: "#", active: false, badge: null },
+      { icon: Link2, label: "API", href: "mailto:support@imgvex.com?subject=API%20Access%20Request", active: false, badge: null },
     ],
   },
 ];
@@ -194,13 +194,13 @@ const faqs = [
 
 const discoverLinks = [
   { label: "Text to Video", href: "/tools/text-to-video" },
-  { label: "Video to Video", href: "#" },
-  { label: "Text to Image", href: "/tools/text-to-video" },
-  { label: "Image to Image", href: "#" },
-  { label: "Text to Speech", href: "#" },
-  { label: "AI Avatar", href: "#" },
-  { label: "Sora Pro 2K", href: "#" },
-  { label: "Veo 3.1", href: "#" },
+  { label: "Video to Video", href: "/tools/video-to-video" },
+  { label: "Text to Image", href: "/tools/text-to-image" },
+  { label: "Image to Image", href: "/tools/image-to-image" },
+  { label: "Text to Speech", href: "/generate" },
+  { label: "AI Avatar", href: "/generate" },
+  { label: "Sora Pro 2K", href: "/generate" },
+  { label: "Veo 3.1", href: "/generate" },
 ];
 
 /* ─── Animation variants ─── */

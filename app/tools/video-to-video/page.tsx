@@ -93,11 +93,11 @@ const sidebarTools: SidebarItem[] = [
   {
     category: "",
     items: [
-      { icon: Briefcase, label: "Use cases", href: "#", active: false, badge: null },
-      { icon: Paintbrush, label: "Effects", href: "#", active: false, badge: null },
-      { icon: Handshake, label: "Affiliate", href: "#", active: false, badge: null },
+      { icon: Briefcase, label: "Use cases", href: "/solutions/ai-video-generator", active: false, badge: null },
+      { icon: Paintbrush, label: "Effects", href: "/generate", active: false, badge: null },
+      { icon: Handshake, label: "Affiliate", href: "mailto:support@imgvex.com?subject=Affiliate%20Program%20Inquiry", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Link2, label: "API", href: "#", active: false, badge: null },
+      { icon: Link2, label: "API", href: "mailto:support@imgvex.com?subject=API%20Access%20Request", active: false, badge: null },
     ],
   },
 ];
@@ -148,7 +148,7 @@ const relatedTools = [
   { name: "Image to Video", desc: "Animate any photo", href: "/tools/image-to-video" },
   { name: "Text to Video", desc: "Prompt-to-video", href: "/tools/text-to-video" },
   { name: "AI Video Generator", desc: "Full AI creation suite", href: "/generate" },
-  { name: "Reference to Video", desc: "Style-based generation", href: "#" },
+  { name: "Reference to Video", desc: "Style-based generation", href: "/tools/video-to-video" },
 ];
 
 const faqs = [
@@ -573,7 +573,7 @@ export default function VideoToVideoPage() {
             <div>
               <div className="flex items-center justify-between mb-3">
                 <p className="text-sm font-semibold text-[#F8FAFC]">Style</p>
-                <Link href="#" className="text-sm text-[#818CF8] hover:underline">View All (70)</Link>
+                <Link href="/generate" className="text-sm text-[#818CF8] hover:underline">View All (70)</Link>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {stylePresets.map((style) => (
