@@ -105,7 +105,7 @@ const sidebarTools: SidebarItem[] = [
       { icon: Paintbrush, label: "Effects", href: "/generate", active: false, badge: null },
       { icon: Handshake, label: "Affiliate", href: "mailto:support@imgvex.com?subject=Affiliate%20Program%20Inquiry", active: false, badge: null },
       { icon: Tag, label: "Price", href: "/pricing", active: false, badge: "50% OFF" },
-      { icon: Link2, label: "API", href: "mailto:support@imgvex.com?subject=API%20Access%20Request", active: false, badge: null },
+      { icon: Link2, label: "API", href: "/api", active: false, badge: null },
     ],
   },
 ];

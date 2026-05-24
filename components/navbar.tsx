@@ -271,7 +271,7 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
             ))}
 
             <Link
-              href="mailto:support@imgvex.com?subject=API%20Access%20Request"
+              href="/api"
               className="px-3 py-2 text-sm font-medium text-[#CBD5E1] hover:text-[#F8FAFC] transition-colors duration-200"
             >
               API
