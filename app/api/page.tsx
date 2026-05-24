@@ -304,6 +304,10 @@ export default function ApiPage() {
               </span>
             ))}
           </div>
+          <p className="text-[11px] text-[#475569] text-center max-w-[720px] mt-2 leading-relaxed">
+            Independent service · imgvex.AI is not affiliated with, endorsed by, or sponsored by the model providers shown.
+            Models are accessed through our unified interface to enhance usability and provide additional features.
+          </p>
         </div>
       </section>
 

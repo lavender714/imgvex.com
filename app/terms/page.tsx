@@ -84,6 +84,16 @@ const sections = [
     ],
   },
   {
+    id: "third-party-models",
+    title: "Third-Party Models and Trademarks",
+    content: [
+      "The Service provides a custom interface built on top of third-party AI models — including but not limited to OpenAI's GPT and Sora, Google DeepMind's Gemini and Veo, Anthropic's Claude, ByteDance's Seedance, Black Forest Labs' Flux, Kling, MiniMax's Hailuo, Runway, Midjourney, xAI's Grok, and Ideogram. imgvex.AI is an independent platform.",
+      "imgvex.AI is not affiliated with, endorsed by, or sponsored by any of these model providers. Each provider's name, logo, and trademarks belong to its respective owner and are used solely for the purpose of identifying which third-party models are available through the Service.",
+      "When you generate content using a third-party model via the Service, that model's terms of service and content policy also apply to your generation. We aggregate and surface third-party model output as-is. You acknowledge that model availability, output quality, response time, and features may change at the providers' discretion, and that imgvex.AI does not guarantee uninterrupted access to any specific third-party model.",
+      "If a third-party model is removed, deprecated, or temporarily unavailable, we will make a reasonable effort to substitute an equivalent model or refund the affected credits, but we are under no obligation to maintain any specific model in our catalog.",
+    ],
+  },
+  {
     id: "intellectual-property",
     title: "Intellectual Property",
     content: [

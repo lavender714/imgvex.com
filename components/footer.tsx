@@ -67,6 +67,19 @@ export function Footer() {
             ))}
           </div>
         </div>
+
+        {/* Independence disclaimer + copyright */}
+        <div className="mt-12 pt-8 border-t border-[#1E293B]/50 flex flex-col gap-3">
+          <p className="text-[11px] text-[#475569] leading-relaxed max-w-[860px]">
+            imgvex.AI is an independent platform that provides a unified interface to access third-party AI models.
+            Model names mentioned on this site (including but not limited to Veo, Sora, GPT, Gemini, Claude, Flux,
+            Seedance, Kling, Hailuo, Runway, Midjourney, Grok, and Ideogram) are trademarks of their respective owners.
+            We are not affiliated with, endorsed by, or sponsored by these model providers.
+          </p>
+          <p className="text-[11px] text-[#475569]">
+            © 2026 imgvex.AI. All rights reserved.
+          </p>
+        </div>
       </div>
     </footer>
   );
