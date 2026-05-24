@@ -436,9 +436,9 @@ export default function VideoToVideoPage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px]">
+      <div className="sticky top-[60px] flex h-[calc(100vh-60px)] gap-4 py-4 pr-4 z-10 bg-[#0B0817]">
         {/* Left Sidebar */}
-        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -454,11 +454,11 @@ export default function VideoToVideoPage() {
                       href={item.href}
                       className={`flex items-center gap-2.5 px-3 py-2 rounded-full text-[13px] transition-colors ${
                         item.active
-                          ? "bg-[rgba(236,72,153,0.12)] text-[#EC4899] font-medium"
+                          ? "bg-[rgba(99,102,241,0.12)] text-[#6366F1] font-medium"
                           : "text-[#94A3B8] hover:bg-[rgba(148,163,184,0.06)] hover:text-[#F8FAFC]"
                       }`}
                     >
-                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#EC4899]" : "text-[#64748B]"}`} />
+                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#6366F1]" : "text-[#64748B]"}`} />
                       <span className="flex-1">{item.label}</span>
                       {item.badge && (
                         <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold ${item.badge === "Hot" ? "bg-[#EF4444]/15 text-[#EF4444]" : item.badge === "New" ? "bg-[#14B8A6]/15 text-[#14B8A6]" : "bg-[#F59E0B]/15 text-[#F59E0B]"}`}>
@@ -481,7 +481,7 @@ export default function VideoToVideoPage() {
           </div>
           {/* Upgrade now button */}
           <div className="p-3 border-t border-[#1E293B]">
-            <Button className="w-full rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
+            <Button className="w-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
               <Link href="/pricing">
                 <Crown className="w-4 h-4 mr-2" />
                 Upgrade now
@@ -629,7 +629,7 @@ export default function VideoToVideoPage() {
               <Button
                 onClick={handleGenerate}
                 disabled={isGenerating || authLoading}
-                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
+                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
               >
                 <Sparkles className="w-4 h-4 mr-2" />
                 {authLoading
@@ -898,7 +898,7 @@ export default function VideoToVideoPage() {
               Transform any video into stunning AI-generated styles. Upload once, create endlessly.
             </motion.p>
             <motion.div variants={fadeInUp}>
-              <Button className="rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
+              <Button className="rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white font-semibold text-sm px-8 h-12 transition-all" asChild>
                 <Link href="/generate">
                   <Sparkles className="w-4 h-4 mr-2" />
                   Try Video to Video AI Free

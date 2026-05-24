@@ -410,9 +410,9 @@ export default function TextToVideoPage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px]">
+      <div className="sticky top-[60px] flex h-[calc(100vh-60px)] gap-4 py-4 pr-4 z-10 bg-[#0B0817]">
         {/* Left Sidebar */}
-        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -430,11 +430,11 @@ export default function TextToVideoPage() {
                       href={item.href}
                       className={`flex items-center gap-2.5 px-3 py-2 rounded-full text-[13px] transition-colors ${
                         item.active
-                          ? "bg-[rgba(236,72,153,0.12)] text-[#EC4899] font-medium"
+                          ? "bg-[rgba(99,102,241,0.12)] text-[#6366F1] font-medium"
                           : "text-[#94A3B8] hover:bg-[rgba(148,163,184,0.06)] hover:text-[#F8FAFC]"
                       }`}
                     >
-                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#EC4899]" : "text-[#64748B]"}`} />
+                      <item.icon className={`w-4 h-4 ${item.active ? "text-[#6366F1]" : "text-[#64748B]"}`} />
                       <span className="flex-1">{item.label}</span>
                       {item.badge && (
                         <span
@@ -468,7 +468,7 @@ export default function TextToVideoPage() {
           </div>
           {/* Upgrade now button */}
           <div className="p-3 border-t border-[#1E293B]">
-            <Button className="w-full rounded-full bg-gradient-to-r from-[#EC4899] to-[#8B5CF6] hover:from-[#D4377E] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
+            <Button className="w-full rounded-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#4F52E6] hover:to-[#7C4FE0] text-white font-semibold text-[13px] h-10 transition-all" asChild>
               <Link href="/pricing">
                 <Crown className="w-4 h-4 mr-2" />
                 Upgrade now
