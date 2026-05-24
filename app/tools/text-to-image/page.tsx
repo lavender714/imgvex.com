@@ -458,9 +458,9 @@ export default function TextToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex gap-4 py-4 pr-4">
+      <div className="sticky top-[60px] flex h-[calc(100vh-60px)] gap-4 py-4 pr-4 z-10 bg-[#0B0817]">
         {/* Left Sidebar */}
-        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-56px]">
+        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -512,13 +512,10 @@ export default function TextToImagePage() {
           </div>
         </aside>
 
-        {/* Center: Generation Panel */}
-        <main className="flex-1 min-w-0">
-          <div className="px-6 pt-6">
-            {/* Editor + Results */}
-            <div className="flex gap-6">
-              {/* Left: Editor */}
-              <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] mt-[-56px]">
+        {/* Center: Editor + Results */}
+        <div className="flex-1 flex gap-6 min-w-0">
+            {/* Left: Editor */}
+            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col min-h-0">
               <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
               {/* Model Selector */}
               <div>
@@ -720,7 +717,7 @@ export default function TextToImagePage() {
             </div>
 
             {/* Right: Results */}
-            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col max-h-[calc(100vh-76px)] overflow-y-auto mt-[-56px]">
+            <div className="w-[420px] flex-shrink-0 rounded-2xl border border-[#1E293B] bg-[#0A0A12] p-6 flex flex-col overflow-y-auto">
               <p className="text-sm font-semibold text-[#F8FAFC] mb-4">Results</p>
 
               {/* Result Showcase */}
@@ -777,10 +774,11 @@ export default function TextToImagePage() {
                 )}
               </div>
             </div>
-            </div>
+      </div>
+    </div>
 
-            {/* ─── Marketing Content ─── */}
-            <div className="border-t border-[#1E293B] mt-8 px-6 pt-8 pb-6">
+      {/* ─── Marketing Content ─── */}
+      <div className="border-t border-[#1E293B]">
         {/* Supported Models */}
         <section className="py-12 px-6 md:px-12">
           <motion.div
@@ -1009,11 +1007,8 @@ export default function TextToImagePage() {
             </motion.div>
           </motion.div>
         </section>
-          </div>
-          </div>
-          <Footer />
-        </main>
       </div>
+      <Footer />
 
       {/* Image Preview Modal */}
       {previewImage && (

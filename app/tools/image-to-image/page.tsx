@@ -536,9 +536,9 @@ export default function ImageToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="flex h-[calc(100vh-60px-40px)] min-h-[640px]">
+      <div className="flex gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="w-[220px] flex-shrink-0 border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-56px]">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -591,7 +591,8 @@ export default function ImageToImagePage() {
         </aside>
 
         {/* Center: Generation Panel */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
+        <main className="flex-1 min-w-0">
+          <div className="px-6 pt-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             {/* Title */}
             <div>
@@ -818,10 +819,11 @@ export default function ImageToImagePage() {
               )}
             </div>
           </div>
-        </main>
+        </div>
+      </main>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+        <aside className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] overflow-hidden mt-[-56px] hidden xl:flex">
           <div className="p-4 border-b border-[#1E293B]">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-[#F8FAFC]">Preview</h3>
