@@ -30,6 +30,10 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# pnpm (this project uses npm — keep pnpm artifacts local only)
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
 # env files (can opt-in for committing if needed)
 .env
 .env.local
