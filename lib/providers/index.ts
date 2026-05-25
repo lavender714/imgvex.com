@@ -166,6 +166,8 @@ export async function queryTaskStatus(
 // 注册供应商 adapter（纯类型导入无运行时循环依赖风险）
 import { kieAdapter } from "./kie";
 import { apipodAdapter } from "./apipod";
+import { evolinkAdapter } from "./evolink";
 
 registerProviderAdapter(kieAdapter);
 registerProviderAdapter(apipodAdapter);
+registerProviderAdapter(evolinkAdapter);

@@ -42,6 +42,14 @@ export const PROVIDER_CONFIGS: ProviderConfig[] = [
     timeoutMs: 10000,
     defaultBaseUrl: "https://api.kie.ai/api/v1",
   },
+  {
+    id: "evolink",
+    name: "EvoLink",
+    baseUrlEnv: "EVOLINK_BASE_URL",
+    apiKeyEnv: "EVOLINK_API_KEY",
+    timeoutMs: 10000,
+    defaultBaseUrl: "https://api.evolink.ai",
+  },
 ];
 
 // 模型注册表 — 每个模型明确声明 taskType 和支持的供应商
@@ -55,6 +63,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "google/nano-banana", priority: 1, etaSeconds: 18 },
       { providerId: "apipod", providerModelId: "nano-banana", priority: 2, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "nano-banana-beta", priority: 3, etaSeconds: 18 },
     ],
   },
   {
@@ -65,6 +74,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
       { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 2, etaSeconds: 22 },
+      { providerId: "evolink", providerModelId: "nano-banana-pro-beta", priority: 3, etaSeconds: 22 },
     ],
   },
   {
@@ -75,6 +85,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
       { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "nano-banana-2-beta", priority: 3, etaSeconds: 18 },
     ],
   },
   {
@@ -85,6 +96,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "gpt-image-2-text-to-image", priority: 1, etaSeconds: 25 },
       { providerId: "apipod", providerModelId: "gpt-image-2", priority: 2, etaSeconds: 25 },
+      { providerId: "evolink", providerModelId: "gpt-image-2", priority: 3, etaSeconds: 25 },
     ],
   },
   {
@@ -96,6 +108,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "gpt-image/1.5-text-to-image", priority: 1, etaSeconds: 25 },
       { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 2, etaSeconds: 25 },
+      { providerId: "evolink", providerModelId: "gpt-image-1.5", priority: 3, etaSeconds: 25 },
     ],
   },
   {
@@ -188,6 +201,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "G",
     providers: [
       { providerId: "kie", providerModelId: "gpt-image-2-image-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "evolink", providerModelId: "gpt-image-2", priority: 3, etaSeconds: 25 },
     ],
   },
   {
@@ -198,6 +212,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "gpt-image/1.5-image-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "evolink", providerModelId: "gpt-image-1.5", priority: 3, etaSeconds: 25 },
     ],
   },
 
@@ -209,6 +224,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     providers: [
       { providerId: "apipod", providerModelId: "seedance-2.0-t2v", priority: 1, etaSeconds: 75 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-text-to-video", priority: 2, etaSeconds: 75 },
     ],
   },
   {
@@ -218,6 +234,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     providers: [
       { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 1, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-fast-text-to-video", priority: 2, etaSeconds: 45 },
     ],
   },
   {
@@ -227,6 +244,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     providers: [
       { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 1, etaSeconds: 75 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-image-to-video", priority: 2, etaSeconds: 75 },
     ],
   },
   {
@@ -245,6 +263,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "V",
     providers: [
       { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 1, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast", priority: 2, etaSeconds: 45 },
     ],
   },
   {
@@ -254,6 +273,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "V",
     providers: [
       { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "veo-3.1-generate-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
@@ -263,6 +283,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     providers: [
       { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
@@ -273,6 +294,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "apipod", providerModelId: "sora-2-pro", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
@@ -291,6 +313,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "K",
     providers: [
       { providerId: "apipod", providerModelId: "kling-3", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-text-to-video", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -300,6 +323,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "K",
     providers: [
       { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-motion-control", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -310,6 +334,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "apipod", providerModelId: "hailuo-02", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-02", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -320,6 +345,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "apipod", providerModelId: "hailuo-02-pro", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-2.3", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -329,6 +355,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "G",
     providers: [
       { providerId: "apipod", providerModelId: "grok-imagine-t2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "grok-imagine-text-to-video-beta", priority: 2, etaSeconds: 60 },
     ],
   },
 ];

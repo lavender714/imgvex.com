@@ -536,9 +536,9 @@ export default function ImageToImagePage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="sticky top-[60px] flex h-[calc(100vh-60px)] gap-4 py-4 pr-4 z-10 bg-[#0B0817]">
+      <div className="flex gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-56px]">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -820,7 +820,6 @@ export default function ImageToImagePage() {
             </div>
           </div>
         </div>
-      </main>
 
         {/* Right: Preview Panel */}
         <aside className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] overflow-hidden mt-[-56px] hidden xl:flex">
@@ -881,7 +880,6 @@ export default function ImageToImagePage() {
             </button>
           </div>
         </aside>
-      </div>
 
       {/* ─── Marketing Content ─── */}
       <div className="border-t border-[#1E293B]">
@@ -1250,6 +1248,8 @@ export default function ImageToImagePage() {
 
       </div>
       <Footer />
+    </main>
     </div>
+  </div>
   );
 }
