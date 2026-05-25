@@ -119,7 +119,8 @@ const sections = [
     content: [
       "You may cancel your subscription at any time through your account settings or by contacting us. Your cancellation will take effect at the end of your current billing period.",
       "Upon cancellation, you will continue to have access to your paid features until the end of the current billing period. After that, your account will revert to the free plan or be suspended, depending on your usage.",
-      "We offer a 3-day money-back guarantee for first-time subscribers. If you are not satisfied with the Service, you may request a full refund within 3 days of your initial purchase. Refund requests must be submitted via email.",
+      "We offer a 3-day money-back guarantee for first-time subscribers. If you are not satisfied with the Service, you may request a full refund within 3 days of your initial purchase. Refund requests must be submitted via email to support@imgvex.com.",
+      "We respond to refund, cancellation, and customer support requests within 3 business days. If we do not respond to a refund request within this timeframe, our payments partner (Creem) reserves the right to issue the refund on our behalf.",
       "One-time credit packs are non-refundable once credits have been used. Unused credits from credit packs remain available even after subscription cancellation.",
     ],
   },
