@@ -157,9 +157,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     name: "Midjourney",
     taskType: "text-to-image",
     logo: "M",
-    comingSoon: true,
     providers: [
       { providerId: "apipod", providerModelId: "midjourney", priority: 1, etaSeconds: 30 },
+      { providerId: "evolink", providerModelId: "mj-v7", priority: 2, etaSeconds: 45 },
     ],
   },
 

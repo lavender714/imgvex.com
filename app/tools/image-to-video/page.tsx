@@ -540,7 +540,7 @@ export default function ImageToVideoPage() {
 
         {/* Center: Generation Panel */}
         <main className="flex-1 min-w-0">
-          <div className="px-6 pt-6">
+          <div className="flex gap-6"><div className="flex-1"><div className="px-6 pt-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             {/* Model Selector */}
             <div>
@@ -797,8 +797,7 @@ export default function ImageToVideoPage() {
                 </p>
               )}
             </div>
-          </div>
-          </div>
+          </div></div></div><div className="flex-1">
 
         {/* Right: Preview Panel */}
         <aside className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
@@ -866,7 +865,7 @@ export default function ImageToVideoPage() {
           )}
         </div>
       </div>
-    </aside>
+    </aside></div></div>
 
       {/* ─── Marketing Content ─── */}
       <div className="border-t border-[#1E293B]">

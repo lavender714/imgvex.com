@@ -134,7 +134,6 @@ export const API_CATALOG: ApiCatalogModel[] = [
     etaSeconds: 30,
     banner: { kind: "gradient", emoji: "M", ...GRADIENTS.orange },
     badge: "Premium",
-    comingSoon: true,
   },
 
   // ─── Image-to-Image ───

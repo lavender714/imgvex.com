@@ -24,7 +24,39 @@ function pickEndpoint(taskType: TaskType): string {
   return `${baseUrl}/v1/images/generations`;
 }
 
+/**
+ * Midjourney V7 on EvoLink uses a different request shape than other models:
+ * - No top-level aspect_ratio / quality / n / image_urls fields
+ * - All parameters injected into the `prompt` as MJ flags (--ar, --iw, etc.)
+ * - Image-to-image: URLs prepended to the prompt
+ * - Speed mode in model_params.speed (draft | fast | turbo)
+ */
+function buildMidjourneyRequest(options: TaskOptions): Record<string, unknown> {
+  let prompt = options.prompt;
+
+  // Image-to-image / blend: prepend reference URLs
+  if (options.inputUrls?.length) {
+    prompt = `${options.inputUrls.join(" ")} ${prompt}`;
+  }
+
+  // Inject MJ flags from generic options
+  const flags: string[] = [];
+  if (options.aspectRatio) flags.push(`--ar ${options.aspectRatio}`);
+  if (flags.length > 0) prompt = `${prompt} ${flags.join(" ")}`;
+
+  return {
+    model: "mj-v7",
+    prompt,
+    model_params: { speed: "fast" },
+  };
+}
+
 function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+  // Midjourney V7 needs its own shape — flags go in the prompt, not as fields
+  if (providerModelId === "mj-v7") {
+    return buildMidjourneyRequest(options);
+  }
+
   const body: Record<string, unknown> = {
     model: providerModelId,
     prompt: options.prompt,
