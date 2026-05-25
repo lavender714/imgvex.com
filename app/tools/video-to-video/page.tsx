@@ -491,7 +491,8 @@ export default function VideoToVideoPage() {
         </aside>
 
         {/* Center: Upload + Style Panel */}
-        <main className="flex-1 overflow-y-auto px-6 py-6">
+        <main className="flex-1 min-w-0">
+          <div className="px-6 pt-6">
           <div className="max-w-[640px] mx-auto flex flex-col gap-5">
             <div>
               <p className="text-lg font-bold text-[#F8FAFC] mb-1">Video to Video</p>
@@ -651,9 +652,10 @@ export default function VideoToVideoPage() {
               )}
             </div>
           </div>
+          </div>
 
         {/* Right: Preview Panel */}
-        <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
+        <aside className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
           <div className="p-4 border-b border-[#1E293B]">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-semibold text-[#F8FAFC]">Video to Video AI</h3>
