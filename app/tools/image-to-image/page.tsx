@@ -593,15 +593,8 @@ export default function ImageToImagePage() {
         {/* Center: Generation Panel */}
         <main className="flex-1 min-w-0">
           <div className="flex gap-6">
-            <div className="flex-1">
-              <div className="px-6 pt-6">
-              <div className="max-w-[640px] mx-auto flex flex-col gap-5">
-            {/* Title */}
-            <div>
-              <p className="text-lg font-bold text-[#F8FAFC] mb-1">Image to Image</p>
-              <p className="text-sm text-[#64748B]">Transform any image with AI-powered style transfer</p>
-            </div>
-
+            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] mt-[-56px]">
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
             {/* Model Selector */}
             <div>
               <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -779,49 +772,47 @@ export default function ImageToImagePage() {
               <div className="bg-red-500/10 text-red-400 text-sm px-4 py-3 rounded-xl">{genError}</div>
             )}
 
-            {/* Credit Cost & Generate */}
-            <div className="flex flex-col gap-3 pt-2">
-              <div className="flex items-center gap-2 text-sm text-[#64748B]">
-                <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 2L2 7l10 5 10-5-10-5z" />
-                  <path d="M2 17l10 5 10-5" />
-                  <path d="M2 12l10 5 10-5" />
-                </svg>
-                <span>Required credits:</span>
-                <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
-                {isGenerating && (
-                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
-                )}
-              </div>
+          </div>
+          <div className="px-6 py-4 border-t border-[#1E293B] flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-sm text-[#64748B]">
+              <svg className="w-4 h-4 text-[#8B5CF6]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                <path d="M2 17l10 5 10-5" />
+                <path d="M2 12l10 5 10-5" />
+              </svg>
+              <span>Required credits:</span>
+              <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
               {isGenerating && (
-                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              )}
-              <Button
-                onClick={handleGenerate}
-                disabled={isGenerating || authLoading}
-                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
-              >
-                {authLoading
-                  ? "Checking..."
-                  : isGenerating
-                  ? taskStatus || "Generating..."
-                  : user
-                  ? "Generate"
-                  : "Sign in to Generate"}
-              </Button>
-              {!user && !authLoading && (
-                <p className="text-xs text-[#64748B] text-center">
-                  You need to <Link href="/auth" className="text-[#818CF8] hover:underline">sign in</Link> before generating images
-                </p>
+                <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
               )}
             </div>
+            {isGenerating && (
+              <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating || authLoading}
+              className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#8B5CF6] to-[#EC4899] hover:from-[#7C4FE0] hover:to-[#D4377E] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
+            >
+              {authLoading
+                ? "Checking..."
+                : isGenerating
+                ? taskStatus || "Generating..."
+                : user
+                ? "Generate"
+                : "Sign in to Generate"}
+            </Button>
+            {!user && !authLoading && (
+              <p className="text-xs text-[#64748B] text-center">
+                You need to <Link href="/auth" className="text-[#818CF8] hover:underline">sign in</Link> before generating images
+              </p>
+            )}
           </div>
-        </div>
         </div>
         <div className="flex-1">
 
