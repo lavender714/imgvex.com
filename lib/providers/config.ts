@@ -195,6 +195,18 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
+    id: "nano-banana-2-image",
+    name: "Nano Banana 2",
+    taskType: "image-to-image",
+    logo: "N",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "nano-banana-2-image-to-image", priority: 1, etaSeconds: 18 },
+      { providerId: "apipod", providerModelId: "nano-banana-2-image", priority: 2, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "nano-banana-2-image", priority: 3, etaSeconds: 18 },
+    ],
+  },
+  {
     id: "gpt-image-2-image",
     name: "GPT Image 2.0",
     taskType: "image-to-image",
@@ -213,6 +225,17 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "gpt-image/1.5-image-to-image", priority: 1, etaSeconds: 25 },
       { providerId: "evolink", providerModelId: "gpt-image-1.5", priority: 3, etaSeconds: 25 },
+    ],
+  },
+  {
+    id: "flux-kontext-image",
+    name: "Flux Kontext",
+    taskType: "image-to-image",
+    logo: "F",
+    comingSoon: true,
+    providers: [
+      { providerId: "kie", providerModelId: "flux1-kontext-image", priority: 1, etaSeconds: 20 },
+      { providerId: "apipod", providerModelId: "flux-kontext-image", priority: 2, etaSeconds: 20 },
     ],
   },
 
@@ -239,12 +262,142 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
   },
   {
     id: "seedance-2.0-r2v",
-    name: "Seedance 2.0 R2V",
+    name: "Seedance 2.0",
     taskType: "image-to-video",
     logo: "S",
     providers: [
       { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 1, etaSeconds: 75 },
       { providerId: "evolink", providerModelId: "seedance-2.0-image-to-video", priority: 2, etaSeconds: 75 },
+    ],
+  },
+  {
+    id: "seedance-2.0-fast-r2v",
+    name: "Seedance 2.0 fast",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-r2v", priority: 1, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 2, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "veo3-1-lite-i2v",
+    name: "Veo 3.1 Lite",
+    taskType: "image-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-lite-i2v", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "veo3-1-fast-i2v",
+    name: "Veo 3.1 Fast",
+    taskType: "image-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-fast-i2v", priority: 1, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast-image-to-video", priority: 2, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "veo3-1-quality-i2v",
+    name: "Veo 3.1 Quality",
+    taskType: "image-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-quality-i2v", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "veo-3.1-generate-image-to-video", priority: 2, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "sora-2-vip-i2v",
+    name: "Sora 2",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "sora-2-vip-i2v", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-image-to-video", priority: 2, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "sora-2-pro-i2v",
+    name: "Sora 2 Pro",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "sora-2-pro-i2v", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-pro-image-to-video", priority: 2, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "runway-gen4-i2v",
+    name: "Runway",
+    taskType: "image-to-video",
+    logo: "R",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "runway-gen4-i2v", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "kling-3-i2v",
+    name: "Kling 3.0",
+    taskType: "image-to-video",
+    logo: "K",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "kling-3-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-image-to-video", priority: 2, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "kling-2.6-motion-control-i2v",
+    name: "Kling V2.6",
+    taskType: "image-to-video",
+    logo: "K",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "kling-2.6-motion-control-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-motion-control-image", priority: 2, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "hailuo-02-i2v",
+    name: "Hailuo 02",
+    taskType: "image-to-video",
+    logo: "H",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "hailuo-02-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-02-image", priority: 2, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "hailuo-02-pro-i2v",
+    name: "Hailuo 02 Pro",
+    taskType: "image-to-video",
+    logo: "H",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "hailuo-02-pro-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-2.3-image", priority: 2, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "grok-imagine-i2v",
+    name: "Grok",
+    taskType: "image-to-video",
+    logo: "G",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "grok-imagine-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "grok-imagine-image-to-video-beta", priority: 2, etaSeconds: 60 },
     ],
   },
   {
