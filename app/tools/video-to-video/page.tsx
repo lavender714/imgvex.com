@@ -436,9 +436,9 @@ export default function VideoToVideoPage() {
       <Navbar variant="app" />
 
       {/* ─── Workbench ─── */}
-      <div className="sticky top-[60px] flex h-[calc(100vh-60px)] gap-4 py-4 pr-4 z-10 bg-[#0B0817]">
+      <div className="flex gap-4 py-4 pr-4">
         {/* Left Sidebar */}
-        <aside className="w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col">
+        <aside className="sticky top-[60px] self-start h-[calc(100vh-60px)] w-[200px] flex-shrink-0 rounded-r-2xl border-y border-r border-[#1E293B] bg-[#0A0A12] hidden lg:flex flex-col mt-[-56px]">
           <div className="flex-1 overflow-y-auto py-4">
           {sidebarTools.map((section, idx) =>
             isCategory(section) ? (
@@ -651,7 +651,6 @@ export default function VideoToVideoPage() {
               )}
             </div>
           </div>
-        </main>
 
         {/* Right: Preview Panel */}
         <aside className="w-[480px] flex-shrink-0 border-l border-[#1E293B] bg-[#0A0A12] hidden xl:flex flex-col">
@@ -693,7 +692,6 @@ export default function VideoToVideoPage() {
             </div>
           </div>
         </aside>
-      </div>
 
       {/* ─── Marketing Content ─── */}
       <div className="border-t border-[#1E293B]">
@@ -909,6 +907,8 @@ export default function VideoToVideoPage() {
         </section>
 
         <Footer />
+      </div>
+      </main>
       </div>
     </div>
   );
