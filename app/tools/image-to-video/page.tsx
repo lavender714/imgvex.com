@@ -540,8 +540,9 @@ export default function ImageToVideoPage() {
 
         {/* Center: Generation Panel */}
         <main className="flex-1 min-w-0">
-          <div className="flex gap-6"><div className="flex-1"><div className="px-6 pt-6">
-          <div className="max-w-[640px] mx-auto flex flex-col gap-5">
+          <div className="flex gap-6">
+            <div className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col max-h-[calc(100vh-76px)] mt-[-56px]">
+              <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5">
             {/* Model Selector */}
             <div>
               <Select value={selectedModel} onValueChange={(v) => v && setSelectedModel(v)}>
@@ -744,60 +745,61 @@ export default function ImageToVideoPage() {
               </div>
             </div>
 
-            {/* Credit Cost & Generate */}
-            <div className="flex flex-col gap-3 pt-2">
-              <div className="flex items-center gap-2 text-sm text-[#64748B]">
-                <Layers className="w-4 h-4 text-[#818CF8]" />
-                <span>Required credits:</span>
-                <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
-                {isGenerating && (
-                  <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
-                )}
-              </div>
+          </div>
+          <div className="px-6 py-4 border-t border-[#1E293B] flex flex-col gap-3">
+            <div className="flex items-center gap-2 text-sm text-[#64748B]">
+              <Layers className="w-4 h-4 text-[#818CF8]" />
+              <span>Required credits:</span>
+              <span className="font-semibold text-[#F8FAFC]">{creditCost}</span>
               {isGenerating && (
-                <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-              )}
-              {genError && (
-                <div className="rounded-xl bg-[rgba(239,68,68,0.1)] border border-[#EF4444]/30 px-4 py-3">
-                  <p className="text-sm text-[#EF4444]">{genError}</p>
-                </div>
-              )}
-              {taskStatus && isGenerating && (
-                <div className="flex items-center gap-2 text-sm text-[#818CF8]">
-                  <div className="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
-                  <span>{taskStatus}</span>
-                </div>
-              )}
-              <Button
-                onClick={handleGenerate}
-                disabled={isGenerating || authLoading}
-                className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
-              >
-                <Sparkles className="w-4 h-4 mr-2" />
-                {authLoading
-                  ? "Checking..."
-                  : !user
-                  ? "Sign in to Generate"
-                  : isGenerating
-                  ? "Generating..."
-                  : "Generate"}
-              </Button>
-              {!user && !authLoading && (
-                <p className="text-xs text-center text-[#64748B]">
-                  Please{" "}
-                  <Link href="/auth" className="text-[#818CF8] hover:underline">
-                    sign in
-                  </Link>{" "}
-                  to generate videos
-                </p>
+                <span className="text-xs text-[#64748B] ml-auto">{progress}%</span>
               )}
             </div>
-          </div></div></div><div className="flex-1">
+            {isGenerating && (
+              <div className="w-full h-1.5 bg-[#1E293B] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+            {genError && (
+              <div className="rounded-xl bg-[rgba(239,68,68,0.1)] border border-[#EF4444]/30 px-4 py-3">
+                <p className="text-sm text-[#EF4444]">{genError}</p>
+              </div>
+            )}
+            {taskStatus && isGenerating && (
+              <div className="flex items-center gap-2 text-sm text-[#818CF8]">
+                <div className="w-4 h-4 border-2 border-[#6366F1] border-t-transparent rounded-full animate-spin" />
+                <span>{taskStatus}</span>
+              </div>
+            )}
+            <Button
+              onClick={handleGenerate}
+              disabled={isGenerating || authLoading}
+              className="w-full h-[52px] rounded-2xl bg-gradient-to-r from-[#6366F1] to-[#8B5CF6] hover:from-[#5558E0] hover:to-[#7C4FE0] text-white font-semibold text-[15px] transition-all disabled:opacity-50"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              {authLoading
+                ? "Checking..."
+                : !user
+                ? "Sign in to Generate"
+                : isGenerating
+                ? "Generating..."
+                : "Generate"}
+            </Button>
+            {!user && !authLoading && (
+              <p className="text-xs text-center text-[#64748B]">
+                Please{" "}
+                <Link href="/auth" className="text-[#818CF8] hover:underline">
+                  sign in
+                </Link>{" "}
+                to generate videos
+              </p>
+            )}
+          </div>
+        </div>
+        <div className="flex-1">
 
         {/* Right: Preview Panel */}
         <aside className="flex-1 rounded-2xl border border-[#1E293B] bg-[#0A0A12] flex flex-col">
