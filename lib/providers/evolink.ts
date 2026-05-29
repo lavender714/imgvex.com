@@ -126,7 +126,7 @@ export const evolinkAdapter: ProviderAdapter = {
     return buildEvolinkRequest(taskType, options, providerModelId);
   },
 
-  async sendRequest(body: unknown, taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }> {
+  async sendRequest(body: unknown, taskType: TaskType, _providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }> {
     const res = await fetch(pickEndpoint(taskType), {
       method: "POST",
       headers: getHeaders(),

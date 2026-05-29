@@ -37,7 +37,7 @@ export interface ProviderAdapter {
   buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown;
 
   // 发送请求创建任务（接收 taskType 以便选择正确的端点）
-  sendRequest(body: unknown, taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }>;
+  sendRequest(body: unknown, taskType: TaskType, providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }>;
 
   // 查询任务状态（接收 taskType 以便选择正确的端点）
   queryStatus(taskId: string, taskType: TaskType): Promise<unknown>;
@@ -105,7 +105,7 @@ export async function executeTaskWithFailover(
 
       // 带超时发送
       const result = await Promise.race([
-        adapter.sendRequest(requestBody, taskType),
+        adapter.sendRequest(requestBody, taskType, candidate.providerModelId),
         new Promise<never>((_, reject) =>
           setTimeout(() => reject(new Error("Timeout")), adapter.timeoutMs)
         ),
@@ -129,7 +129,7 @@ export async function executeTaskWithFailover(
           await new Promise((resolve) => setTimeout(resolve, 3000));
           const requestBody = adapter.buildRequest(taskType, options, candidate.providerModelId);
           const retryResult = await Promise.race([
-            adapter.sendRequest(requestBody, taskType),
+            adapter.sendRequest(requestBody, taskType, candidate.providerModelId),
             new Promise<never>((_, reject) =>
               setTimeout(() => reject(new Error("Timeout")), adapter.timeoutMs)
             ),

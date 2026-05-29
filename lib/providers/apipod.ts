@@ -87,7 +87,7 @@ export const apipodAdapter: ProviderAdapter = {
     return buildApiPodRequest(taskType, options, providerModelId);
   },
 
-  async sendRequest(body: unknown, taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }> {
+  async sendRequest(body: unknown, taskType: TaskType, _providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }> {
     const endpoint = getEndpoint(taskType);
 
     const res = await fetch(`${baseUrl}/${endpoint}/generations`, {

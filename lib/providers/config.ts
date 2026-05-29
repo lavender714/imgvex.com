@@ -292,7 +292,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "V",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-lite-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "veo3_lite", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "veo3-1-lite-i2v", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -302,8 +303,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "V",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-fast-i2v", priority: 1, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "veo-3.1-fast-image-to-video", priority: 2, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "veo3_fast", priority: 1, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "veo3-1-fast-i2v", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast-image-to-video", priority: 3, etaSeconds: 45 },
     ],
   },
   {
@@ -313,8 +315,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "V",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-quality-i2v", priority: 1, etaSeconds: 90 },
-      { providerId: "evolink", providerModelId: "veo-3.1-generate-image-to-video", priority: 2, etaSeconds: 90 },
+      { providerId: "kie", providerModelId: "veo3", priority: 1, etaSeconds: 90 },
+      { providerId: "apipod", providerModelId: "veo3-1-quality-i2v", priority: 2, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "veo-3.1-generate-image-to-video", priority: 3, etaSeconds: 90 },
     ],
   },
   {
@@ -410,7 +413,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "V",
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-lite", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "veo3_lite", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "veo3-1-lite", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -419,8 +423,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "V",
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 1, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "veo-3.1-fast", priority: 2, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "veo3_fast", priority: 1, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast", priority: 3, etaSeconds: 45 },
     ],
   },
   {
@@ -429,8 +434,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "V",
     providers: [
-      { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 1, etaSeconds: 90 },
-      { providerId: "evolink", providerModelId: "veo-3.1-generate-preview", priority: 2, etaSeconds: 90 },
+      { providerId: "kie", providerModelId: "veo3", priority: 1, etaSeconds: 90 },
+      { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 2, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "veo-3.1-generate-preview", priority: 3, etaSeconds: 90 },
     ],
   },
   {

@@ -29,63 +29,84 @@ function sizeToResolution(size?: string): string {
   return map[size || ""] || "1K";
 }
 
-// KIE models use different param names for image inputs
-function getImageInputKey(providerModelId: string, taskType: TaskType): string | null {
-  if (taskType === "image-to-image") {
-    if (providerModelId === "nano-banana-2") return "image_input";
-    if (providerModelId.startsWith("flux-kontext")) return "inputImage";
-    return "input_urls";
-  }
-  if (taskType === "image-to-video") {
-    if (providerModelId.startsWith("bytedance/seedance")) return "reference_image_urls";
-    return "input_urls";
-  }
-  return null;
+// ─── Endpoint routing per model family ───
+function getEndpoint(providerModelId: string): string {
+  if (providerModelId.startsWith("flux-kontext")) return `${baseUrl}/flux/kontext/generate`;
+  if (providerModelId.startsWith("veo3")) return `${baseUrl}/veo/generate`;
+  return `${baseUrl}/jobs/createTask`;
 }
 
-function buildKieImageRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
-  const input: Record<string, any> = {
-    prompt: options.prompt,
-    aspect_ratio: options.aspectRatio || (taskType === "image-to-image" ? "auto" : "1:1"),
-    resolution: options.resolution || sizeToResolution(options.size),
-    ...(options.n ? { n: options.n } : {}),
-  };
+// ─── Request builders ───
 
-  if (taskType === "image-to-image" && options.inputUrls && options.inputUrls.length > 0) {
-    const key = getImageInputKey(providerModelId, taskType);
-    if (key) input[key] = key === "inputImage" ? options.inputUrls[0] : options.inputUrls;
+function buildUniversalRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+  const input: Record<string, any> = { prompt: options.prompt };
+
+  if (taskType === "text-to-image" || taskType === "image-to-image") {
+    input.aspect_ratio = options.aspectRatio || (taskType === "image-to-image" ? "auto" : "1:1");
+    input.resolution = options.resolution || sizeToResolution(options.size);
+    if (options.n) input.n = options.n;
+    if (options.quality) input.quality = options.quality;
+    if (options.style) input.style = options.style;
+
+    if (taskType === "image-to-image" && options.inputUrls?.length) {
+      if (providerModelId === "nano-banana-2") {
+        input.image_input = options.inputUrls;
+      } else {
+        input.input_urls = options.inputUrls;
+      }
+    }
   }
 
-  if (options.quality) {
-    input.quality = options.quality;
+  if (taskType === "text-to-video" || taskType === "image-to-video") {
+    if (options.aspectRatio) input.aspect_ratio = options.aspectRatio;
+    if (options.duration) input.duration = options.duration;
+
+    if (taskType === "image-to-video" && options.inputUrls?.length) {
+      if (providerModelId.startsWith("bytedance/seedance")) {
+        input.reference_image_urls = options.inputUrls;
+      } else {
+        input.input_urls = options.inputUrls;
+      }
+    }
   }
 
-  if (options.style) {
-    input.style = options.style;
-  }
-
-  return {
-    model: providerModelId,
-    input,
-  };
+  return { model: providerModelId, input };
 }
 
-function buildKieVideoRequest(options: TaskOptions, providerModelId: string): unknown {
-  const input: Record<string, any> = {
+function buildFluxKontextRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+  const body: Record<string, any> = {
+    model: providerModelId,
     prompt: options.prompt,
-    ...(options.aspectRatio ? { aspect_ratio: options.aspectRatio } : {}),
-    ...(options.duration ? { duration: options.duration } : {}),
+    aspectRatio: options.aspectRatio || "16:9",
+    outputFormat: "jpeg",
   };
 
-  if (options.inputUrls && options.inputUrls.length > 0) {
-    const key = getImageInputKey(providerModelId, "image-to-video");
-    if (key) input[key] = options.inputUrls;
+  if (taskType === "image-to-image" && options.inputUrls?.length) {
+    body.inputImage = options.inputUrls[0];
   }
 
-  return {
+  return body;
+}
+
+function buildVeoRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+  const body: Record<string, any> = {
+    prompt: options.prompt,
     model: providerModelId,
-    input,
+    aspect_ratio: options.aspectRatio || "16:9",
+    duration: options.duration || 8,
+    resolution: options.resolution || "720p",
   };
+
+  if (taskType === "text-to-video") {
+    body.generationType = "TEXT_2_VIDEO";
+  }
+
+  if (taskType === "image-to-video" && options.inputUrls?.length) {
+    body.generationType = "FIRST_AND_LAST_FRAMES_2_VIDEO";
+    body.imageUrls = options.inputUrls;
+  }
+
+  return body;
 }
 
 function isHttpUrl(value: any): boolean {
@@ -250,14 +271,19 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
-    if (taskType === "text-to-image" || taskType === "image-to-image") {
-      return buildKieImageRequest(taskType, options, providerModelId);
+    if (providerModelId.startsWith("flux-kontext")) {
+      return buildFluxKontextRequest(taskType, options, providerModelId);
     }
-    return buildKieVideoRequest(options, providerModelId);
+    if (providerModelId.startsWith("veo3")) {
+      return buildVeoRequest(taskType, options, providerModelId);
+    }
+    return buildUniversalRequest(taskType, options, providerModelId);
   },
 
-  async sendRequest(body: unknown, _taskType: TaskType): Promise<{ taskId: string; rawResponse: unknown }> {
-    const res = await fetch(`${baseUrl}/jobs/createTask`, {
+  async sendRequest(body: unknown, _taskType: TaskType, providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }> {
+    const endpoint = getEndpoint(providerModelId);
+
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: getHeaders(),
       body: JSON.stringify(body),
