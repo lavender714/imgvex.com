@@ -408,8 +408,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "G",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "grok-imagine-i2v", priority: 1, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "grok-imagine-image-to-video-beta", priority: 2, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "grok-imagine/image-to-video", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "grok-imagine-i2v", priority: 2, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "grok-imagine-image-to-video-beta", priority: 3, etaSeconds: 60 },
     ],
   },
   {
@@ -527,8 +528,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "G",
     providers: [
-      { providerId: "apipod", providerModelId: "grok-imagine-t2v", priority: 1, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "grok-imagine-text-to-video-beta", priority: 2, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "grok-imagine/text-to-video", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "grok-imagine-t2v", priority: 2, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "grok-imagine-text-to-video-beta", priority: 3, etaSeconds: 60 },
     ],
   },
 ];
