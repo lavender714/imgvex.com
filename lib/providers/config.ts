@@ -296,6 +296,46 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
+    id: "seedance-2.0-fast-i2v",
+    name: "Seedance 2.0 Fast",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-i2v", priority: 1, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "seedance-2.0-i2v",
+    name: "Seedance 2.0",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "seedance-2.0-i2v", priority: 1, etaSeconds: 75 },
+    ],
+  },
+  {
+    id: "wan2.7-i2v",
+    name: "Wan 2.7",
+    taskType: "image-to-video",
+    logo: "W",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "wan2.7-i2v", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "veo3-1-fast-ref",
+    name: "Veo 3.1 Fast Ref",
+    taskType: "image-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-fast-ref", priority: 1, etaSeconds: 45 },
+    ],
+  },
+  {
     id: "veo3-1-lite-i2v",
     name: "Veo 3.1 Lite",
     taskType: "image-to-video",
