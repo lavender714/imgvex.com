@@ -62,7 +62,13 @@ function buildApiPodRequest(taskType: TaskType, options: TaskOptions, providerMo
   if (options.resolution) body.resolution = options.resolution;
   if (options.duration) body.duration = options.duration;
 
-  if (options.inputUrls?.length) body.image_urls = options.inputUrls;
+  if (options.inputUrls?.length) {
+    if (providerModelId === "sora-2-vip" || providerModelId === "sora-2-vip-i2v") {
+      body.image_url = options.inputUrls[0];
+    } else {
+      body.image_urls = options.inputUrls;
+    }
+  }
 
   return body;
 }
