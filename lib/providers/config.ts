@@ -349,7 +349,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "R",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "runway-gen4-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "runway", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "runway-gen4-i2v", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -470,7 +471,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "R",
     providers: [
-      { providerId: "apipod", providerModelId: "runway-gen4", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "runway", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "runway-gen4", priority: 2, etaSeconds: 60 },
     ],
   },
   {

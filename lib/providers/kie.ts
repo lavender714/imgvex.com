@@ -10,6 +10,9 @@ function loadEnv(key: string, defaultValue?: string): string {
 const baseUrl = loadEnv("KIE_BASE_URL", "https://kie.ai/api/v1");
 const apiKey = loadEnv("KIE_API_KEY", "");
 
+// Track last used model ID for endpoint routing in queryStatus
+let lastProviderModelId = "";
+
 function getHeaders() {
   return {
     "Content-Type": "application/json",
@@ -31,9 +34,15 @@ function sizeToResolution(size?: string): string {
 
 // ─── Endpoint routing per model family ───
 function getEndpoint(providerModelId: string): string {
+  if (providerModelId === "runway") return `${baseUrl}/runway/generate`;
   if (providerModelId.startsWith("flux-kontext")) return `${baseUrl}/flux/kontext/generate`;
   if (providerModelId.startsWith("veo3")) return `${baseUrl}/veo/generate`;
   return `${baseUrl}/jobs/createTask`;
+}
+
+function getQueryEndpoint(providerModelId: string): string {
+  if (providerModelId === "runway") return `${baseUrl}/runway/record-detail`;
+  return `${baseUrl}/jobs/recordInfo`;
 }
 
 // ─── Request builders ───
@@ -113,6 +122,22 @@ function buildVeoRequest(taskType: TaskType, options: TaskOptions, providerModel
   return body;
 }
 
+function buildRunwayRequest(taskType: TaskType, options: TaskOptions): unknown {
+  const body: Record<string, any> = {
+    prompt: options.prompt,
+    duration: options.duration || 5,
+    quality: options.resolution || "720p",
+    aspectRatio: options.aspectRatio || "16:9",
+    waterMark: "",
+  };
+
+  if (taskType === "image-to-video" && options.inputUrls?.length) {
+    body.imageUrl = options.inputUrls[0];
+  }
+
+  return body;
+}
+
 function isHttpUrl(value: any): boolean {
   return typeof value === "string" && value.startsWith("http");
 }
@@ -138,9 +163,7 @@ function extractUrls(value: any): string[] {
   return [];
 }
 
-function normalizeResult(raw: any): ProviderStatusResult {
-  console.log("[KIE] raw response:", JSON.stringify(raw, null, 2));
-
+function normalizeUniversalResult(raw: any): ProviderStatusResult {
   const d = raw?.data ?? raw;
 
   const rawStatus =
@@ -227,9 +250,6 @@ function normalizeResult(raw: any): ProviderStatusResult {
   }
   if (urls.length === 0) {
     urls = extractUrls(raw);
-    if (urls.length > 0) {
-      console.log("[KIE] URLs found via deep scan:", urls);
-    }
   }
 
   const statusMap: Record<string, ProviderStatusResult["status"]> = {
@@ -253,11 +273,59 @@ function normalizeResult(raw: any): ProviderStatusResult {
   const statusKey = String(rawStatus).toLowerCase();
   const status = statusMap[statusKey] || (rawStatus as ProviderStatusResult["status"]);
 
-  return {
-    status,
-    result: urls,
-    error,
+  return { status, result: urls, error };
+}
+
+function normalizeRunwayResult(raw: any): ProviderStatusResult {
+  const d = raw?.data ?? raw;
+
+  const rawStatus =
+    d?.state ??
+    d?.status ??
+    raw?.status ??
+    "unknown";
+
+  let urls: string[] = [];
+  const videoInfo = d?.videoInfo;
+  if (videoInfo?.videoUrl) urls.push(videoInfo.videoUrl);
+
+  if (urls.length === 0) {
+    urls = extractUrls(raw);
+  }
+
+  let error =
+    d?.failMsg ??
+    d?.error ??
+    d?.message ??
+    raw?.error ??
+    raw?.msg ??
+    raw?.message;
+
+  if (error === "success" || error === "SUCCESS") error = undefined;
+
+  const statusMap: Record<string, ProviderStatusResult["status"]> = {
+    success: "completed",
+    completed: "completed",
+    done: "completed",
+    finished: "completed",
+    processing: "processing",
+    running: "processing",
+    generating: "processing",
+    in_progress: "processing",
+    pending: "pending",
+    queued: "pending",
+    queueing: "pending",
+    wait: "pending",
+    waiting: "pending",
+    failed: "failed",
+    error: "failed",
+    fail: "failed",
   };
+
+  const statusKey = String(rawStatus).toLowerCase();
+  const status = statusMap[statusKey] || (rawStatus as ProviderStatusResult["status"]);
+
+  return { status, result: urls, error };
 }
 
 export const kieAdapter: ProviderAdapter = {
@@ -275,6 +343,9 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
+    if (providerModelId === "runway") {
+      return buildRunwayRequest(taskType, options);
+    }
     if (providerModelId.startsWith("flux-kontext")) {
       return buildFluxKontextRequest(taskType, options, providerModelId);
     }
@@ -285,6 +356,7 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   async sendRequest(body: unknown, _taskType: TaskType, providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }> {
+    lastProviderModelId = providerModelId;
     const endpoint = getEndpoint(providerModelId);
 
     const res = await fetch(endpoint, {
@@ -322,7 +394,9 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   async queryStatus(taskId: string): Promise<unknown> {
-    const res = await fetch(`${baseUrl}/jobs/recordInfo?taskId=${taskId}`, {
+    const endpoint = `${getQueryEndpoint(lastProviderModelId)}?taskId=${taskId}`;
+
+    const res = await fetch(endpoint, {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
 
@@ -346,6 +420,9 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   parseResponse(raw: unknown): ProviderStatusResult {
-    return normalizeResult(raw);
+    if (lastProviderModelId === "runway") {
+      return normalizeRunwayResult(raw);
+    }
+    return normalizeUniversalResult(raw);
   },
 };
