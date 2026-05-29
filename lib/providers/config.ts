@@ -505,7 +505,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "H",
     comingSoon: true,
     providers: [
-      { providerId: "kie", providerModelId: "hailuo/2-3-text-to-video-standard", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "hailuo/02-text-to-video-standard", priority: 1, etaSeconds: 60 },
       { providerId: "apipod", providerModelId: "hailuo-02", priority: 2, etaSeconds: 60 },
       { providerId: "evolink", providerModelId: "MiniMax-Hailuo-02", priority: 3, etaSeconds: 60 },
     ],
@@ -517,7 +517,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "H",
     comingSoon: true,
     providers: [
-      { providerId: "kie", providerModelId: "hailuo/2-3-text-to-video-pro", priority: 1, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "hailuo/02-text-to-video-pro", priority: 1, etaSeconds: 60 },
       { providerId: "apipod", providerModelId: "hailuo-02-pro", priority: 2, etaSeconds: 60 },
       { providerId: "evolink", providerModelId: "MiniMax-Hailuo-2.3", priority: 3, etaSeconds: 60 },
     ],
