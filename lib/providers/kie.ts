@@ -29,6 +29,20 @@ function sizeToResolution(size?: string): string {
   return map[size || ""] || "1K";
 }
 
+// KIE models use different param names for image inputs
+function getImageInputKey(providerModelId: string, taskType: TaskType): string | null {
+  if (taskType === "image-to-image") {
+    if (providerModelId === "nano-banana-2") return "image_input";
+    if (providerModelId.startsWith("flux-kontext")) return "inputImage";
+    return "input_urls";
+  }
+  if (taskType === "image-to-video") {
+    if (providerModelId.startsWith("bytedance/seedance")) return "reference_image_urls";
+    return "input_urls";
+  }
+  return null;
+}
+
 function buildKieImageRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
   const input: Record<string, any> = {
     prompt: options.prompt,
@@ -38,7 +52,8 @@ function buildKieImageRequest(taskType: TaskType, options: TaskOptions, provider
   };
 
   if (taskType === "image-to-image" && options.inputUrls && options.inputUrls.length > 0) {
-    input.input_urls = options.inputUrls;
+    const key = getImageInputKey(providerModelId, taskType);
+    if (key) input[key] = key === "inputImage" ? options.inputUrls[0] : options.inputUrls;
   }
 
   if (options.quality) {
@@ -63,7 +78,8 @@ function buildKieVideoRequest(options: TaskOptions, providerModelId: string): un
   };
 
   if (options.inputUrls && options.inputUrls.length > 0) {
-    input.input_urls = options.inputUrls;
+    const key = getImageInputKey(providerModelId, "image-to-video");
+    if (key) input[key] = options.inputUrls;
   }
 
   return {
@@ -229,6 +245,7 @@ export const kieAdapter: ProviderAdapter = {
       "text-to-image",
       "image-to-image",
       "text-to-video",
+      "image-to-video",
     ].includes(taskType);
   },
 

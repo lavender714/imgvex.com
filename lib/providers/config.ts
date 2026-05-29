@@ -148,7 +148,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-image",
     logo: "F",
     providers: [
-      { providerId: "kie", providerModelId: "flux1-kontext", priority: 1, etaSeconds: 20 },
+      { providerId: "kie", providerModelId: "flux-kontext-pro", priority: 1, etaSeconds: 20 },
       { providerId: "apipod", providerModelId: "flux-kontext", priority: 2, etaSeconds: 20 },
     ],
   },
@@ -201,7 +201,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "N",
     comingSoon: true,
     providers: [
-      { providerId: "kie", providerModelId: "nano-banana-2-image-to-image", priority: 1, etaSeconds: 18 },
+      { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
       { providerId: "apipod", providerModelId: "nano-banana-2-image", priority: 2, etaSeconds: 18 },
       { providerId: "evolink", providerModelId: "nano-banana-2-image", priority: 3, etaSeconds: 18 },
     ],
@@ -234,7 +234,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "F",
     comingSoon: true,
     providers: [
-      { providerId: "kie", providerModelId: "flux1-kontext-image", priority: 1, etaSeconds: 20 },
+      { providerId: "kie", providerModelId: "flux-kontext-pro", priority: 1, etaSeconds: 20 },
       { providerId: "apipod", providerModelId: "flux-kontext-image", priority: 2, etaSeconds: 20 },
     ],
   },
@@ -246,8 +246,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "S",
     providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-t2v", priority: 1, etaSeconds: 75 },
-      { providerId: "evolink", providerModelId: "seedance-2.0-text-to-video", priority: 2, etaSeconds: 75 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 75 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-t2v", priority: 2, etaSeconds: 75 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-text-to-video", priority: 3, etaSeconds: 75 },
     ],
   },
   {
@@ -256,8 +257,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "S",
     providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 1, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "seedance-2.0-fast-text-to-video", priority: 2, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-fast-text-to-video", priority: 3, etaSeconds: 45 },
     ],
   },
   {
@@ -266,8 +268,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "image-to-video",
     logo: "S",
     providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 1, etaSeconds: 75 },
-      { providerId: "evolink", providerModelId: "seedance-2.0-image-to-video", priority: 2, etaSeconds: 75 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 75 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 2, etaSeconds: 75 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-image-to-video", priority: 3, etaSeconds: 75 },
     ],
   },
   {
@@ -277,8 +280,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-fast-r2v", priority: 1, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 2, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-r2v", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 3, etaSeconds: 45 },
     ],
   },
   {
