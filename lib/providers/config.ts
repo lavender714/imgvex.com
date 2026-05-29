@@ -107,8 +107,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "gpt-image/1.5-text-to-image", priority: 1, etaSeconds: 25 },
-      { providerId: "apipod", providerModelId: "gpt-image-1-5", priority: 2, etaSeconds: 25 },
-      { providerId: "evolink", providerModelId: "gpt-image-1.5", priority: 3, etaSeconds: 25 },
+      { providerId: "evolink", providerModelId: "gpt-image-1.5", priority: 2, etaSeconds: 25 },
     ],
   },
   {
@@ -119,7 +118,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "grok-imagine/text-to-image", priority: 1, etaSeconds: 25 },
-      { providerId: "apipod", providerModelId: "grok-imagine", priority: 2, etaSeconds: 25 },
     ],
   },
   {
@@ -130,7 +128,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "ideogram/v3-text-to-image", priority: 1, etaSeconds: 20 },
-      { providerId: "apipod", providerModelId: "ideogram", priority: 2, etaSeconds: 20 },
     ],
   },
   {
@@ -158,8 +155,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-image",
     logo: "M",
     providers: [
-      { providerId: "apipod", providerModelId: "midjourney", priority: 1, etaSeconds: 30 },
-      { providerId: "evolink", providerModelId: "mj-v7", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "mj-v7", priority: 1, etaSeconds: 45 },
     ],
   },
   {
