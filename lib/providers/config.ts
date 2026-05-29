@@ -371,8 +371,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "K",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "kling-2.6-motion-control-i2v", priority: 1, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "kling-v3-motion-control-image", priority: 2, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "kling-2.6/image-to-video", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "kling-2.6-motion-control-i2v", priority: 2, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-motion-control-image", priority: 3, etaSeconds: 60 },
     ],
   },
   {
@@ -487,8 +488,9 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "K",
     providers: [
-      { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 1, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "kling-v3-motion-control", priority: 2, etaSeconds: 60 },
+      { providerId: "kie", providerModelId: "kling-2.6/text-to-video", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 2, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "kling-v3-motion-control", priority: 3, etaSeconds: 60 },
     ],
   },
   {

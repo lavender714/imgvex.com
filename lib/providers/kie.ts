@@ -64,6 +64,8 @@ function buildUniversalRequest(taskType: TaskType, options: TaskOptions, provide
     if (taskType === "image-to-video" && options.inputUrls?.length) {
       if (providerModelId.startsWith("bytedance/seedance")) {
         input.reference_image_urls = options.inputUrls;
+      } else if (providerModelId.startsWith("kling-2.6")) {
+        input.image_urls = options.inputUrls;
       } else {
         input.input_urls = options.inputUrls;
       }
