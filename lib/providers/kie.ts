@@ -66,6 +66,8 @@ function buildUniversalRequest(taskType: TaskType, options: TaskOptions, provide
         input.reference_image_urls = options.inputUrls;
       } else if (providerModelId.startsWith("kling-2.6")) {
         input.image_urls = options.inputUrls;
+      } else if (providerModelId.startsWith("hailuo/")) {
+        input.image_url = options.inputUrls[0];
       } else {
         input.input_urls = options.inputUrls;
       }
