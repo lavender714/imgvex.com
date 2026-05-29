@@ -222,6 +222,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "G",
     providers: [
       { providerId: "kie", providerModelId: "gpt-image-2-image-to-image", priority: 1, etaSeconds: 25 },
+      { providerId: "apipod", providerModelId: "gpt-image-2-edit", priority: 2, etaSeconds: 25 },
       { providerId: "evolink", providerModelId: "gpt-image-2", priority: 3, etaSeconds: 25 },
     ],
   },
