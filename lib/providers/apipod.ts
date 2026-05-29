@@ -59,6 +59,7 @@ function buildApiPodRequest(taskType: TaskType, options: TaskOptions, providerMo
   if (options.quality) body.quality = options.quality;
   if (options.style) body.style = options.style;
   if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+  if (options.resolution) body.resolution = options.resolution;
   if (options.duration) body.duration = options.duration;
 
   if (options.inputUrls?.length) body.image_urls = options.inputUrls;
