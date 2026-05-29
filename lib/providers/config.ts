@@ -257,7 +257,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     taskType: "text-to-video",
     logo: "S",
     providers: [
-      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2-fast", priority: 1, etaSeconds: 45 },
       { providerId: "apipod", providerModelId: "seedance-2.0-fast-t2v", priority: 2, etaSeconds: 45 },
       { providerId: "evolink", providerModelId: "seedance-2.0-fast-text-to-video", priority: 3, etaSeconds: 45 },
     ],
@@ -280,7 +280,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     comingSoon: true,
     providers: [
-      { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 45 },
+      { providerId: "kie", providerModelId: "bytedance/seedance-2-fast", priority: 1, etaSeconds: 45 },
       { providerId: "apipod", providerModelId: "seedance-2.0-fast-r2v", priority: 2, etaSeconds: 45 },
       { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 3, etaSeconds: 45 },
     ],
