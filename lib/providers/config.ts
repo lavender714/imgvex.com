@@ -162,6 +162,15 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
       { providerId: "evolink", providerModelId: "mj-v7", priority: 2, etaSeconds: 45 },
     ],
   },
+  {
+    id: "wan2.7-text-to-image",
+    name: "Wan 2.7",
+    taskType: "text-to-image",
+    logo: "W",
+    providers: [
+      { providerId: "apipod", providerModelId: "wan2.7-image", priority: 1, etaSeconds: 20 },
+    ],
+  },
 
   // 图生图
   {
