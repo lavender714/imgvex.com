@@ -342,17 +342,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "sora-2-pro-i2v",
-    name: "Sora 2 Pro",
-    taskType: "image-to-video",
-    logo: "S",
-    comingSoon: true,
-    providers: [
-      { providerId: "apipod", providerModelId: "sora-2-pro-i2v", priority: 1, etaSeconds: 90 },
-      { providerId: "evolink", providerModelId: "sora-2-pro-image-to-video", priority: 2, etaSeconds: 90 },
-    ],
-  },
-  {
     id: "runway-gen4-i2v",
     name: "Runway",
     taskType: "image-to-video",
@@ -456,6 +445,36 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
+    id: "veo3-1-lite-4k",
+    name: "Veo 3.1 Lite 4K",
+    taskType: "text-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-lite-4k", priority: 1, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "veo3-1-fast-4k",
+    name: "Veo 3.1 Fast 4K",
+    taskType: "text-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-fast-4k", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
+    id: "veo3-1-quality-4k",
+    name: "Veo 3.1 Quality 4K",
+    taskType: "text-to-video",
+    logo: "V",
+    comingSoon: true,
+    providers: [
+      { providerId: "apipod", providerModelId: "veo3-1-quality-4k", priority: 1, etaSeconds: 120 },
+    ],
+  },
+  {
     id: "sora-2-vip",
     name: "Sora 2",
     taskType: "text-to-video",
@@ -463,17 +482,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
       { providerId: "evolink", providerModelId: "sora-2-preview", priority: 2, etaSeconds: 90 },
-    ],
-  },
-  {
-    id: "sora-2-pro",
-    name: "Sora 2 Pro",
-    taskType: "text-to-video",
-    logo: "S",
-    comingSoon: true,
-    providers: [
-      { providerId: "apipod", providerModelId: "sora-2-pro", priority: 1, etaSeconds: 90 },
-      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
