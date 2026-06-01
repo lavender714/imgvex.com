@@ -77,13 +77,16 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
   // Video generation params
   if (taskType === "text-to-video" || taskType === "image-to-video") {
     if (options.duration) body.duration = options.duration;
-    // EvoLink video quality accepts 480p / 720p / 1080p / 4k
+    // EvoLink video quality accepts 480p / 512p / 720p / 768p / 1080p / 4k
     const q = options.resolution || options.quality;
-    if (q && (/^(480|720|1080)p$/.test(q) || q === "4k")) {
+    if (q && (/^(480|512|720|768|1080)p$/.test(q) || q === "4k")) {
       body.quality = q;
     }
     if (options.n) body.n = options.n;
-    if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+    // Hailuo models do not support aspect_ratio
+    if (options.aspectRatio && !providerModelId.includes("Hailuo")) {
+      body.aspect_ratio = options.aspectRatio;
+    }
     // Veo 3.1 requires generation_type; Kling O3 does not
     if (providerModelId.startsWith("veo-3.1")) {
       body.generation_type = taskType === "image-to-video" ? "FIRST&LAST" : "TEXT";
