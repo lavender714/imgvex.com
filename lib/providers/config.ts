@@ -326,7 +326,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "veo3_fast", priority: 1, etaSeconds: 45 },
       { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 2, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "veo-3.1-fast-image-to-video", priority: 3, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast-generate-preview", priority: 3, etaSeconds: 45 },
     ],
   },
   {
@@ -447,7 +447,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "veo3_fast", priority: 1, etaSeconds: 45 },
       { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 2, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "veo-3.1-fast", priority: 3, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "veo-3.1-fast-generate-preview", priority: 3, etaSeconds: 45 },
     ],
   },
   {
