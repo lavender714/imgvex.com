@@ -204,7 +204,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
-      { providerId: "apipod", providerModelId: "nano-banana-2-image", priority: 2, etaSeconds: 18 },
+      { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
       { providerId: "evolink", providerModelId: "nano-banana-2-image", priority: 3, etaSeconds: 18 },
     ],
   },
@@ -315,7 +315,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "veo3_lite", priority: 1, etaSeconds: 60 },
-      { providerId: "apipod", providerModelId: "veo3-1-lite-i2v", priority: 2, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "veo3-1-lite", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -326,7 +326,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "veo3_fast", priority: 1, etaSeconds: 45 },
-      { providerId: "apipod", providerModelId: "veo3-1-fast-i2v", priority: 2, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "veo3-1-fast", priority: 2, etaSeconds: 45 },
       { providerId: "evolink", providerModelId: "veo-3.1-fast-image-to-video", priority: 3, etaSeconds: 45 },
     ],
   },
@@ -338,7 +338,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "veo3", priority: 1, etaSeconds: 90 },
-      { providerId: "apipod", providerModelId: "veo3-1-quality-i2v", priority: 2, etaSeconds: 90 },
+      { providerId: "apipod", providerModelId: "veo3-1-quality", priority: 2, etaSeconds: 90 },
       { providerId: "evolink", providerModelId: "veo-3.1-generate-image-to-video", priority: 3, etaSeconds: 90 },
     ],
   },
@@ -349,7 +349,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "sora-2-vip-i2v", priority: 1, etaSeconds: 90 },
+      { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
       { providerId: "evolink", providerModelId: "sora-2-image-to-video", priority: 2, etaSeconds: 90 },
     ],
   },
