@@ -84,7 +84,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
       { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
-      { providerId: "evolink", providerModelId: "nano-banana-2-beta", priority: 3, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "gemini-3.1-flash-image-preview", priority: 3, etaSeconds: 18 },
     ],
   },
   {
@@ -205,7 +205,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-2", priority: 1, etaSeconds: 18 },
       { providerId: "apipod", providerModelId: "nano-banana-2", priority: 2, etaSeconds: 18 },
-      { providerId: "evolink", providerModelId: "nano-banana-2-image", priority: 3, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "gemini-3.1-flash-image-preview", priority: 3, etaSeconds: 18 },
     ],
   },
   {
