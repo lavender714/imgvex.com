@@ -73,7 +73,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "kie", providerModelId: "nano-banana-pro", priority: 1, etaSeconds: 22 },
       { providerId: "apipod", providerModelId: "nano-banana-pro", priority: 2, etaSeconds: 22 },
-      { providerId: "evolink", providerModelId: "nano-banana-pro-beta", priority: 3, etaSeconds: 22 },
+      { providerId: "evolink", providerModelId: "gemini-3-pro-image-preview", priority: 3, etaSeconds: 22 },
     ],
   },
   {
