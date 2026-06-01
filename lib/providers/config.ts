@@ -551,6 +551,15 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
+    id: "kling-o3-image-video",
+    name: "Kling O3",
+    taskType: "image-to-video",
+    logo: "K",
+    providers: [
+      { providerId: "evolink", providerModelId: "kling-o3-image-to-video", priority: 1, etaSeconds: 60 },
+    ],
+  },
+  {
     id: "hailuo-02",
     name: "Hailuo 02",
     taskType: "text-to-video",

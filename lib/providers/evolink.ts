@@ -84,10 +84,21 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
     }
     if (options.n) body.n = options.n;
     if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
-    // Veo 3.1 requires generation_type; harmless for other models
-    body.generation_type = taskType === "image-to-video" ? "FIRST&LAST" : "TEXT";
+    // Veo 3.1 requires generation_type; Kling O3 does not
+    if (providerModelId.startsWith("veo-3.1")) {
+      body.generation_type = taskType === "image-to-video" ? "FIRST&LAST" : "TEXT";
+    }
     if (taskType === "image-to-video" && options.inputUrls?.length) {
-      body.image_urls = options.inputUrls;
+      if (providerModelId === "kling-o3-image-to-video") {
+        // Kling O3 uses image_start / image_end instead of image_urls
+        body.image_start = options.inputUrls[0];
+        if (options.inputUrls[1]) body.image_end = options.inputUrls[1];
+        if (options.inputUrls.length > 2) {
+          body.image_urls = options.inputUrls.slice(2);
+        }
+      } else {
+        body.image_urls = options.inputUrls;
+      }
     }
   }
 
