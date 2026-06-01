@@ -10,8 +10,8 @@ function loadEnv(key: string, defaultValue?: string): string {
 const baseUrl = loadEnv("KIE_BASE_URL", "https://kie.ai/api/v1");
 const apiKey = loadEnv("KIE_API_KEY", "");
 
-// Track last used model ID for endpoint routing in queryStatus
-let lastProviderModelId = "";
+// Map taskId -> providerModelId for endpoint routing in queryStatus
+const taskModelMap = new Map<string, string>();
 
 function getHeaders() {
   return {
@@ -356,7 +356,6 @@ export const kieAdapter: ProviderAdapter = {
   },
 
   async sendRequest(body: unknown, _taskType: TaskType, providerModelId: string): Promise<{ taskId: string; rawResponse: unknown }> {
-    lastProviderModelId = providerModelId;
     const endpoint = getEndpoint(providerModelId);
 
     const res = await fetch(endpoint, {
@@ -390,11 +389,14 @@ export const kieAdapter: ProviderAdapter = {
       data.id;
 
     if (!taskId) throw new Error(`No task_id returned from KIE. Body: ${rawText}`);
-    return { taskId: String(taskId), rawResponse: data };
+    const tid = String(taskId);
+    taskModelMap.set(tid, providerModelId);
+    return { taskId: tid, rawResponse: data };
   },
 
-  async queryStatus(taskId: string): Promise<unknown> {
-    const endpoint = `${getQueryEndpoint(lastProviderModelId)}?taskId=${taskId}`;
+  async queryStatus(taskId: string, _taskType: TaskType): Promise<unknown> {
+    const modelId = taskModelMap.get(taskId) || "";
+    const endpoint = `${getQueryEndpoint(modelId)}?taskId=${taskId}`;
 
     const res = await fetch(endpoint, {
       headers: { Authorization: `Bearer ${apiKey}` },
@@ -416,13 +418,16 @@ export const kieAdapter: ProviderAdapter = {
       throw new Error(`KIE query failed: ${res.status} ${msg}`);
     }
 
-    return raw;
+    return { __kie_model_id: modelId, __kie_raw: raw };
   },
 
   parseResponse(raw: unknown): ProviderStatusResult {
-    if (lastProviderModelId === "runway") {
-      return normalizeRunwayResult(raw);
+    const wrapped = raw as any;
+    const modelId = wrapped?.__kie_model_id || "";
+    const actualRaw = wrapped?.__kie_raw ?? wrapped;
+    if (modelId === "runway") {
+      return normalizeRunwayResult(actualRaw);
     }
-    return normalizeUniversalResult(raw);
+    return normalizeUniversalResult(actualRaw);
   },
 };

@@ -54,15 +54,26 @@ function buildApiPodRequest(taskType: TaskType, options: TaskOptions, providerMo
     prompt: options.prompt,
   };
 
-  if (options.size) body.size = options.size;
-  if (options.n) body.n = options.n;
-  if (options.quality) body.quality = options.quality;
-  if (options.style) body.style = options.style;
-  if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
-  if (options.resolution) body.resolution = options.resolution;
-  if (options.duration) body.duration = options.duration;
+  // Image generation params
+  if (taskType === "text-to-image" || taskType === "image-to-image") {
+    if (options.size) body.size = options.size;
+    if (options.n) body.n = options.n;
+    if (options.quality) body.quality = options.quality;
+    if (options.style) body.style = options.style;
+    if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+    if (options.resolution) body.resolution = options.resolution;
+  }
 
-  if (options.inputUrls?.length) {
+  // Video generation params
+  if (taskType === "text-to-video" || taskType === "image-to-video") {
+    if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+    if (options.duration) body.duration = options.duration;
+    if (options.quality) body.quality = options.quality;
+    if (options.resolution) body.resolution = options.resolution;
+  }
+
+  // Image URLs for I2I and I2V
+  if ((taskType === "image-to-image" || taskType === "image-to-video") && options.inputUrls?.length) {
     if (providerModelId === "sora-2-vip" || providerModelId === "sora-2-vip-i2v") {
       body.image_url = options.inputUrls[0];
     } else {
@@ -86,8 +97,12 @@ export const apipodAdapter: ProviderAdapter = {
   timeoutMs: 10000,
 
   supports(taskType: TaskType): boolean {
-    // APIPod 目前支持文生图和文生视频
-    return taskType === "text-to-image" || taskType === "text-to-video";
+    return (
+      taskType === "text-to-image" ||
+      taskType === "image-to-image" ||
+      taskType === "text-to-video" ||
+      taskType === "image-to-video"
+    );
   },
 
   buildRequest(taskType: TaskType, options: TaskOptions, providerModelId: string): unknown {
