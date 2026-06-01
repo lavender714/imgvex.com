@@ -76,7 +76,10 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
   // Image generation params
   if (taskType === "text-to-image" || taskType === "image-to-image") {
     if (options.size) body.size = options.size;
-    if (options.resolution) body.resolution = options.resolution;
+    // GPT Image 1.5 does not support resolution
+    if (options.resolution && providerModelId !== "gpt-image-1.5") {
+      body.resolution = options.resolution;
+    }
     if (options.quality) body.quality = options.quality;
     if (options.n) body.n = options.n;
     if (options.aspectRatio && !options.size) body.size = options.aspectRatio;
@@ -88,14 +91,20 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
   // Video generation params
   if (taskType === "text-to-video" || taskType === "image-to-video") {
     if (options.duration) body.duration = options.duration;
-    // EvoLink video quality accepts 480p / 512p / 720p / 768p / 1080p / 4k
-    const q = options.resolution || options.quality;
-    if (q && (/^(480|512|720|768|1080)p$/.test(q) || q === "4k")) {
-      body.quality = q;
+    // Sora-2 Preview does not support quality
+    if (providerModelId !== "sora-2-preview") {
+      const q = options.resolution || options.quality;
+      if (q && (/^(480|512|720|768|1080)p$/.test(q) || q === "4k")) {
+        body.quality = q;
+      }
     }
-    if (options.n) body.n = options.n;
-    // Hailuo models do not support aspect_ratio
-    if (options.aspectRatio && !providerModelId.includes("Hailuo")) {
+    // Only Veo 3.1 supports n for video generation
+    if (options.n && providerModelId.startsWith("veo-3.1")) {
+      body.n = options.n;
+    }
+    // Hailuo and Kling I2V do not support aspect_ratio
+    const isKlingI2V = providerModelId === "kling-o3-image-to-video" || providerModelId === "kling-v3-image-to-video";
+    if (options.aspectRatio && !providerModelId.includes("Hailuo") && !isKlingI2V) {
       body.aspect_ratio = options.aspectRatio;
     }
     // Veo 3.1 requires generation_type; Kling O3 does not
