@@ -77,12 +77,15 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
   // Video generation params
   if (taskType === "text-to-video" || taskType === "image-to-video") {
     if (options.duration) body.duration = options.duration;
-    // EvoLink video quality only accepts 480p / 720p / 1080p
+    // EvoLink video quality accepts 480p / 720p / 1080p / 4k
     const q = options.resolution || options.quality;
-    if (q && /^(480|720|1080)p$/.test(q)) {
+    if (q && (/^(480|720|1080)p$/.test(q) || q === "4k")) {
       body.quality = q;
     }
+    if (options.n) body.n = options.n;
     if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
+    // Veo 3.1 requires generation_type; harmless for other models
+    body.generation_type = taskType === "image-to-video" ? "FIRST&LAST" : "TEXT";
     if (taskType === "image-to-video" && options.inputUrls?.length) {
       body.image_urls = options.inputUrls;
     }
