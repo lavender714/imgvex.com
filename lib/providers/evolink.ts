@@ -89,8 +89,8 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
       body.generation_type = taskType === "image-to-video" ? "FIRST&LAST" : "TEXT";
     }
     if (taskType === "image-to-video" && options.inputUrls?.length) {
-      if (providerModelId === "kling-o3-image-to-video") {
-        // Kling O3 uses image_start / image_end instead of image_urls
+      if (providerModelId === "kling-o3-image-to-video" || providerModelId === "kling-v3-image-to-video") {
+        // Kling O3/V3 use image_start / image_end instead of image_urls
         body.image_start = options.inputUrls[0];
         if (options.inputUrls[1]) body.image_end = options.inputUrls[1];
         if (options.inputUrls.length > 2) {
