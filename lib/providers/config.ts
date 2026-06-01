@@ -62,8 +62,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "N",
     providers: [
       { providerId: "kie", providerModelId: "google/nano-banana", priority: 1, etaSeconds: 18 },
-      { providerId: "apipod", providerModelId: "nano-banana", priority: 2, etaSeconds: 18 },
-      { providerId: "evolink", providerModelId: "nano-banana-beta", priority: 3, etaSeconds: 18 },
+      { providerId: "evolink", providerModelId: "nano-banana-beta", priority: 2, etaSeconds: 18 },
     ],
   },
   {
@@ -146,7 +145,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "F",
     providers: [
       { providerId: "kie", providerModelId: "flux-kontext-pro", priority: 1, etaSeconds: 20 },
-      { providerId: "apipod", providerModelId: "flux-kontext", priority: 2, etaSeconds: 20 },
     ],
   },
   {
@@ -177,7 +175,6 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "flux-2/flex-image-to-image", priority: 1, etaSeconds: 18 },
-      { providerId: "apipod", providerModelId: "flux-2", priority: 2, etaSeconds: 18 },
     ],
   },
   {
@@ -539,8 +536,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "hailuo/02-text-to-video-standard", priority: 1, etaSeconds: 60 },
-      { providerId: "apipod", providerModelId: "hailuo-02", priority: 2, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-02", priority: 3, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-02", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -551,8 +547,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "hailuo/02-text-to-video-pro", priority: 1, etaSeconds: 60 },
-      { providerId: "apipod", providerModelId: "hailuo-02-pro", priority: 2, etaSeconds: 60 },
-      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-2.3", priority: 3, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "MiniMax-Hailuo-2.3", priority: 2, etaSeconds: 60 },
     ],
   },
   {
