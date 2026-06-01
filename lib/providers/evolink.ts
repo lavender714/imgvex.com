@@ -77,10 +77,10 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
   // Video generation params
   if (taskType === "text-to-video" || taskType === "image-to-video") {
     if (options.duration) body.duration = options.duration;
-    if (options.resolution) {
-      body.quality = options.resolution;
-    } else if (options.quality) {
-      body.quality = options.quality;
+    // EvoLink video quality only accepts 480p / 720p / 1080p
+    const q = options.resolution || options.quality;
+    if (q && /^(480|720|1080)p$/.test(q)) {
+      body.quality = q;
     }
     if (options.aspectRatio) body.aspect_ratio = options.aspectRatio;
     if (taskType === "image-to-video" && options.inputUrls?.length) {
@@ -103,7 +103,7 @@ function normalizeResult(raw: any): ProviderStatusResult {
 
   const results = Array.isArray(raw?.results) ? raw.results.filter((u: unknown) => typeof u === "string") : [];
 
-  const error = raw?.error?.message ?? raw?.error?.code ?? undefined;
+  const error = raw?.error?.message ?? raw?.error?.type ?? raw?.error?.code ?? undefined;
 
   return { status, result: results, error };
 }
@@ -155,7 +155,7 @@ export const evolinkAdapter: ProviderAdapter = {
     return { taskId: String(taskId), rawResponse: data };
   },
 
-  async queryStatus(taskId: string): Promise<unknown> {
+  async queryStatus(taskId: string, _taskType: TaskType): Promise<unknown> {
     const res = await fetch(`${baseUrl}/v1/tasks/${encodeURIComponent(taskId)}`, {
       headers: { Authorization: `Bearer ${apiKey}` },
     });
