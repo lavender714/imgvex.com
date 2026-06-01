@@ -353,6 +353,16 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
+    id: "sora-2-pro-image-video",
+    name: "Sora 2 Pro",
+    taskType: "image-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 1, etaSeconds: 90 },
+    ],
+  },
+  {
     id: "runway-gen4-image-video",
     name: "Runway",
     taskType: "image-to-video",
@@ -489,6 +499,16 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     providers: [
       { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
       { providerId: "evolink", providerModelId: "sora-2-preview", priority: 2, etaSeconds: 90 },
+    ],
+  },
+  {
+    id: "sora-2-pro",
+    name: "Sora 2 Pro",
+    taskType: "text-to-video",
+    logo: "S",
+    comingSoon: true,
+    providers: [
+      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 1, etaSeconds: 90 },
     ],
   },
   {
