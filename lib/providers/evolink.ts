@@ -57,6 +57,17 @@ function buildEvolinkRequest(taskType: TaskType, options: TaskOptions, providerM
     return buildMidjourneyRequest(options);
   }
 
+  // Kling Motion Control: requires reference image + reference video
+  if (providerModelId === "kling-v3-motion-control" || providerModelId === "kling-v3-motion-control-image") {
+    const mcBody: Record<string, unknown> = {
+      model: providerModelId,
+      image_urls: options.inputUrls ?? [],
+    };
+    if (options.videoUrls?.length) mcBody.video_urls = options.videoUrls;
+    if (options.prompt) mcBody.prompt = options.prompt;
+    return mcBody;
+  }
+
   const body: Record<string, unknown> = {
     model: providerModelId,
     prompt: options.prompt,

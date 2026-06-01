@@ -15,6 +15,7 @@ export interface TaskOptions {
   aspectRatio?: string;
   resolution?: string;
   inputUrls?: string[];
+  videoUrls?: string[];
 }
 
 // 供应商响应的统一格式
