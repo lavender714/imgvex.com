@@ -47,25 +47,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "ideogram",
     "flux-2",
     "flux-kontext",
-    "wan2.7-image-edit",
+    "wan-2.7-image-video",
     "midjourney",
   ];
 
   const videoModels = [
-    "seedance-2.0-t2v",
-    "seedance-2.0-fast-t2v",
-    "seedance-2.0-r2v",
-    "veo3-1-lite",
-    "veo3-1-fast",
-    "veo3-1-quality",
-    "sora-2-vip",
-    "sora-2-pro",
+    "seedance-2.0",
+    "seedance-2.0-fast",
+    "veo-3.1-lite",
+    "veo-3.1-fast",
+    "veo-3.1-quality",
+    "sora-2",
     "runway-gen4",
-    "kling-3",
-    "kling-2.6-motion-control",
+    "kling-3.0",
+    "kling-2.6-motion",
     "hailuo-02",
     "hailuo-02-pro",
-    "grok-imagine-t2v",
+    "grok-video",
   ];
 
   const modelRoutes: MetadataRoute.Sitemap = [

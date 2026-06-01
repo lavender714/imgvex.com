@@ -247,7 +247,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
 
   // 文生视频
   {
-    id: "seedance-2.0-t2v",
+    id: "seedance-2.0",
     name: "Seedance 2.0",
     taskType: "text-to-video",
     logo: "S",
@@ -258,7 +258,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "seedance-2.0-fast-t2v",
+    id: "seedance-2.0-fast",
     name: "Seedance 2.0 Fast",
     taskType: "text-to-video",
     logo: "S",
@@ -269,50 +269,29 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "seedance-2.0-r2v",
+    id: "seedance-2.0-fast-image-video",
+    name: "Seedance 2.0 Fast",
+    taskType: "image-to-video",
+    logo: "S",
+    providers: [
+      { providerId: "kie", providerModelId: "bytedance/seedance-2-fast", priority: 1, etaSeconds: 45 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-fast-i2v", priority: 2, etaSeconds: 45 },
+      { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 3, etaSeconds: 45 },
+    ],
+  },
+  {
+    id: "seedance-2.0-image-video",
     name: "Seedance 2.0",
     taskType: "image-to-video",
     logo: "S",
     providers: [
       { providerId: "kie", providerModelId: "bytedance/seedance-2", priority: 1, etaSeconds: 75 },
-      { providerId: "apipod", providerModelId: "seedance-2.0-r2v", priority: 2, etaSeconds: 75 },
+      { providerId: "apipod", providerModelId: "seedance-2.0-i2v", priority: 2, etaSeconds: 75 },
       { providerId: "evolink", providerModelId: "seedance-2.0-image-to-video", priority: 3, etaSeconds: 75 },
     ],
   },
   {
-    id: "seedance-2.0-fast-r2v",
-    name: "Seedance 2.0 fast",
-    taskType: "image-to-video",
-    logo: "S",
-    comingSoon: true,
-    providers: [
-      { providerId: "kie", providerModelId: "bytedance/seedance-2-fast", priority: 1, etaSeconds: 45 },
-      { providerId: "apipod", providerModelId: "seedance-2.0-fast-r2v", priority: 2, etaSeconds: 45 },
-      { providerId: "evolink", providerModelId: "seedance-2.0-fast-image-to-video", priority: 3, etaSeconds: 45 },
-    ],
-  },
-  {
-    id: "seedance-2.0-fast-i2v",
-    name: "Seedance 2.0 Fast",
-    taskType: "image-to-video",
-    logo: "S",
-    comingSoon: true,
-    providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-fast-i2v", priority: 1, etaSeconds: 45 },
-    ],
-  },
-  {
-    id: "seedance-2.0-i2v",
-    name: "Seedance 2.0",
-    taskType: "image-to-video",
-    logo: "S",
-    comingSoon: true,
-    providers: [
-      { providerId: "apipod", providerModelId: "seedance-2.0-i2v", priority: 1, etaSeconds: 75 },
-    ],
-  },
-  {
-    id: "wan2.7-i2v",
+    id: "wan-2.7-image-video",
     name: "Wan 2.7",
     taskType: "image-to-video",
     logo: "W",
@@ -322,7 +301,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-fast-ref",
+    id: "veo-3.1-fast-ref",
     name: "Veo 3.1 Fast Ref",
     taskType: "image-to-video",
     logo: "V",
@@ -332,7 +311,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-lite-i2v",
+    id: "veo-3.1-lite-image-video",
     name: "Veo 3.1 Lite",
     taskType: "image-to-video",
     logo: "V",
@@ -343,7 +322,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-fast-i2v",
+    id: "veo-3.1-fast-image-video",
     name: "Veo 3.1 Fast",
     taskType: "image-to-video",
     logo: "V",
@@ -355,7 +334,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-quality-i2v",
+    id: "veo-3.1-quality-image-video",
     name: "Veo 3.1 Quality",
     taskType: "image-to-video",
     logo: "V",
@@ -367,7 +346,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "sora-2-vip-i2v",
+    id: "sora-2-image-video",
     name: "Sora 2",
     taskType: "image-to-video",
     logo: "S",
@@ -378,7 +357,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "runway-gen4-i2v",
+    id: "runway-gen4-image-video",
     name: "Runway",
     taskType: "image-to-video",
     logo: "R",
@@ -389,7 +368,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "kling-3-i2v",
+    id: "kling-3.0-image-video",
     name: "Kling 3.0",
     taskType: "image-to-video",
     logo: "K",
@@ -401,7 +380,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "kling-2.6-motion-control-i2v",
+    id: "kling-2.6-motion-image-video",
     name: "Kling V2.6",
     taskType: "image-to-video",
     logo: "K",
@@ -413,7 +392,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "hailuo-02-i2v",
+    id: "hailuo-02-image-video",
     name: "Hailuo 02",
     taskType: "image-to-video",
     logo: "H",
@@ -425,7 +404,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "hailuo-02-pro-i2v",
+    id: "hailuo-02-pro-image-video",
     name: "Hailuo 02 Pro",
     taskType: "image-to-video",
     logo: "H",
@@ -437,7 +416,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "grok-imagine-i2v",
+    id: "grok-image-video",
     name: "Grok",
     taskType: "image-to-video",
     logo: "G",
@@ -449,7 +428,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-lite",
+    id: "veo-3.1-lite",
     name: "Veo 3.1 Lite",
     taskType: "text-to-video",
     logo: "V",
@@ -459,7 +438,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-fast",
+    id: "veo-3.1-fast",
     name: "Veo 3.1 Fast",
     taskType: "text-to-video",
     logo: "V",
@@ -470,7 +449,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-quality",
+    id: "veo-3.1-quality",
     name: "Veo 3.1 Quality",
     taskType: "text-to-video",
     logo: "V",
@@ -481,7 +460,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-lite-4k",
+    id: "veo-3.1-lite-4k",
     name: "Veo 3.1 Lite 4K",
     taskType: "text-to-video",
     logo: "V",
@@ -491,7 +470,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-fast-4k",
+    id: "veo-3.1-fast-4k",
     name: "Veo 3.1 Fast 4K",
     taskType: "text-to-video",
     logo: "V",
@@ -501,7 +480,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "veo3-1-quality-4k",
+    id: "veo-3.1-quality-4k",
     name: "Veo 3.1 Quality 4K",
     taskType: "text-to-video",
     logo: "V",
@@ -511,7 +490,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "sora-2-vip",
+    id: "sora-2",
     name: "Sora 2",
     taskType: "text-to-video",
     logo: "S",
@@ -531,7 +510,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "kling-3",
+    id: "kling-3.0",
     name: "Kling 3.0",
     taskType: "text-to-video",
     logo: "K",
@@ -542,7 +521,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "kling-2.6-motion-control",
+    id: "kling-2.6-motion",
     name: "Kling V2.6",
     taskType: "text-to-video",
     logo: "K",
@@ -577,7 +556,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     ],
   },
   {
-    id: "grok-imagine-t2v",
+    id: "grok-video",
     name: "Grok",
     taskType: "text-to-video",
     logo: "G",

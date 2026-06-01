@@ -11,14 +11,13 @@ export const metadata: Metadata = {
 };
 
 const models = [
-  { id: "sora-2-vip", name: "Sora 2 VIP", tag: "Cinematic" },
-  { id: "sora-2-pro", name: "Sora 2 Pro", tag: "Pro" },
-  { id: "kling-3", name: "Kling 3", tag: "Realistic" },
+  { id: "sora-2", name: "Sora 2", tag: "Cinematic" },
+  { id: "kling-3.0", name: "Kling 3.0", tag: "Realistic" },
   { id: "runway-gen4", name: "Runway Gen-4", tag: "Creative" },
   { id: "hailuo-02-pro", name: "Hailuo 02 Pro", tag: "Motion" },
   { id: "veo3-1-quality", name: "Veo 3.1 Quality", tag: "Google" },
-  { id: "seedance-2.0-t2v", name: "Seedance 2.0", tag: "Dance" },
-  { id: "grok-imagine-t2v", name: "Grok T2V", tag: "X AI" },
+  { id: "seedance-2.0", name: "Seedance 2.0", tag: "Dance" },
+  { id: "grok-video", name: "Grok Video", tag: "X AI" },
 ];
 
 const useCases = [

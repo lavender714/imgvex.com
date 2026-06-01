@@ -259,7 +259,7 @@ function FAQItem({ q, a, isOpen, onToggle }: { q: string; a: string; isOpen: boo
 /* ─── Page ─── */
 
 export default function TextToVideoPage() {
-  const [selectedModel, setSelectedModel] = useState("seedance-2.0-t2v");
+  const [selectedModel, setSelectedModel] = useState("seedance-2.0");
   const [prompt, setPrompt] = useState("");
   const [videoRatio, setVideoRatio] = useState("16:9");
   const [openFaq, setOpenFaq] = useState<number | null>(0);

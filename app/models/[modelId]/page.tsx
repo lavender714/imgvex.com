@@ -133,7 +133,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Standard (~20s)",
     bestFor: ["Story illustrations", "Sequential art", "Narrative scenes"],
   },
-  "wan2.7-image-edit": {
+  "wan-2.7-image-video": {
     name: "Wan 2.7 Image Edit",
     type: "image",
     description:
@@ -161,7 +161,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Slow (~30s)",
     bestFor: ["Fine art", "Concept art", "Editorial illustrations"],
   },
-  "seedance-2.0-t2v": {
+  "seedance-2.0": {
     name: "Seedance 2.0 T2V",
     type: "video",
     description:
@@ -175,7 +175,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Slow (~75s)",
     bestFor: ["Dance videos", "Motion visualization", "Action scenes"],
   },
-  "seedance-2.0-fast-t2v": {
+  "seedance-2.0-fast": {
     name: "Seedance 2.0 Fast",
     type: "video",
     description:
@@ -217,7 +217,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Standard (~60s)",
     bestFor: ["Batch production", "Cost-sensitive projects", "Quick videos"],
   },
-  "veo3-1-fast": {
+  "veo-3.1-fast": {
     name: "Veo 3.1 Fast",
     type: "video",
     description:
@@ -231,7 +231,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Fast (~45s)",
     bestFor: ["Time-sensitive projects", "Rapid iteration", "Daily content"],
   },
-  "veo3-1-quality": {
+  "veo-3.1-quality": {
     name: "Veo 3.1 Quality",
     type: "video",
     description:
@@ -245,7 +245,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Slow (~90s)",
     bestFor: ["Cinematic content", "High-end productions", "Premium deliverables"],
   },
-  "sora-2-vip": {
+  "sora-2": {
     name: "Sora 2 VIP",
     type: "video",
     description:
@@ -259,20 +259,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Slow (~90s)",
     bestFor: ["Film production", "Commercials", "High-end content"],
   },
-  "sora-2-pro": {
-    name: "Sora 2 Pro",
-    type: "video",
-    description:
-      "OpenAI's professional-tier video model. Sora 2 Pro offers a balance of quality and speed for professional video production workflows.",
-    features: [
-      "Professional quality",
-      "Balanced speed",
-      "Reliable output",
-      "Production ready",
-    ],
-    speed: "Slow (~90s)",
-    bestFor: ["Professional work", "Client projects", "Studio production"],
-  },
+  // Sora 2 Pro removed - offline on APIPod
   "runway-gen4": {
     name: "Runway Gen-4",
     type: "video",
@@ -287,7 +274,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Standard (~60s)",
     bestFor: ["Creative videos", "Artistic projects", "Experimental content"],
   },
-  "kling-3": {
+  "kling-3.0": {
     name: "Kling 3",
     type: "video",
     description:
@@ -301,7 +288,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Standard (~60s)",
     bestFor: ["Human-centric videos", "Character animation", "Realistic scenes"],
   },
-  "kling-2.6-motion-control": {
+  "kling-2.6-motion": {
     name: "Kling 2.6 Motion Control",
     type: "video",
     description:
@@ -343,7 +330,7 @@ const MODEL_DATA: Record<string, ModelInfo> = {
     speed: "Standard (~60s)",
     bestFor: ["Professional deliverables", "Long-form content", "High-res video"],
   },
-  "grok-imagine-t2v": {
+  "grok-video": {
     name: "Grok Imagine T2V",
     type: "video",
     description:
