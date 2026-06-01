@@ -384,7 +384,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "kie", providerModelId: "kling-2.6/image-to-video", priority: 1, etaSeconds: 60 },
-      { providerId: "apipod", providerModelId: "kling-2.6-motion-control-i2v", priority: 2, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "kling-2.6-motion-control", priority: 2, etaSeconds: 60 },
       { providerId: "evolink", providerModelId: "kling-v3-motion-control-image", priority: 3, etaSeconds: 60 },
     ],
   },
