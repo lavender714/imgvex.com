@@ -349,7 +349,7 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     comingSoon: true,
     providers: [
       { providerId: "apipod", providerModelId: "sora-2-vip", priority: 1, etaSeconds: 90 },
-      { providerId: "evolink", providerModelId: "sora-2-image-to-video", priority: 2, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
