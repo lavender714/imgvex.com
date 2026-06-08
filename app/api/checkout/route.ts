@@ -61,7 +61,7 @@ export async function GET(req: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        "x-api-key": apiKey,
       },
       body: JSON.stringify(body),
     });
