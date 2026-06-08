@@ -78,31 +78,6 @@ export function getVideoCreditCost(modelId: string, resolution?: string): number
   return base;
 }
 
-// ─── Build-time / startup guard: prevent model↔cost mismatches ───
-// This runs once when the module is first loaded. If a model in
-// MODEL_REGISTRY lacks a corresponding entry here, the server will
-// fail fast instead of silently undercharging users.
-(function validateModelCosts() {
-  try {
-    // Dynamic import avoids top-level circular dependencies at type-check time
-    const { MODEL_REGISTRY } = require("@/lib/providers/config") as typeof import("@/lib/providers/config");
-
-    const missing: string[] = [];
-    for (const model of MODEL_REGISTRY) {
-      if (model.comingSoon) continue;
-      if (!(model.id in MODEL_CREDIT_COSTS)) {
-        missing.push(model.id);
-      }
-    }
-
-    if (missing.length > 0) {
-      throw new Error(
-        `[model-costs] Missing credit cost entries for ${missing.length} model(s): ${missing.join(", ")}. ` +
-          `Every non-comingSoon model in MODEL_REGISTRY must have a matching key in MODEL_CREDIT_COSTS.`
-      );
-    }
-  } catch (err: any) {
-    // Re-throw so the process crashes loud and clear during dev / build / deploy
-    throw err;
-  }
-})();
+// NOTE: Model↔cost consistency is validated at build time via
+// `npm run prebuild` → scripts/validate-model-costs.ts
+// Do NOT add a runtime IIFE here — it can break ESM bundlers.
