@@ -76,9 +76,6 @@ export async function executeTaskWithFailover(
   taskType: TaskType,
   options: TaskOptions
 ): Promise<FailoverResult> {
-  // 生成服务全局屏蔽（维护模式）
-  throw new Error("生成服务暂时维护中，请稍后再试");
-
   const registration = getModelRegistration(modelId);
   if (!registration) {
     throw new Error(`Model not found: ${modelId}`);
