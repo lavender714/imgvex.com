@@ -12,6 +12,7 @@ export const MODEL_CREDIT_COSTS: Record<string, number> = {
   "flux": 7,
   "nano-banana-pro": 9,
   "midjourney": 10,
+  "wan2.7-text-to-image": 10,
 
   // --- Image-to-Image ---
   "flux-2": 7,
@@ -19,24 +20,47 @@ export const MODEL_CREDIT_COSTS: Record<string, number> = {
   "nano-banana-edit": 6,
   "gpt-image-2-image": 3,
   "gpt-image-1-5-image": 2,
+  "nano-banana-2-image": 4,
+  "flux-kontext-image": 5,
 
   // --- Text-to-Video (per 5-second generation) ---
+  // Keys MUST match MODEL_REGISTRY id, not providerModelId
   "runway-gen4": 6,
   "hailuo-02": 15,
   "hailuo-02-pro": 23,
-  "kling-3": 35,
-  "kling-2.6-motion-control": 35,
-  "veo3-1-lite": 75,
-  "sora-2-vip": 75,
+  "kling-3.0": 35,
+  "kling-2.6-motion": 35,
+  "kling-o3": 35,
+  "veo-3.1-lite": 75,
+  "sora-2": 75,
   "sora-2-pro": 165,
-  "seedance-2.0-fast-t2v": 50,
-  "seedance-2.0-t2v": 155,
-  "veo3-1-fast": 163,
-  "veo3-1-quality": 163,
-  "grok-imagine-t2v": 50,
+  "seedance-2.0": 155,
+  "seedance-2.0-fast": 50,
+  "veo-3.1-fast": 163,
+  "veo-3.1-quality": 163,
+  "grok-video": 50,
+  "veo-3.1-lite-4k": 120,
+  "veo-3.1-fast-4k": 120,
+  "veo-3.1-quality-4k": 240,
 
   // --- Image-to-Video ---
-  "seedance-2.0-r2v": 155,
+  // Keys MUST match MODEL_REGISTRY id, not providerModelId
+  "seedance-2.0-image-video": 155,
+  "seedance-2.0-fast-image-video": 155,
+  "wan-2.7-image-video": 60,
+  "veo-3.1-fast-ref": 75,
+  "veo-3.1-lite-image-video": 75,
+  "veo-3.1-fast-image-video": 163,
+  "veo-3.1-quality-image-video": 163,
+  "sora-2-image-video": 75,
+  "sora-2-pro-image-video": 165,
+  "runway-gen4-image-video": 6,
+  "kling-3.0-image-video": 35,
+  "kling-2.6-motion-image-video": 35,
+  "hailuo-02-image-video": 15,
+  "hailuo-02-pro-image-video": 23,
+  "grok-image-video": 50,
+  "kling-o3-image-video": 35,
 };
 
 export function getModelCreditCost(modelId: string): number {
@@ -48,8 +72,37 @@ export function getVideoCreditCost(modelId: string, resolution?: string): number
   const base = getModelCreditCost(modelId);
 
   if (modelId === "runway-gen4" && resolution === "1080p") return 15;
-  if (modelId === "kling-3" && resolution === "1080p") return 45;
-  if (modelId === "kling-2.6-motion-control" && resolution === "1080p") return 45;
+  if (modelId === "kling-3.0" && resolution === "1080p") return 45;
+  if (modelId === "kling-2.6-motion" && resolution === "1080p") return 45;
 
   return base;
 }
+
+// ─── Build-time / startup guard: prevent model↔cost mismatches ───
+// This runs once when the module is first loaded. If a model in
+// MODEL_REGISTRY lacks a corresponding entry here, the server will
+// fail fast instead of silently undercharging users.
+(function validateModelCosts() {
+  try {
+    // Dynamic import avoids top-level circular dependencies at type-check time
+    const { MODEL_REGISTRY } = require("@/lib/providers/config") as typeof import("@/lib/providers/config");
+
+    const missing: string[] = [];
+    for (const model of MODEL_REGISTRY) {
+      if (model.comingSoon) continue;
+      if (!(model.id in MODEL_CREDIT_COSTS)) {
+        missing.push(model.id);
+      }
+    }
+
+    if (missing.length > 0) {
+      throw new Error(
+        `[model-costs] Missing credit cost entries for ${missing.length} model(s): ${missing.join(", ")}. ` +
+          `Every non-comingSoon model in MODEL_REGISTRY must have a matching key in MODEL_CREDIT_COSTS.`
+      );
+    }
+  } catch (err: any) {
+    // Re-throw so the process crashes loud and clear during dev / build / deploy
+    throw err;
+  }
+})();
