@@ -49,9 +49,11 @@ export async function GET(req: NextRequest) {
     ...(referenceId && { metadata: { referenceId } }),
   };
 
-  const apiKey = process.env.CREEM_API_KEY;
+  const apiKey = isTest
+    ? (process.env.CREEM_TEST_API_KEY || process.env.CREEM_API_KEY)
+    : process.env.CREEM_API_KEY;
   if (!apiKey) {
-    console.error("[checkout] CREEM_API_KEY is not set");
+    console.error("[checkout] API key is not set (test=", isTest, ")");
     return NextResponse.json({ error: "Server config error: missing API key" }, { status: 500 });
   }
 
