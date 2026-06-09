@@ -27,10 +27,44 @@ export async function getUserCredits(userId: string): Promise<UserCredits> {
   };
 }
 
+/**
+ * Apply resolution-based upcharge for image models whose supplier cost
+ * scales significantly with output resolution (flux, gpt-image, nano-banana).
+ * Keeps 1K prices competitive while covering 4K supplier costs.
+ */
+function applyImageSizeCost(baseCost: number, modelId: string, size?: string): number {
+  if (!size) return baseCost;
+
+  const is2k = size.includes("2k") || size === "2048x2048";
+  const is4k = size.includes("4k") || size === "4096x4096";
+
+  if (!is2k && !is4k) return baseCost;
+
+  switch (modelId) {
+    case "flux":
+    case "flux-2":
+      // KIE flux-2 2K costs $0.12; charge a flat 12c for non-1K resolutions
+      return 12;
+    case "gpt-image-2":
+    case "gpt-image-2-image":
+      // KIE/EvoLink gpt-image-2 4K costs ~$0.08
+      return is4k ? 8 : baseCost;
+    case "nano-banana-2":
+    case "nano-banana-2-image":
+      // EvoLink nano-banana-2 4K costs $0.128
+      return is4k ? 12 : baseCost;
+    case "nano-banana-pro":
+      // EvoLink nano-banana-pro 4K costs $0.203
+      return is4k ? 20 : baseCost;
+    default:
+      return baseCost;
+  }
+}
+
 export function calculateGenerationCost(
   modelId: string,
   taskType: string,
-  options?: { resolution?: string; duration?: number }
+  options?: { resolution?: string; duration?: number; size?: string }
 ): number {
   let baseCost: number;
 
@@ -38,6 +72,7 @@ export function calculateGenerationCost(
     baseCost = getVideoCreditCost(modelId, options?.resolution);
   } else {
     baseCost = getModelCreditCost(modelId);
+    baseCost = applyImageSizeCost(baseCost, modelId, options?.size);
   }
 
   // Duration multiplier for video: default 5s is base cost

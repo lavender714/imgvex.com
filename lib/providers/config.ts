@@ -293,7 +293,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "W",
     comingSoon: true,
     providers: [
-      { providerId: "apipod", providerModelId: "wan2.7-i2v", priority: 1, etaSeconds: 60 },
+      { providerId: "evolink", providerModelId: "wan-2.7-image-to-video", priority: 1, etaSeconds: 60 },
+      { providerId: "apipod", providerModelId: "wan2.7-i2v", priority: 2, etaSeconds: 60 },
     ],
   },
   {
@@ -508,7 +509,8 @@ export const MODEL_REGISTRY: ModelRegistration[] = [
     logo: "S",
     comingSoon: true,
     providers: [
-      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 1, etaSeconds: 90 },
+      { providerId: "apipod", providerModelId: "sora-2-pro", priority: 1, etaSeconds: 90 },
+      { providerId: "evolink", providerModelId: "sora-2-pro-preview", priority: 2, etaSeconds: 90 },
     ],
   },
   {
