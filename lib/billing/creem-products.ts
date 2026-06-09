@@ -16,6 +16,13 @@ const PRODUCT_TIER_MAP: Record<string, TierConfig> = Object.fromEntries(
     [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY, { tier: "pro", creditsMonthly: 800 }],
     [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY, { tier: "ultra", creditsMonthly: 5000 }],
     [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY, { tier: "ultra", creditsMonthly: 5000 }],
+    // Test mode product IDs
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY_TEST, { tier: "lite", creditsMonthly: 300 }],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY_TEST, { tier: "lite", creditsMonthly: 300 }],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY_TEST, { tier: "pro", creditsMonthly: 800 }],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY_TEST, { tier: "pro", creditsMonthly: 800 }],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY_TEST, { tier: "ultra", creditsMonthly: 5000 }],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY_TEST, { tier: "ultra", creditsMonthly: 5000 }],
   ].filter((entry): entry is [string, TierConfig] => Boolean(entry[0])),
 );
 
