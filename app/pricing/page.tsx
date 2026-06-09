@@ -29,14 +29,6 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-const isTest = process.env.NEXT_PUBLIC_CREEM_TEST_MODE === "true";
-
-function productId(base: string): string | undefined {
-  return isTest
-    ? process.env[`${base}_TEST` as keyof NodeJS.ProcessEnv] as string | undefined
-    : process.env[base as keyof NodeJS.ProcessEnv] as string | undefined;
-}
-
 const pricingTiersMonthly = [
   {
     tier: "lite" as const,
@@ -44,7 +36,7 @@ const pricingTiersMonthly = [
     price: 15,
     originalPrice: 15,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY,
     features: [
       "300 credits / month",
       "720p output",
@@ -60,7 +52,7 @@ const pricingTiersMonthly = [
     price: 29,
     originalPrice: 29,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY,
     features: [
       "800 credits / month",
       "1080p output",
@@ -77,7 +69,7 @@ const pricingTiersMonthly = [
     price: 139,
     originalPrice: 139,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY,
     features: [
       "5,000 credits / month",
       "4K output",
@@ -97,7 +89,7 @@ const pricingTiersYearly = [
     price: 10,
     originalPrice: 15,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY,
     features: [
       "300 credits / month",
       "720p output",
@@ -113,7 +105,7 @@ const pricingTiersYearly = [
     price: 14.5,
     originalPrice: 29,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY,
     features: [
       "800 credits / month",
       "1080p output",
@@ -131,7 +123,7 @@ const pricingTiersYearly = [
     price: 109,
     originalPrice: 139,
     period: "/month",
-    productId: productId("NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY"),
+    productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY,
     features: [
       "5,000 credits / month",
       "4K output",

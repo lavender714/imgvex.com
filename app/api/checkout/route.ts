@@ -37,12 +37,33 @@ export async function GET(req: NextRequest) {
   const isTest = rawTestMode?.toLowerCase().trim() === "true";
   const baseUrl = isTest ? API_BASE.test : API_BASE.production;
 
-  console.log("[checkout] CREEM_TEST_MODE raw=", JSON.stringify(rawTestMode), "isTest=", isTest, "baseUrl=", baseUrl);
+  // Map production product IDs to test product IDs when in test mode
+  function resolveTestProductId(prodId: string): string {
+    if (!isTest) return prodId;
+    const map: Record<string, string | undefined> = {
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_MONTHLY_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_LITE_YEARLY_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_MONTHLY_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PRO_YEARLY_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY_TEST,
+    };
+    const mapped = map[prodId];
+    if (mapped) {
+      console.log("[checkout] mapped product", prodId, "->", mapped);
+      return mapped;
+    }
+    return prodId;
+  }
+
+  const resolvedProductId = resolveTestProductId(productId);
+
+  console.log("[checkout] CREEM_TEST_MODE raw=", JSON.stringify(rawTestMode), "isTest=", isTest, "baseUrl=", baseUrl, "productId=", resolvedProductId);
 
   const successUrl = resolveSuccessUrl(successUrlParam ?? "/dashboard?checkout=success", req);
 
   const body: Record<string, unknown> = {
-    product_id: productId,
+    product_id: resolvedProductId,
     ...(successUrl && { success_url: successUrl }),
     ...(unitsParam && { units: parseInt(unitsParam, 10) }),
     ...(discountCode && { discount_code: discountCode }),
