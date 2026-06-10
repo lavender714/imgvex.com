@@ -38,6 +38,7 @@ function extractUserId(sub: NormalizedSubscriptionEntity): string | null {
 
 export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
   const userId = extractUserId(sub);
+  console.log("[creem] applyPaidSubscription sub=", sub.id, "userId=", userId, "product=", sub.product.id, "metadata=", JSON.stringify(sub.metadata));
   if (!userId) {
     console.warn("[creem] subscription.paid missing referenceId in metadata", sub.id);
     return;
@@ -49,12 +50,24 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
   }
 
   const supabase = createAdminClient();
+
+  // Fetch current credits so we can add on top (don't overwrite)
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("credits_balance")
+    .eq("id", userId)
+    .single();
+
+  const currentBalance = profile?.credits_balance ?? 0;
+  const newBalance = currentBalance + tier.creditsMonthly;
+  console.log("[creem] updating user", userId, "tier=", tier.tier, "current credits=", currentBalance, "new credits=", newBalance);
+
   const { error } = await supabase
     .from("profiles")
     .update({
       plan_tier: tier.tier,
       credits_monthly: tier.creditsMonthly,
-      credits_balance: tier.creditsMonthly,
+      credits_balance: newBalance,
       plan_started_at: sub.created_at,
       plan_ends_at: sub.current_period_end_date,
       creem_customer_id: sub.customer.id,
@@ -67,6 +80,7 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
     console.error("[creem] Failed to apply paid subscription:", error);
     throw error;
   }
+  console.log("[creem] applied paid subscription successfully for user", userId);
 }
 
 export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {
