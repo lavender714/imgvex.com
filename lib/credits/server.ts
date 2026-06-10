@@ -84,16 +84,19 @@ export function calculateGenerationCost(
   return baseCost;
 }
 
-/** Atomically deduct credits. Returns true if successful, false if insufficient. */
+/** Atomically deduct credits. Returns true if successful, false if insufficient.
+ *  If modelId is provided and the user has unlimited access for that model, returns true without deducting. */
 export async function tryDeductCredits(
   userId: string,
-  amount: number
+  amount: number,
+  modelId?: string
 ): Promise<boolean> {
   const supabase = await createClient();
 
   const { data, error } = await supabase.rpc("deduct_credits", {
     p_user_id: userId,
     p_amount: amount,
+    p_model_id: modelId,
   });
 
   if (error) {

@@ -6,13 +6,14 @@ import { Check } from "lucide-react";
 import { CreemCheckout } from "@creem_io/nextjs";
 
 interface PricingCardProps {
-  tier: "lite" | "pro" | "ultra";
+  tier: "free" | "lite" | "pro" | "ultra";
   name: string;
   price: number;
   originalPrice?: number;
   period?: string;
   features: string[];
   discountLabel?: string;
+  badge?: string;
   isCurrent?: boolean;
   onSelect?: () => void;
   productId?: string;
@@ -20,6 +21,13 @@ interface PricingCardProps {
 }
 
 const tierStyles = {
+  free: {
+    border: "border-[#1E293B]",
+    buttonBg: "bg-[#13131F]",
+    buttonBorder: "border border-[#1E293B]",
+    buttonText: "text-[#F8FAFC]",
+    buttonHover: "hover:bg-[#1E293B]",
+  },
   lite: {
     border: "border-[#1E293B]",
     buttonBg: "bg-[#13131F]",
@@ -51,6 +59,7 @@ export function PricingCard({
   period = "/month",
   features,
   discountLabel,
+  badge,
   isCurrent,
   onSelect,
   productId,
@@ -59,6 +68,8 @@ export function PricingCard({
   const styles = tierStyles[tier];
   const buttonLabel = isCurrent
     ? "Current Plan"
+    : tier === "free"
+    ? "Start Free"
     : tier === "pro"
     ? "Upgrade to Pro"
     : tier === "ultra"
@@ -67,7 +78,11 @@ export function PricingCard({
   const buttonClass = `w-full h-12 rounded-[14px] font-semibold text-[15px] ${styles.buttonBg} ${styles.buttonBorder} ${styles.buttonText} ${styles.buttonHover}`;
 
   const cta =
-    productId && !isCurrent ? (
+    tier === "free" ? (
+      <Button className={buttonClass} asChild>
+        <a href="/generate">{buttonLabel}</a>
+      </Button>
+    ) : productId && !isCurrent ? (
       <CreemCheckout
         productId={productId}
         referenceId={referenceId}
@@ -86,10 +101,13 @@ export function PricingCard({
     <div
       className={`relative flex flex-col gap-0 p-8 rounded-[20px] bg-[#0F0F1A] border ${styles.border} transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
     >
-      {isCurrent && (
+      {(isCurrent || badge) && (
         <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <Badge className="bg-[rgba(20,184,166,0.15)] text-[#14B8A6] border-0 text-[11px] font-semibold px-2.5 py-0.5">
-            Current Plan
+          <Badge className={isCurrent
+            ? "bg-[rgba(20,184,166,0.15)] text-[#14B8A6] border-0 text-[11px] font-semibold px-2.5 py-0.5"
+            : "bg-[#EC4899] text-white border-0 text-[11px] font-semibold px-2.5 py-0.5"
+          }>
+            {isCurrent ? "Current Plan" : badge}
           </Badge>
         </div>
       )}

@@ -30,10 +30,10 @@ interface BillingProfile {
 }
 
 const TIER_LABELS: Record<string, { name: string; color: string; description: string }> = {
-  free: { name: "Free", color: "#64748B", description: "25 starter credits, no auto-renewal" },
-  lite: { name: "Lite", color: "#14B8A6", description: "300 credits / month, starter models" },
-  pro: { name: "Pro", color: "#6366F1", description: "800 credits / month, all 20+ models" },
-  ultra: { name: "Ultra", color: "#EC4899", description: "5,000 credits / month, unlimited usage" },
+  free: { name: "Free", color: "#64748B", description: "25 starter credits, 3 basic image models" },
+  lite: { name: "Lite", color: "#14B8A6", description: "300 credits / month, all models, watermarked" },
+  pro: { name: "Pro", color: "#6366F1", description: "800 credits / month, all models, watermark-free" },
+  ultra: { name: "Ultra", color: "#EC4899", description: "5,000 credits / month + Unlimited models" },
 };
 
 export default function BillingPage() {

@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navbar } from "@/components/navbar";
 import { TopTabSwitcher } from "@/components/top-tab-switcher";
 import { HeroInput } from "@/components/hero-input";
 import { ParamPills, type VideoParams, type ImageParams } from "@/components/param-pills";
 import { GenerateButton } from "@/components/generate-button";
 import { FeaturedCarousel } from "@/components/featured-carousel";
+import { createClient } from "@/lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, Download, Share2, RefreshCw } from "lucide-react";
 
@@ -23,6 +24,24 @@ const queueItems = [
 export default function GeneratePage() {
   const [activeTab, setActiveTab] = useState<"video" | "image">("video");
   const [prompt, setPrompt] = useState(defaultVideoPrompt);
+  const [planTier, setPlanTier] = useState<string>("free");
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("profiles")
+        .select("plan_tier")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (data?.plan_tier) {
+        setPlanTier(data.plan_tier);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   const [videoParams, setVideoParams] = useState<VideoParams>({
     model: "kling-2",
@@ -93,6 +112,7 @@ export default function GeneratePage() {
                 mode={activeTab}
                 params={activeTab === "video" ? videoParams : imageParams}
                 onChange={activeTab === "video" ? setVideoParams as (p: VideoParams | ImageParams) => void : setImageParams as (p: VideoParams | ImageParams) => void}
+                planTier={planTier}
               />
 
               {/* Generate Button */}

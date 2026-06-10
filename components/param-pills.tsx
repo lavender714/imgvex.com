@@ -26,6 +26,8 @@ interface ParamPillsProps {
   mode: "video" | "image";
   params: VideoParams | ImageParams;
   onChange: (params: VideoParams | ImageParams) => void;
+  /** Current user's plan tier. Defaults to "free" if not provided. */
+  planTier?: string;
 }
 
 const videoModels = [
@@ -42,9 +44,51 @@ const imageModels = [
   { id: "dalle-4", name: "DALL-E 4", cost: 4 },
 ];
 
-export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
-  const models = mode === "video" ? videoModels : imageModels;
+const BASIC_IMAGE_MODELS = new Set([
+  "nano-banana",
+  "gpt-image-1-5",
+  "flux",
+]);
+
+const VIDEO_RESOLUTIONS = ["480p", "720p", "1080p", "4K"] as const;
+const VIDEO_DURATIONS = ["3", "5", "10", "15", "16"] as const;
+
+export function ParamPills({ mode, params, onChange, planTier = "free" }: ParamPillsProps) {
   const isVideo = mode === "video";
+
+  // Filter models by plan tier
+  const allModels = mode === "video" ? videoModels : imageModels;
+  const models = planTier === "free" && mode === "image"
+    ? imageModels.filter((m) => BASIC_IMAGE_MODELS.has(m.id))
+    : allModels;
+
+  // Determine max video resolution by tier
+  const maxVideoRes = (() => {
+    switch (planTier) {
+      case "lite": return "720p";
+      case "pro": return "1080p";
+      case "ultra": return "4K";
+      default: return null; // free = no video
+    }
+  })();
+
+  const allowedResolutions = maxVideoRes
+    ? VIDEO_RESOLUTIONS.slice(0, VIDEO_RESOLUTIONS.indexOf(maxVideoRes) + 1)
+    : [];
+
+  // Determine max video duration by tier
+  const maxDuration = (() => {
+    switch (planTier) {
+      case "lite": return 10;
+      case "pro": return 15;
+      case "ultra": return 60;
+      default: return 0;
+    }
+  })();
+
+  const allowedDurations = maxDuration > 0
+    ? VIDEO_DURATIONS.filter((d) => parseInt(d) <= maxDuration)
+    : [];
 
   const updateParam = (
     key: string,
@@ -75,14 +119,14 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
       </Select>
 
       {/* Duration (Video only) */}
-      {isVideo && (
+      {isVideo && allowedDurations.length > 0 && (
         <Select value={(params as VideoParams).duration} onValueChange={(v) => v && updateParam("duration", v as VideoParams["duration"])}>
           <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
             <SelectValue />
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
           </SelectTrigger>
           <SelectContent className="bg-[#13101F] border-[#1E293B]">
-            {["3", "5", "10", "15", "16"].map((v) => (
+            {allowedDurations.map((v) => (
               <SelectItem key={v} value={v} className="text-xs text-[#CBD5E1] focus:bg-[#1E293B] focus:text-[#F8FAFC]">{v}s</SelectItem>
             ))}
           </SelectContent>
@@ -120,14 +164,14 @@ export function ParamPills({ mode, params, onChange }: ParamPillsProps) {
       </Select>
 
       {/* Resolution (Video only) */}
-      {isVideo && (
+      {isVideo && allowedResolutions.length > 0 && (
         <Select value={(params as VideoParams).resolution} onValueChange={(v) => v && updateParam("resolution", v as VideoParams["resolution"])}>
           <SelectTrigger className="h-9 pl-3 pr-2 gap-1.5 rounded-full bg-[#13101F] border-[#1E293B] text-xs font-medium text-[#CBD5E1] hover:border-[#475569] transition-colors">
             <SelectValue />
             <ChevronDown className="w-3.5 h-3.5 text-[#64748B]" />
           </SelectTrigger>
           <SelectContent className="bg-[#13101F] border-[#1E293B]">
-            {["480p", "720p", "1080p", "4K"].map((v) => (
+            {allowedResolutions.map((v) => (
               <SelectItem key={v} value={v} className="text-xs text-[#CBD5E1] focus:bg-[#1E293B] focus:text-[#F8FAFC]">{v}</SelectItem>
             ))}
           </SelectContent>

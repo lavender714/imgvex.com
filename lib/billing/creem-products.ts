@@ -1,5 +1,6 @@
 import type { NormalizedSubscriptionEntity } from "@creem_io/webhook-types";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { TIER_CONFIG, buildUltraUnlimitedModels } from "./tier-config";
 
 export type PlanTier = "free" | "lite" | "pro" | "ultra";
 
@@ -62,6 +63,12 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
   const newBalance = currentBalance + tier.creditsMonthly;
   console.log("[creem] updating user", userId, "tier=", tier.tier, "current credits=", currentBalance, "new credits=", newBalance);
 
+  // Build permission fields based on tier
+  const perms = TIER_CONFIG[tier.tier];
+  const unlimitedModels = tier.tier === "ultra"
+    ? buildUltraUnlimitedModels(new Date(sub.created_at))
+    : {};
+
   const { error } = await supabase
     .from("profiles")
     .update({
@@ -72,6 +79,17 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
       plan_ends_at: sub.current_period_end_date,
       creem_customer_id: sub.customer.id,
       creem_subscription_id: sub.id,
+      // Tier permissions
+      max_image_resolution: perms.maxImageResolution,
+      max_video_resolution: perms.maxVideoResolution,
+      max_video_duration: perms.maxVideoDuration,
+      max_concurrent_jobs: perms.maxConcurrentJobs,
+      has_watermark: perms.hasWatermark,
+      commercial_license: perms.commercialLicense,
+      priority_queue: perms.priorityQueue,
+      privacy_controls: perms.privacyControls,
+      copy_protection: perms.copyProtection,
+      unlimited_models: unlimitedModels,
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);
@@ -91,12 +109,24 @@ export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {
   }
 
   const supabase = createAdminClient();
+  const perms = TIER_CONFIG["free"];
   const { error } = await supabase
     .from("profiles")
     .update({
       plan_tier: "free",
       credits_monthly: 0,
       plan_ends_at: sub.current_period_end_date ?? sub.canceled_at,
+      // Reset permissions to free tier
+      max_image_resolution: perms.maxImageResolution,
+      max_video_resolution: perms.maxVideoResolution,
+      max_video_duration: perms.maxVideoDuration,
+      max_concurrent_jobs: perms.maxConcurrentJobs,
+      has_watermark: perms.hasWatermark,
+      commercial_license: perms.commercialLicense,
+      priority_queue: perms.priorityQueue,
+      privacy_controls: perms.privacyControls,
+      copy_protection: perms.copyProtection,
+      unlimited_models: {},
       updated_at: new Date().toISOString(),
     })
     .eq("id", userId);

@@ -55,13 +55,77 @@ export async function POST(request: Request) {
       );
     }
 
+    // --- Tier permission checks ---
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("plan_tier, max_video_resolution, max_video_duration, max_concurrent_jobs, max_image_resolution, unlimited_models")
+      .eq("id", user.id)
+      .single();
+
+    const tier = profile?.plan_tier ?? "free";
+    const maxVideoRes = profile?.max_video_resolution;
+    const maxVideoDuration = profile?.max_video_duration ?? 0;
+    const maxConcurrent = profile?.max_concurrent_jobs ?? 1;
+    const maxImageRes = profile?.max_image_resolution ?? "1024x1024";
+
+    // 1. Concurrent jobs check
+    const { data: activeJobCount } = await supabase.rpc("count_active_jobs", {
+      p_user_id: user.id,
+    });
+    if ((activeJobCount ?? 0) >= maxConcurrent) {
+      return NextResponse.json(
+        { error: `Max ${maxConcurrent} concurrent jobs on your plan`, code: "RATE_LIMITED" },
+        { status: 429 }
+      );
+    }
+
+    // 2. Resolution & duration checks
+    if (taskType.includes("video")) {
+      if (!maxVideoRes) {
+        return NextResponse.json(
+          { error: "Video generation requires a paid plan", code: "UPGRADE_REQUIRED" },
+          { status: 403 }
+        );
+      }
+      if (rest.resolution) {
+        const allowedResolutions = ["480p", "720p", "1080p", "4K"];
+        const maxIdx = allowedResolutions.indexOf(maxVideoRes);
+        const reqIdx = allowedResolutions.indexOf(rest.resolution);
+        if (reqIdx === -1 || reqIdx > maxIdx) {
+          return NextResponse.json(
+            { error: `${rest.resolution} requires a higher plan`, code: "UPGRADE_REQUIRED" },
+            { status: 403 }
+          );
+        }
+      }
+      if (rest.duration && rest.duration > maxVideoDuration) {
+        return NextResponse.json(
+          { error: `Max ${maxVideoDuration}s video on your plan`, code: "UPGRADE_REQUIRED" },
+          { status: 403 }
+        );
+      }
+    } else {
+      // Image resolution check
+      const allowedImageRes = ["1024x1024", "2048x2048", "4096x4096"];
+      const size = rest.size ?? "1024x1024";
+      const maxIdx = allowedImageRes.indexOf(maxImageRes);
+      const reqIdx = allowedImageRes.indexOf(size);
+      if (reqIdx === -1 || reqIdx > maxIdx) {
+        return NextResponse.json(
+          { error: `${size} images require a higher plan`, code: "UPGRADE_REQUIRED" },
+          { status: 403 }
+        );
+      }
+    }
+
     // --- Credits check & deduct ---
     const creditsCost = calculateGenerationCost(model, taskType, {
       resolution: rest.resolution,
       duration: rest.duration,
+      size: rest.size,
     });
 
-    const deducted = await tryDeductCredits(user.id, creditsCost);
+    const deducted = await tryDeductCredits(user.id, creditsCost, model);
     if (!deducted) {
       return NextResponse.json(
         { error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: creditsCost },
