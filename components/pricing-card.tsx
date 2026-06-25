@@ -83,14 +83,20 @@ export function PricingCard({
         <a href="/generate">{buttonLabel}</a>
       </Button>
     ) : productId && !isCurrent ? (
-      <CreemCheckout
-        productId={productId}
-        referenceId={referenceId}
-        checkoutPath="/api/checkout"
-        successUrl="/dashboard?checkout=success"
-      >
-        <Button className={buttonClass}>{buttonLabel}</Button>
-      </CreemCheckout>
+      referenceId ? (
+        <CreemCheckout
+          productId={productId}
+          referenceId={referenceId}
+          checkoutPath="/api/checkout"
+          successUrl="/dashboard?checkout=success"
+        >
+          <Button className={buttonClass}>{buttonLabel}</Button>
+        </CreemCheckout>
+      ) : (
+        <Button className={buttonClass} disabled>
+          Loading...
+        </Button>
+      )
     ) : (
       <Button className={buttonClass} onClick={onSelect}>
         {buttonLabel}

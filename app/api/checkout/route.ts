@@ -29,8 +29,14 @@ export async function GET(req: NextRequest) {
   const unitsParam = req.nextUrl.searchParams.get("units");
   const discountCode = req.nextUrl.searchParams.get("discountCode");
 
+  console.log("[checkout] params:", { productId, referenceId, successUrlParam, unitsParam, discountCode });
+
   if (!productId) {
     return NextResponse.json({ error: "Product ID is required" }, { status: 400 });
+  }
+  if (!referenceId) {
+    console.error("[checkout] referenceId is missing — user not authenticated or pricing page not loaded");
+    return NextResponse.json({ error: "User ID is required. Please sign in and try again." }, { status: 401 });
   }
 
   const rawTestMode = process.env.CREEM_TEST_MODE;
