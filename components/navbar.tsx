@@ -285,9 +285,7 @@ export function Navbar({ variant = "landing" }: NavbarProps) {
           </nav>
 
           <div className="flex items-center gap-3">
-            {isLoading ? (
-              <div className="w-20 h-9 rounded-full bg-[#1E293B] animate-pulse" />
-            ) : user ? (
+            {user ? (
               <div className="flex items-center gap-3">
                 <CreditPill credits={credits} />
                 <UserMenu user={user} credits={credits} />

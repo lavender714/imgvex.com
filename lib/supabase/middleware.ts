@@ -1,7 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const GET_USER_TIMEOUT_MS = 4000;
+const GET_USER_TIMEOUT_MS = 1500;
 
 async function getUserWithTimeout(supabase: ReturnType<typeof createServerClient>, timeoutMs: number) {
   return Promise.race([

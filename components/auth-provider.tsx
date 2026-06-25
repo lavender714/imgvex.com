@@ -6,6 +6,16 @@ import type { AuthUser } from "@/lib/auth/types";
 
 export type { AuthUser };
 
+const AUTH_TIMEOUT_MS = 2000;
+const CREDITS_TIMEOUT_MS = 2000;
+
+function withTimeout<T>(promise: PromiseLike<T>, ms: number, label: string): Promise<T> {
+  const timeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error(`${label} timeout after ${ms}ms`)), ms)
+  );
+  return Promise.race([promise, timeout]);
+}
+
 interface AuthContextValue {
   user: AuthUser | null;
   credits: number;
@@ -38,14 +48,23 @@ export function AuthProvider({
   const [credits, setCredits] = useState<number>(0);
 
   const fetchCredits = useCallback(async (userId: string) => {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("credits_balance")
-      .eq("id", userId)
-      .maybeSingle();
-    if (!error && data) {
-      setCredits(data.credits_balance ?? 0);
+    try {
+      const supabase = createClient();
+      const result = await withTimeout(
+        supabase
+          .from("profiles")
+          .select("credits_balance")
+          .eq("id", userId)
+          .maybeSingle()
+          .then((res: { data: { credits_balance: number | null } | null; error: unknown }) => res),
+        CREDITS_TIMEOUT_MS,
+        "fetchCredits"
+      );
+      if (!result.error && result.data) {
+        setCredits(result.data.credits_balance ?? 0);
+      }
+    } catch (err) {
+      console.warn("[auth] fetchCredits failed:", err);
     }
   }, []);
 
@@ -58,16 +77,26 @@ export function AuthProvider({
 
     // If server didn't provide user, check client-side
     if (!initialUser) {
-      supabase.auth.getUser().then(({ data }) => {
-        if (data.user) {
-          setUser({
-            id: data.user.id,
-            email: data.user.email,
-            user_metadata: data.user.user_metadata,
-          });
-        }
-        setIsLoading(false);
-      });
+      withTimeout(
+        supabase.auth.getUser(),
+        AUTH_TIMEOUT_MS,
+        "getUser"
+      )
+        .then(({ data }) => {
+          if (data.user) {
+            setUser({
+              id: data.user.id,
+              email: data.user.email,
+              user_metadata: data.user.user_metadata,
+            });
+          }
+        })
+        .catch((err) => {
+          console.warn("[auth] client-side getUser failed:", err);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
     }
 
     // Listen for auth state changes across tabs
