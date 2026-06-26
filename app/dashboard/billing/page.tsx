@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { CreemPortal } from "@creem_io/nextjs";
 import { useAuth } from "@/components/auth-provider";
+import { CreditPacks } from "@/components/credit-packs";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import {
@@ -185,6 +186,9 @@ export default function BillingPage() {
               />
             </div>
           </div>
+
+          {/* Buy more credits (one-time packs) */}
+          <CreditPacks referenceId={user?.id} />
 
           {/* Help / change plan row */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

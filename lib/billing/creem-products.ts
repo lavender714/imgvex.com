@@ -1,4 +1,4 @@
-import type { NormalizedSubscriptionEntity } from "@creem_io/webhook-types";
+import type { NormalizedSubscriptionEntity, NormalizedCheckoutEntity } from "@creem_io/webhook-types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TIER_CONFIG, buildUltraUnlimitedModels } from "./tier-config";
 
@@ -31,10 +31,67 @@ export function tierForProduct(productId: string): TierConfig | null {
   return PRODUCT_TIER_MAP[productId] ?? null;
 }
 
-function extractUserId(sub: NormalizedSubscriptionEntity): string | null {
-  const fromMeta = sub.metadata?.referenceId ?? sub.metadata?.user_id;
+// One-time top-up credit packs (never expire). SPEC: 2K=$19, 10K=$79, 50K=$349.
+const CREDIT_PACK_MAP: Record<string, number> = Object.fromEntries(
+  [
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K, 2000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K, 10000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K, 50000],
+    // Test mode product IDs
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K_TEST, 2000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K_TEST, 10000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K_TEST, 50000],
+  ].filter((entry): entry is [string, number] => Boolean(entry[0])),
+);
+
+export function creditPackForProduct(productId: string): number | null {
+  return CREDIT_PACK_MAP[productId] ?? null;
+}
+
+function metaUserId(meta: { referenceId?: string; user_id?: string } | undefined | null): string | null {
+  const fromMeta = meta?.referenceId ?? meta?.user_id;
   if (typeof fromMeta === "string" && fromMeta.length > 0) return fromMeta;
   return null;
+}
+
+function extractUserId(sub: NormalizedSubscriptionEntity): string | null {
+  return metaUserId(sub.metadata as { referenceId?: string; user_id?: string } | undefined);
+}
+
+/**
+ * checkout.completed — fulfill a one-time credit pack purchase. No-op for
+ * subscription checkouts (those are credited by subscription.paid). Idempotent
+ * per checkout id, so webhook retries cannot double-grant.
+ */
+export async function grantTopupCredits(checkout: NormalizedCheckoutEntity) {
+  const productId = checkout.product?.id;
+  const amount = productId ? creditPackForProduct(productId) : null;
+  if (!amount) {
+    // Not a credit pack (subscription checkout or unknown product) — ignore.
+    return;
+  }
+
+  const userId = metaUserId(checkout.metadata as { referenceId?: string; user_id?: string } | undefined);
+  if (!userId) {
+    console.warn("[creem] checkout.completed credit pack missing referenceId", checkout.id);
+    return;
+  }
+
+  const supabase = createAdminClient();
+  const { data: granted, error } = await supabase.rpc("grant_topup_credits", {
+    p_user_id: userId,
+    p_transaction_id: checkout.id,
+    p_amount: amount,
+  });
+
+  if (error) {
+    console.error("[creem] grant_topup_credits failed:", error);
+    throw error;
+  }
+  console.log(
+    "[creem] checkout.completed user", userId, "pack", productId, "checkout=", checkout.id,
+    granted === true ? `granted ${amount} topup credits` : "duplicate — credits unchanged",
+  );
 }
 
 /**
