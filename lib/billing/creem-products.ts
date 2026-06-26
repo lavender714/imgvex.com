@@ -36,16 +36,19 @@ export function tierForProduct(productId: string): TierConfig | null {
   return PRODUCT_TIER_MAP[productId] ?? null;
 }
 
-// One-time top-up credit packs (never expire). SPEC: 2K=$19, 10K=$79, 50K=$349.
+// One-time top-up credit packs (never expire). Priced ~$0.035-0.04/credit
+// (3.5-4x the $0.01/credit cost, in line with subscriptions):
+//   S = $19 / 500 · M = $79 / 2,000 · L = $349 / 10,000
+// Env names are size-agnostic so price/credit tweaks don't require renames.
 const CREDIT_PACK_MAP: Record<string, number> = Object.fromEntries(
   [
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K, 2000],
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K, 10000],
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K, 50000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_S, 500],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_M, 2000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_L, 10000],
     // Test mode product IDs
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K_TEST, 2000],
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K_TEST, 10000],
-    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K_TEST, 50000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_S_TEST, 500],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_M_TEST, 2000],
+    [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_L_TEST, 10000],
   ].filter((entry): entry is [string, number] => Boolean(entry[0])),
 );
 

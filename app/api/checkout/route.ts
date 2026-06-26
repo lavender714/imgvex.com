@@ -54,9 +54,9 @@ export async function GET(req: NextRequest) {
       [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_MONTHLY_TEST,
       [process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_ULTRA_YEARLY_TEST,
       // One-time credit packs
-      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K_TEST,
-      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K_TEST,
-      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_S!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_S_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_M!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_M_TEST,
+      [process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_L!]: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_L_TEST,
     };
     const mapped = map[prodId];
     if (mapped) {

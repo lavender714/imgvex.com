@@ -7,11 +7,12 @@ import { Infinity } from "lucide-react";
 interface CreditPackCardProps {
   credits: number;
   price: number;
+  popular?: boolean;
   onSelect?: () => void;
 }
 
-export function CreditPackCard({ credits, price, onSelect }: CreditPackCardProps) {
-  const isPopular = credits === 10000;
+export function CreditPackCard({ credits, price, popular, onSelect }: CreditPackCardProps) {
+  const isPopular = popular ?? false;
 
   return (
     <div

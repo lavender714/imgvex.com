@@ -3,12 +3,13 @@
 import { CreemCheckout } from "@creem_io/nextjs";
 import { CreditPackCard } from "@/components/credit-pack-card";
 
-// One-time credit packs (SPEC: 2K=$19, 10K=$79, 50K=$349). Product ids come from
-// public env vars so the same values map to credits server-side in CREDIT_PACK_MAP.
+// One-time credit packs. Priced ~$0.035-0.04/credit (3.5-4x the $0.01 cost).
+// Product ids come from public env vars so the same values map to credits
+// server-side in CREDIT_PACK_MAP.
 const PACKS = [
-  { credits: 2000, price: 19, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_2K },
-  { credits: 10000, price: 79, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_10K },
-  { credits: 50000, price: 349, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_50K },
+  { credits: 500, price: 19, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_S },
+  { credits: 2000, price: 79, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_M, popular: true },
+  { credits: 10000, price: 349, productId: process.env.NEXT_PUBLIC_CREEM_PRODUCT_PACK_L },
 ];
 
 export function CreditPacks({ referenceId }: { referenceId?: string }) {
@@ -33,10 +34,10 @@ export function CreditPacks({ referenceId }: { referenceId?: string }) {
               checkoutPath="/api/checkout"
               successUrl="/dashboard/billing?checkout=success"
             >
-              <CreditPackCard credits={p.credits} price={p.price} />
+              <CreditPackCard credits={p.credits} price={p.price} popular={p.popular} />
             </CreemCheckout>
           ) : (
-            <CreditPackCard key={p.credits} credits={p.credits} price={p.price} />
+            <CreditPackCard key={p.credits} credits={p.credits} price={p.price} popular={p.popular} />
           )
         )}
       </div>

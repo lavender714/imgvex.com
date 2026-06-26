@@ -91,12 +91,20 @@ once used. Operator processes the refund in the **Creem Dashboard**, which fires
 
 ## 6. Top-up packs (M3) — setup checklist
 
-SPEC pricing: **2K=$19, 10K=$79, 50K=$349** (one-time, never expire).
+Cost basis **1 credit ≈ $0.01**. Packs are priced ~$0.035–0.04/credit (3.5–4×
+cost, in line with subscriptions — never below the $0.01 cost floor):
+
+| Slot | Price | Credits | $/credit |
+|---|---|---|---|
+| `PACK_S` | $19 | 500 | $0.038 |
+| `PACK_M` | $79 | 2,000 | $0.0395 (Best Value) |
+| `PACK_L` | $349 | 10,000 | $0.0349 |
 
 1. Creem Dashboard → create 3 **one-time** products in **Live** and **Test** (6 total).
 2. Set env (deploy platform + `.env.local`), then **redeploy** (NEXT_PUBLIC_ is build-time):
-   `NEXT_PUBLIC_CREEM_PRODUCT_PACK_{2K,10K,50K}` and `…_TEST`.
-3. Credit amounts are mapped in `CREDIT_PACK_MAP` (`lib/billing/creem-products.ts`); keep them in sync with the products.
+   `NEXT_PUBLIC_CREEM_PRODUCT_PACK_{S,M,L}` and `…_TEST`.
+3. Credit amounts are mapped in `CREDIT_PACK_MAP` (`lib/billing/creem-products.ts`); the display price lives in `components/credit-packs.tsx`. Keep both in sync with the Creem product prices.
+4. Env names are size-agnostic (`S`/`M`/`L`) so re-pricing never requires renaming vars.
 
 ## 7. Ops SQL cheat-sheet
 
