@@ -1,6 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateSignature, parseWebhookEvent } from "@creem_io/webhook-types";
-import { applyPaidSubscription, applyActiveSubscription, revokeSubscription, grantTopupCredits } from "@/lib/billing/creem-products";
+import {
+  applyPaidSubscription,
+  applyActiveSubscription,
+  cancelSubscription,
+  expireSubscription,
+  grantTopupCredits,
+  revokeRefundedCredits,
+} from "@/lib/billing/creem-products";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.CREEM_WEBHOOK_SECRET;
@@ -60,17 +67,32 @@ export async function POST(req: NextRequest) {
         await applyActiveSubscription(event.object);
         break;
       }
-      case "subscription.canceled":
+      case "subscription.canceled": {
+        console.log("[creem webhook] handling subscription.canceled for sub=", event.object?.id);
+        // Keep access until period end; downgrade happens on subscription.expired.
+        await cancelSubscription(event.object);
+        break;
+      }
       case "subscription.expired":
       case "subscription.paused": {
         console.log("[creem webhook] handling", event.eventType, "for sub=", event.object?.id);
-        await revokeSubscription(event.object);
+        await expireSubscription(event.object);
         break;
       }
       case "checkout.completed": {
         console.log("[creem webhook] handling checkout.completed for checkout=", event.object?.id);
         // Fulfills one-time credit packs; no-op for subscription checkouts.
         await grantTopupCredits(event.object);
+        break;
+      }
+      case "refund.created": {
+        console.log("[creem webhook] handling refund.created for refund=", event.object?.id);
+        await revokeRefundedCredits(event.object, "manual_refund");
+        break;
+      }
+      case "dispute.created": {
+        console.log("[creem webhook] handling dispute.created for dispute=", event.object?.id);
+        await revokeRefundedCredits(event.object, "chargeback");
         break;
       }
       default: {

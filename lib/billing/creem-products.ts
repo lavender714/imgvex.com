@@ -1,4 +1,9 @@
-import type { NormalizedSubscriptionEntity, NormalizedCheckoutEntity } from "@creem_io/webhook-types";
+import type {
+  NormalizedSubscriptionEntity,
+  NormalizedCheckoutEntity,
+  NormalizedRefundEntity,
+  NormalizedDisputeEntity,
+} from "@creem_io/webhook-types";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { TIER_CONFIG, buildUltraUnlimitedModels } from "./tier-config";
 
@@ -220,10 +225,40 @@ function creditGrantKey(sub: NormalizedSubscriptionEntity): string {
   );
 }
 
-export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {
+/**
+ * subscription.canceled — the user cancelled but keeps access until the period
+ * ends (Pollo/terms behaviour). Do NOT downgrade or touch credits here; just
+ * record when the plan ends. The downgrade happens on subscription.expired.
+ */
+export async function cancelSubscription(sub: NormalizedSubscriptionEntity) {
   const userId = extractUserId(sub);
   if (!userId) {
-    console.warn("[creem] revoke missing referenceId in metadata", sub.id);
+    console.warn("[creem] cancel missing referenceId in metadata", sub.id);
+    return;
+  }
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("profiles")
+    .update({
+      plan_ends_at: sub.current_period_end_date ?? sub.canceled_at,
+      updated_at: new Date().toISOString(),
+    })
+    .eq("id", userId);
+  if (error) {
+    console.error("[creem] Failed to record cancellation:", error);
+    throw error;
+  }
+  console.log("[creem] subscription canceled for user", userId, "— access kept until period end");
+}
+
+/**
+ * subscription.expired / paused — the period has actually ended. Downgrade to
+ * free permissions and expire the subscription credit bucket (topup untouched).
+ */
+export async function expireSubscription(sub: NormalizedSubscriptionEntity) {
+  const userId = extractUserId(sub);
+  if (!userId) {
+    console.warn("[creem] expire missing referenceId in metadata", sub.id);
     return;
   }
 
@@ -235,7 +270,6 @@ export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {
       plan_tier: "free",
       credits_monthly: 0,
       plan_ends_at: sub.current_period_end_date ?? sub.canceled_at,
-      // Reset permissions to free tier
       max_image_resolution: perms.maxImageResolution,
       max_video_resolution: perms.maxVideoResolution,
       max_video_duration: perms.maxVideoDuration,
@@ -251,7 +285,88 @@ export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {
     .eq("id", userId);
 
   if (error) {
-    console.error("[creem] Failed to revoke subscription:", error);
+    console.error("[creem] Failed to expire subscription:", error);
     throw error;
   }
+
+  const { error: expErr } = await supabase.rpc("expire_subscription_credits", {
+    p_user_id: userId,
+    p_ref_id: `${sub.id}:${sub.current_period_end_date ?? sub.canceled_at ?? sub.id}`,
+  });
+  if (expErr) {
+    console.error("[creem] expire_subscription_credits failed:", expErr);
+    throw expErr;
+  }
+  console.log("[creem] subscription expired for user", userId, "— downgraded + subscription credits expired");
+}
+
+/**
+ * refund.created / dispute.created — claw back the credits from the grant that
+ * the refunded/charged-back payment created. We locate the original grant in our
+ * own ledger (it carries user_id + amount + bucket), then revoke clamped at 0.
+ * Idempotent per refund/dispute id.
+ */
+export async function revokeRefundedCredits(
+  entity: NormalizedRefundEntity | NormalizedDisputeEntity,
+  reason: "manual_refund" | "chargeback",
+) {
+  const e = entity as unknown as {
+    id: string;
+    transaction?: { id?: string };
+    checkout?: { id?: string } | string;
+    subscription?: { id?: string } | string;
+    order?: { id?: string } | string;
+  };
+
+  const idOf = (v: { id?: string } | string | undefined): string | undefined =>
+    typeof v === "string" ? v : v?.id;
+
+  const candidates = [
+    e.transaction?.id,
+    idOf(e.checkout),
+    idOf(e.subscription),
+    idOf(e.order),
+  ].filter((x): x is string => Boolean(x));
+
+  if (candidates.length === 0) {
+    console.warn("[creem] refund/dispute has no linkable ids", e.id);
+    return;
+  }
+
+  const supabase = createAdminClient();
+  // Find the grant we made for any of the referenced ids.
+  const { data: grant, error } = await supabase
+    .from("credit_ledger")
+    .select("user_id, amount, transaction_type")
+    .in("transaction_id", candidates)
+    .in("transaction_type", ["subscription_grant", "topup_grant"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (error) {
+    console.error("[creem] refund lookup failed:", error);
+    throw error;
+  }
+  if (!grant) {
+    console.warn("[creem] no matching grant for refund/dispute", e.id, "candidates:", candidates);
+    return;
+  }
+
+  const bucket = grant.transaction_type === "topup_grant" ? "topup" : "subscription";
+  const { data: removed, error: revErr } = await supabase.rpc("revoke_credits", {
+    p_user_id: grant.user_id,
+    p_amount: grant.amount,
+    p_bucket: bucket,
+    p_ref_id: e.id,
+    p_reason: reason,
+  });
+  if (revErr) {
+    console.error("[creem] revoke_credits failed:", revErr);
+    throw revErr;
+  }
+  console.log(
+    "[creem]", reason, "clawed back", removed, "credits from", bucket,
+    "bucket for user", grant.user_id, "ref=", e.id,
+  );
 }
