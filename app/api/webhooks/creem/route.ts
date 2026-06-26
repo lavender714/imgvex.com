@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateSignature, parseWebhookEvent } from "@creem_io/webhook-types";
-import { applyPaidSubscription, revokeSubscription } from "@/lib/billing/creem-products";
+import { applyPaidSubscription, applyActiveSubscription, revokeSubscription } from "@/lib/billing/creem-products";
 
 export async function POST(req: NextRequest) {
   const secret = process.env.CREEM_WEBHOOK_SECRET;
@@ -55,7 +55,9 @@ export async function POST(req: NextRequest) {
       }
       case "subscription.active": {
         console.log("[creem webhook] handling subscription.active for sub=", event.object?.id);
-        await applyPaidSubscription(event.object);
+        // Tier/permissions only — credits are granted exclusively on subscription.paid
+        // so this lifecycle duplicate cannot double-grant.
+        await applyActiveSubscription(event.object);
         break;
       }
       case "subscription.canceled":

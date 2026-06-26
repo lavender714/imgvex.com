@@ -37,33 +37,18 @@ function extractUserId(sub: NormalizedSubscriptionEntity): string | null {
   return null;
 }
 
-export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
-  const userId = extractUserId(sub);
-  console.log("[creem] applyPaidSubscription sub=", sub.id, "userId=", userId, "product=", sub.product.id, "metadata=", JSON.stringify(sub.metadata));
-  if (!userId) {
-    console.warn("[creem] subscription.paid missing referenceId in metadata", sub.id);
-    return;
-  }
-  const tier = tierForProduct(sub.product.id);
-  if (!tier) {
-    console.warn("[creem] No tier mapping for product", sub.product.id);
-    return;
-  }
-
+/**
+ * Sync tier, permissions, dates and Creem ids onto the profile. These are
+ * absolute writes (no increments), so they are safe to re-apply on every event
+ * and every webhook retry. Does NOT touch credits. Returns the resolved tier,
+ * or null if the user/product could not be resolved.
+ */
+async function syncSubscriptionTier(
+  sub: NormalizedSubscriptionEntity,
+  userId: string,
+  tier: TierConfig,
+) {
   const supabase = createAdminClient();
-
-  // Fetch current credits so we can add on top (don't overwrite)
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("credits_balance")
-    .eq("id", userId)
-    .single();
-
-  const currentBalance = profile?.credits_balance ?? 0;
-  const newBalance = currentBalance + tier.creditsMonthly;
-  console.log("[creem] updating user", userId, "tier=", tier.tier, "current credits=", currentBalance, "new credits=", newBalance);
-
-  // Build permission fields based on tier
   const perms = TIER_CONFIG[tier.tier];
   const unlimitedModels = tier.tier === "ultra"
     ? buildUltraUnlimitedModels(new Date(sub.created_at))
@@ -74,7 +59,6 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
     .update({
       plan_tier: tier.tier,
       credits_monthly: tier.creditsMonthly,
-      credits_balance: newBalance,
       plan_started_at: sub.created_at,
       plan_ends_at: sub.current_period_end_date,
       creem_customer_id: sub.customer.id,
@@ -95,10 +79,88 @@ export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
     .eq("id", userId);
 
   if (error) {
-    console.error("[creem] Failed to apply paid subscription:", error);
+    console.error("[creem] Failed to sync subscription tier:", error);
     throw error;
   }
-  console.log("[creem] applied paid subscription successfully for user", userId);
+}
+
+/**
+ * subscription.paid — the billing event. Syncs tier and grants the monthly
+ * credits exactly once (idempotent per Creem transaction).
+ */
+export async function applyPaidSubscription(sub: NormalizedSubscriptionEntity) {
+  const userId = extractUserId(sub);
+  console.log("[creem] applyPaidSubscription sub=", sub.id, "userId=", userId, "product=", sub.product.id);
+  if (!userId) {
+    console.warn("[creem] subscription.paid missing referenceId in metadata", sub.id);
+    return;
+  }
+  const tier = tierForProduct(sub.product.id);
+  if (!tier) {
+    console.warn("[creem] No tier mapping for product", sub.product.id);
+    return;
+  }
+
+  await syncSubscriptionTier(sub, userId, tier);
+
+  // Grant credits idempotently, keyed on the Creem transaction. Webhook retries
+  // and the subscription.active duplicate (which does NOT call this) cannot
+  // double-grant: the same transaction id is a no-op.
+  const supabase = createAdminClient();
+  const txnId = creditGrantKey(sub);
+  const { data: granted, error: grantErr } = await supabase.rpc("grant_subscription_credits", {
+    p_user_id: userId,
+    p_transaction_id: txnId,
+    p_amount: tier.creditsMonthly,
+    p_period_end: sub.current_period_end_date ?? null,
+  });
+
+  if (grantErr) {
+    console.error("[creem] grant_subscription_credits failed:", grantErr);
+    throw grantErr;
+  }
+  console.log(
+    "[creem] applyPaidSubscription user", userId, "tier=", tier.tier, "txn=", txnId,
+    granted === true ? `granted ${tier.creditsMonthly} credits` : "duplicate — credits unchanged",
+  );
+}
+
+/**
+ * subscription.active — a lifecycle event Creem also fires for one payment.
+ * Syncs tier/permissions ONLY; credits are the exclusive job of paid.
+ */
+export async function applyActiveSubscription(sub: NormalizedSubscriptionEntity) {
+  const userId = extractUserId(sub);
+  console.log("[creem] applyActiveSubscription sub=", sub.id, "userId=", userId, "product=", sub.product.id);
+  if (!userId) {
+    console.warn("[creem] subscription.active missing referenceId in metadata", sub.id);
+    return;
+  }
+  const tier = tierForProduct(sub.product.id);
+  if (!tier) {
+    console.warn("[creem] No tier mapping for product", sub.product.id);
+    return;
+  }
+  await syncSubscriptionTier(sub, userId, tier);
+  console.log("[creem] applyActiveSubscription synced tier for user", userId, "(no credit change)");
+}
+
+/**
+ * Idempotency key for a subscription credit grant. Prefer the per-payment
+ * transaction id (changes every renewal, stable across retries of one payment);
+ * fall back to subscription id + period start if the transaction is absent.
+ */
+function creditGrantKey(sub: NormalizedSubscriptionEntity): string {
+  const s = sub as unknown as {
+    last_transaction_id?: string;
+    last_transaction?: { id?: string };
+    current_period_start_date?: string;
+  };
+  return (
+    s.last_transaction_id ??
+    s.last_transaction?.id ??
+    `${sub.id}:${s.current_period_start_date ?? sub.created_at}`
+  );
 }
 
 export async function revokeSubscription(sub: NormalizedSubscriptionEntity) {

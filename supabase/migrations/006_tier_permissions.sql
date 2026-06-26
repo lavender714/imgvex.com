@@ -52,10 +52,14 @@ UPDATE public.profiles SET
   priority_queue = (plan_tier IN ('pro', 'ultra')),
   privacy_controls = (plan_tier IN ('pro', 'ultra')),
   copy_protection = (plan_tier IN ('pro', 'ultra')),
-  unlimited_models = CASE WHEN plan_tier = 'ultra' THEN '{}' ELSE '{}' END
+  unlimited_models = '{}'::jsonb
 WHERE true;
 
 -- 3. Replace deduct_credits with model-aware version
+-- Drop the old 2-arg version first; otherwise the new 3-arg overload
+-- (p_model_id has a DEFAULT) collides with it on 2-arg calls.
+DROP FUNCTION IF EXISTS public.deduct_credits(uuid, integer);
+
 CREATE OR REPLACE FUNCTION public.deduct_credits(
   p_user_id uuid,
   p_amount integer,
@@ -97,7 +101,7 @@ BEGIN
 END;
 $$;
 
-COMMENT ON FUNCTION public.deduct_credits IS 'Atomically deduct credits. If p_model_id is provided and exists in unlimited_models with a future expires_at, returns true without deducting.';
+COMMENT ON FUNCTION public.deduct_credits(uuid, integer, text) IS 'Atomically deduct credits. If p_model_id is provided and exists in unlimited_models with a future expires_at, returns true without deducting.';
 
 -- 4. Helper function: count active concurrent jobs for a user
 CREATE OR REPLACE FUNCTION public.count_active_jobs(p_user_id uuid)
