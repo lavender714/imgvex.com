@@ -33,6 +33,41 @@ export async function GET(request: Request) {
 
   try {
     const result = await queryTaskStatus(provider, taskId, taskType as TaskType);
+
+    // Reconcile our generation log on terminal states; refund failures exactly
+    // once (the RPC is idempotent and locks, so concurrent polls are safe).
+    if (result.status === "completed" || result.status === "failed" || result.status === "error") {
+      const { data: gen } = await supabase
+        .from("generation_logs")
+        .select("id, status")
+        .eq("task_id", taskId)
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (gen && gen.status !== "completed" && gen.status !== "failed") {
+        const failed = result.status !== "completed";
+        await supabase
+          .from("generation_logs")
+          .update({
+            status: failed ? "failed" : "completed",
+            error_message: failed ? (result.error ?? "Generation failed") : null,
+            completed_at: new Date().toISOString(),
+          })
+          .eq("id", gen.id);
+
+        if (failed) {
+          const { error: refundErr } = await supabase.rpc("refund_generation_credits", {
+            p_generation_id: gen.id,
+          });
+          if (refundErr) {
+            console.error("[status-api] refund failed:", refundErr);
+          } else {
+            console.log("[status-api] refunded credits for failed generation", gen.id);
+          }
+        }
+      }
+    }
+
     return NextResponse.json({
       code: 200,
       message: "success",

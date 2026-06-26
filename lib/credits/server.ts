@@ -84,79 +84,102 @@ export function calculateGenerationCost(
   return baseCost;
 }
 
-/** Atomically deduct credits. Returns true if successful, false if insufficient.
- *  If modelId is provided and the user has unlimited access for that model, returns true without deducting. */
-export async function tryDeductCredits(
+/**
+ * Create a pending generation_logs row and return its id. The id anchors the
+ * credit spend (credit_ledger.generation_id), so the row must exist before
+ * spending. Returns null if the insert failed.
+ */
+export async function createGeneration(data: {
+  userId: string;
+  model: string;
+  taskType: string;
+  prompt?: string;
+  creditsCost: number;
+}): Promise<string | null> {
+  const supabase = await createClient();
+  const { data: row, error } = await supabase
+    .from("generation_logs")
+    .insert({
+      user_id: data.userId,
+      model: data.model,
+      task_type: data.taskType,
+      prompt: data.prompt,
+      credits_cost: data.creditsCost,
+      status: "pending",
+    })
+    .select("id")
+    .single();
+
+  if (error) {
+    console.error("[credits] Failed to create generation log:", error);
+    return null;
+  }
+  return row.id as string;
+}
+
+/**
+ * Spend credits for a generation. Subscription credits are consumed before
+ * topup; the split is recorded so a refund can restore the exact buckets.
+ * Idempotent per generationId. Returns false if the balance is insufficient.
+ * Unlimited-model access returns true without charging.
+ */
+export async function spendCredits(
   userId: string,
+  generationId: string,
   amount: number,
   modelId?: string
 ): Promise<boolean> {
   const supabase = await createClient();
-
-  const { data, error } = await supabase.rpc("deduct_credits", {
+  const { data, error } = await supabase.rpc("spend_credits", {
     p_user_id: userId,
+    p_generation_id: generationId,
     p_amount: amount,
     p_model_id: modelId,
   });
 
   if (error) {
-    console.error("[credits] deduct_credits RPC failed:", error);
-    // Fallback: non-atomic read-update for environments without the RPC
-    return fallbackDeductCredits(userId, amount);
+    console.error("[credits] spend_credits RPC failed:", error);
+    throw error;
   }
-
   return data === true;
 }
 
-async function fallbackDeductCredits(
-  userId: string,
-  amount: number
-): Promise<boolean> {
+/** Refund a failed generation's credits to the buckets they came from. Idempotent. */
+export async function refundGeneration(generationId: string): Promise<void> {
   const supabase = await createClient();
-
-  const { data: profile, error: fetchError } = await supabase
-    .from("profiles")
-    .select("credits_balance, plan_tier")
-    .eq("id", userId)
-    .single();
-
-  if (fetchError) throw fetchError;
-  if (profile.plan_tier === "ultra") return true;
-  if (!profile || (profile.credits_balance ?? 0) < amount) return false;
-
-  const { error: updateError } = await supabase
-    .from("profiles")
-    .update({ credits_balance: profile.credits_balance - amount })
-    .eq("id", userId);
-
-  if (updateError) throw updateError;
-  return true;
+  const { error } = await supabase.rpc("refund_generation_credits", {
+    p_generation_id: generationId,
+  });
+  if (error) {
+    console.error("[credits] refund_generation_credits RPC failed:", error);
+  }
 }
 
-export async function logGeneration(data: {
-  userId: string;
-  taskId?: string;
-  provider?: string;
-  model: string;
-  taskType: string;
-  prompt?: string;
-  creditsCost: number;
-}): Promise<void> {
+/** Attach the provider task id once the async job has been created. */
+export async function attachGenerationTask(
+  generationId: string,
+  taskId?: string,
+  provider?: string
+): Promise<void> {
   const supabase = await createClient();
-  const { error } = await supabase.from("generation_logs").insert({
-    user_id: data.userId,
-    task_id: data.taskId,
-    provider: data.provider,
-    model: data.model,
-    task_type: data.taskType,
-    prompt: data.prompt,
-    credits_cost: data.creditsCost,
-    status: "pending",
-  });
-
+  const { error } = await supabase
+    .from("generation_logs")
+    .update({ task_id: taskId, provider })
+    .eq("id", generationId);
   if (error) {
-    console.error("[credits] Failed to log generation:", error);
-    // Don't throw — logging failure shouldn't block generation
+    console.error("[credits] Failed to attach task to generation:", error);
+  }
+}
+
+/** Delete a pending generation row (used when the spend fails right after create). */
+export async function deleteGeneration(generationId: string): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("generation_logs")
+    .delete()
+    .eq("id", generationId);
+  if (error) {
+    console.error("[credits] Failed to delete generation log:", error);
   }
 }
 

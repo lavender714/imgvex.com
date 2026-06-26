@@ -3,8 +3,11 @@ import { createClient } from "@/lib/supabase/server";
 import { executeTaskWithFailover } from "@/lib/providers";
 import {
   calculateGenerationCost,
-  tryDeductCredits,
-  logGeneration,
+  createGeneration,
+  spendCredits,
+  refundGeneration,
+  attachGenerationTask,
+  deleteGeneration,
 } from "@/lib/credits/server";
 import { screenPrompt } from "@/lib/billing/creem-moderation";
 
@@ -125,34 +128,50 @@ export async function POST(request: Request) {
       size: rest.size,
     });
 
-    const deducted = await tryDeductCredits(user.id, creditsCost, model);
-    if (!deducted) {
+    // Pre-create the generation row so the spend (and any refund) can be
+    // anchored to a stable generation id.
+    const generationId = await createGeneration({
+      userId: user.id,
+      model,
+      taskType,
+      prompt: prompt.trim(),
+      creditsCost,
+    });
+    if (!generationId) {
+      return NextResponse.json({ error: "Failed to start generation" }, { status: 500 });
+    }
+
+    const spent = await spendCredits(user.id, generationId, creditsCost, model);
+    if (!spent) {
+      await deleteGeneration(generationId);
       return NextResponse.json(
         { error: "Insufficient credits", code: "INSUFFICIENT_CREDITS", required: creditsCost },
         { status: 402 }
       );
     }
 
-    console.log(`[generate-api] Deducted ${creditsCost} credits from ${user.id}`);
+    console.log(`[generate-api] Spent ${creditsCost} credits for ${user.id} (generation ${generationId})`);
 
-    const result = await executeTaskWithFailover(model, taskType, {
-      model,
-      prompt: prompt.trim(),
-      ...rest,
-    });
+    let result;
+    try {
+      result = await executeTaskWithFailover(model, taskType, {
+        model,
+        prompt: prompt.trim(),
+        ...rest,
+      });
+    } catch (execError) {
+      // Generation could not be dispatched — refund immediately so the user is
+      // not charged for work that never started.
+      await refundGeneration(generationId);
+      await deleteGeneration(generationId);
+      console.error("[generate-api] dispatch failed, refunded:", execError);
+      throw execError;
+    }
 
     console.log("[generate-api] Failover result:", JSON.stringify(result));
 
-    // --- Log generation (fire-and-forget) ---
-    await logGeneration({
-      userId: user.id,
-      taskId: result.task_id,
-      provider: result.provider,
-      model,
-      taskType,
-      prompt: prompt.trim(),
-      creditsCost,
-    });
+    // Attach the provider task id so status polling can reconcile this row.
+    await attachGenerationTask(generationId, result.task_id, result.provider);
 
     return NextResponse.json({
       code: 200,
